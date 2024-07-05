@@ -1,6 +1,6 @@
 # Movie-Rental-Backend
 
-
+TEST
 
 ## Getting started
 
