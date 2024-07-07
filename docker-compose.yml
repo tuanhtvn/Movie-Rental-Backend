@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  java-springboot:
+    container_name: JavaAPI
+    build: 
+      dockerfile: Dockerfile
+      context: ./movie/
+    ports:
+      -  "8080:8080"
+    volumes:
+      - ./movie:/app
