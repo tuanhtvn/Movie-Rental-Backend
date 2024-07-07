@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: DEBUG
+
+spring:
+  application:
+    name: RentalMovie
+  output:
+    ansi:
+      enabled: DETECT
