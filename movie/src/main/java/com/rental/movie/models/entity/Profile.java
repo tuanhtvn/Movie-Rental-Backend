@@ -1,5 +1,7 @@
 package com.rental.movie.models.entity;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,15 @@ public class Profile {
     private List<Film> selectedMovies = new ArrayList<>();
 
     @CreatedDate
-    private ZonedDateTime createdAt;
+    private Instant createdAt;
     @LastModifiedDate
-    private ZonedDateTime updatedAt;
+    private Instant updatedAt;
+
+    public ZonedDateTime getCreatedAt() {
+        return createdAt.atZone(ZoneId.systemDefault());
+    }
+
+    public ZonedDateTime getUpdatedAt() {
+        return createdAt.atZone(ZoneId.systemDefault());
+    }
 }

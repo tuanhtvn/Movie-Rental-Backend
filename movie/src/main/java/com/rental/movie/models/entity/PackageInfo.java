@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageInfo extends BaseEntity{
+public class PackageInfo extends BaseEntity {
     @Id
     private String id;
     private String packageName;

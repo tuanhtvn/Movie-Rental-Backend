@@ -3,12 +3,11 @@ package com.rental.movie.models.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.relation.Role;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.rental.movie.common.AuthProvider;
+import com.rental.movie.common.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

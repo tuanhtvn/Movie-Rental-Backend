@@ -3,7 +3,8 @@ package com.rental.movie.models.entity;
 import java.time.ZonedDateTime;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.transaction.TransactionStatus;
+
+import com.rental.movie.common.TransactionStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
