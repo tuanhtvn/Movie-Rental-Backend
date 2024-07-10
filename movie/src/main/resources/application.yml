@@ -11,6 +11,10 @@ spring:
   output:
     ansi:
       enabled: DETECT
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: dbdev
 
 # swagger-ui custom path
 springdoc:
