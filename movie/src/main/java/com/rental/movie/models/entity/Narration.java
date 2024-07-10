@@ -1,0 +1,17 @@
+package com.rental.movie.models.entity;
+
+import org.springframework.data.annotation.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Narration {
+    @Id
+    private String id;
+    private String language;
+    private String narrationUrl;
+}

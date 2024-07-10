@@ -1,4 +1,4 @@
-package com.rental.movie.controllers;
+package com.rental.movie.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
