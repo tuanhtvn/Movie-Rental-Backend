@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Item {
     @Id
-    private String id;
+    private String id; // khóa chính
     @DBRef
-    private Film film;
+    private Film film; // phim
 }

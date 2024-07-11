@@ -1,5 +1,7 @@
 package com.rental.movie.model.entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -14,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Album extends BaseEntity {
     @Id
-    private String id;
-    private String albumName;
+    private String id; // khóa chính
+    private String albumName; // tên album
     @DBRef
-    private Film film;
+    private List<Film> film; // danh sách phim
 }

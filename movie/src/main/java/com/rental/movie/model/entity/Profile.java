@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Profile {
     @Id
-    private String id;
-    private String profileName;
-    private String imageUrl;
-    private Boolean isChild;
-    private Boolean isDefault;
+    private String id; // khóa chính
+    private String profileName; // tên profile
+    private String imageUrl; // ảnh đại diện
+    private Boolean isChild; // trạng thái trẻ em
+    private Boolean isDefault; // trạng thái mặc định
 
     @DBRef
     private List<Film> selectedMovies = new ArrayList<>();

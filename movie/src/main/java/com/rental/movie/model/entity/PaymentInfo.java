@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PaymentInfo {
     @Id
-    private String id;
-    private String bankName;
-    private String cardNumber;
-    private String cardHolderName;
-    private ZonedDateTime issueDate;
+    private String id; // khóa 
+    private String bankName; // tên ngân hàng
+    private String cardNumber; // số thẻ
+    private String cardHolderName; // tên chủ thẻ
+    private ZonedDateTime issueDate; // ngày phát hành
 
     @CreatedDate
     private Instant createdAt;

@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SupportRequest {
     @Id
-    private String id;
-    private String title;
-    private String content;
-    private ZonedDateTime requestTime;
-    private Boolean isResolved = false;
+    private String id; // khóa chính
+    private String title; // tiêu đề
+    private String content; // nội dung
+    private ZonedDateTime requestTime; // thời gian gửi
+    private Boolean isResolved = false; // trạng thái đã giải quyết
     @DBRef
-    private User user;
+    private User user; // người gửi
 }

@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RentedFilm {
     @Id
-    private String id;
+    private String id; // khóa chính
     @DBRef
-    private Film film;
-    private ZonedDateTime expirationDate;
-    private ZonedDateTime expireAt;
-    private ZonedDateTime rentalDate;
+    private Film film; // phim
+    private ZonedDateTime expirationDate; // ngày hết hạn(30 ngày sau ngày thuê)
+    private ZonedDateTime expireAt; // thời gian hết hạn(48h kể từ thời điểm xem phim)
+    private ZonedDateTime rentalDate; // ngày thuê
 }

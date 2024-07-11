@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Narration {
     @Id
-    private String id;
-    private String language;
-    private String narrationUrl;
+    private String id; // khóa chính
+    private String language; // ngôn ngữ
+    private String narrationUrl; // đường dẫn thuyết minh
 }

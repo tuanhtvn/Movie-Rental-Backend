@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Comment {
     @Id
-    private String id;
-    private String text;
+    private String id; // khóa chính
+    private String text; // nội dung
     @DBRef
-    private User user;
+    private User user; // người bình luận
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt; // thời gian bình luận
 
     public ZonedDateTime getCreatedAt() {
         return createdAt.atZone(ZoneId.systemDefault());

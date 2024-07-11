@@ -18,9 +18,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Category extends BaseEntity {
     @Id
-    private String id;
-    private String categoryName;
+    private String id; // khóa chính
+    private String categoryName; // tên danh mục
 
-    private List<Banner> banners = new ArrayList<>();
-    private List<Album> albums = new ArrayList<>();
+    private List<Banner> banners = new ArrayList<>(); // danh sách banner
+    private List<Album> albums = new ArrayList<>(); // danh sách album
 }

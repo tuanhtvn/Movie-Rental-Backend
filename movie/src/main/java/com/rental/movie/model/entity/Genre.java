@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Genre extends BaseEntity {
     @Id
-    private String id;
-    private String genreName;
+    private String id; // khóa chính
+    private String genreName; // tên thể loại
 
     @DBRef
-    private List<Film> films = new ArrayList<>();
+    private List<Film> films = new ArrayList<>(); // danh sách phim
 }

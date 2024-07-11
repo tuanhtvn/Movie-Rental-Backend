@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Subtitle {
     @Id
-    private String id;
-    private String subtitleName;
-    private String subtitleUrl;
+    private String id; // khóa chính
+    private String subtitleName; // tên phụ đề
+    private String subtitleUrl; // đường dẫn phụ đề
 }

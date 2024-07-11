@@ -22,27 +22,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Film extends BaseEntity {
     @Id
-    private String id;
-    private String filmName;
-    private String filmUrl;
-    private String description;
-    private String thumbnailUrl;
-    private String trailerUrl;
-    private ZonedDateTime releaseDate;
-    private String duration;
-    private String actors;
-    private String director;
-    private String language;
-    private Integer numberOfViews;
-    private Double rating;
-    private Integer age;
-    private RentalType rentalType;
-    private Double price;
-    private Integer limitTime;
+    private String id; // khóa chính
+    private String filmName; // tên phim
+    private String filmUrl; // đường dẫn phim
+    private String description; // mô tả
+    private String thumbnailUrl; // đường dẫn ảnh thumbnail
+    private String trailerUrl; // đường dẫn trailer
+    private ZonedDateTime releaseDate; // ngày phát hành
+    private String duration; // thời lượng
+    private String actors; // danh sách diễn viên
+    private String director; // đạo diễn
+    private String language; // ngôn ngữ
+    private Integer numberOfViews; // số lượt xem
+    private Double rating; // đánh giá
+    private Integer age; // độ tuổi
+    private RentalType rentalType; // loại thuê phim
+    private Double price; // giá
+    private Integer limitTime; // thời hạn xem
 
-    private List<Subtitle> subtitles = new ArrayList<>();
-    private List<Narration> narrations = new ArrayList<>();
-    private List<Comment> comments = new ArrayList<>();
+    private List<Subtitle> subtitles = new ArrayList<>(); // danh sách phụ đề
+    private List<Narration> narrations = new ArrayList<>(); // danh sách thuyết minh
+    private List<Comment> comments = new ArrayList<>(); // danh sách bình luận
     @DBRef
-    private List<Genre> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>(); // danh sách thể loại
 }

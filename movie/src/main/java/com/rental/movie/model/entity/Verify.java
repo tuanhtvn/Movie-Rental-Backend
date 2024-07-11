@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Verify {
-    private String code;
-    private ZonedDateTime expiredAt;
+    private String code; // mã xác thực
+    private ZonedDateTime expiredAt; // thời gian hết hạn
 }

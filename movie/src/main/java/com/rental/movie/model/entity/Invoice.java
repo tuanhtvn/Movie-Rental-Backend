@@ -20,14 +20,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Invoice {
     @Id
-    private String id;
-    private ZonedDateTime issueDate;
-    private PaymentStatus paymentStatus;
-    private Double totalPrice;
+    private String id; // khóa chính
+    private ZonedDateTime issueDate; // ngày tạo hóa đơn
+    private PaymentStatus paymentStatus; // trạng thái thanh toán
+    private Double totalPrice; // tổng giá
     @DBRef
-    private List<Film> films = new ArrayList<>();
+    private List<Film> films = new ArrayList<>(); // danh sách phim thuê
     @DBRef
-    private PackageInfo packageInfo;
+    private PackageInfo packageInfo; // thông tin gói thuê
     @DBRef
-    private User user;
+    private User user; // người thuê
 }

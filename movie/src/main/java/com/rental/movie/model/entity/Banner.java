@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Banner extends BaseEntity {
     @Id
-    private String id;
-    private String imageUrl;
+    private String id; // khóa chính
+    private String imageUrl; // đường dẫn ảnh banner
     @DBRef
-    private Film film;
+    private Film film; // phim
 }

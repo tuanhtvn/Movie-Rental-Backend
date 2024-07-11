@@ -11,13 +11,13 @@ import lombok.Data;
 
 @Data
 public abstract class BaseEntity {
-    private Boolean isActive = true;
-    private Boolean isDeleted = false;
+    private Boolean isActive = true; // Trạng thái hoạt động
+    private Boolean isDeleted = false; // Trạng thái đã xóa
 
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt; // Thời gian tạo
     @LastModifiedDate
-    private Instant updatedAt;
+    private Instant updatedAt; // Thời gian cập nhật
 
     public ZonedDateTime getCreatedAt() {
         return createdAt.atZone(ZoneId.systemDefault());

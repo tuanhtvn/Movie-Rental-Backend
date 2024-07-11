@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Device {
     @Id
-    private String id;
-    private String token;
-    private ZonedDateTime expireAt;
-    private String info;
-    private ZonedDateTime lastLoggedIn;
+    private String id; // khóa chính
+    private String token; // token
+    private ZonedDateTime expireAt; // thời gian hết hạn
+    private String info; // thông tin thiết bị
+    private ZonedDateTime lastLoggedIn; // thời gian đăng nhập cuối cùng
 }

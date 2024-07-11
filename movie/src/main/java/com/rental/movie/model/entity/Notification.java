@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Notification {
     @Id
-    private String id;
-    private String title;
-    private String content;
-    private ZonedDateTime sentTime;
-    private Boolean isRead = false;
+    private String id; // khóa chính
+    private String title; // tiêu đề
+    private String content; // nội dung
+    private ZonedDateTime sentTime; // thời gian gửi
+    private Boolean isRead = false; // trạng thái đã đọc
     @DBRef
-    private User user;
+    private User user; // người nhận
 }

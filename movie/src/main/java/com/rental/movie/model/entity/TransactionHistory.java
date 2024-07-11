@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransactionHistory {
     @Id
-    private String id;
-    private ZonedDateTime purchaseDate;
-    private Double totalPrice;
-    private TransactionStatus transactionStatus;
+    private String id; // khóa chính
+    private ZonedDateTime purchaseDate; // thời gian mua
+    private Double totalPrice; // tổng giá
+    private TransactionStatus transactionStatus; // trạng thái giao dịch
 }

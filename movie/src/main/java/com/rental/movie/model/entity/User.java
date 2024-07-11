@@ -21,19 +21,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User extends BaseEntity {
     @Id
-    private String id;
-    private String fullName;
-    private String email;
-    private String password;
-    private Boolean isEmailVerified = false;
-    private AuthProvider authProvider;
-    private Role role;
-    private Verify verify;
-    private RentalPackage rentalPackage;
-    private List<Item> cart = new ArrayList<>();
-    private List<Profile> profiles = new ArrayList<>();
-    private List<Device> devices = new ArrayList<>();
-    private List<RentedFilm> rentedFilms = new ArrayList<>();
-    private List<TransactionHistory> transactionHistories = new ArrayList<>();
-    private List<PaymentInfo> paymentInfos = new ArrayList<>();
+    private String id; // khóa chính
+    private String fullName; // họ tên
+    private String email; // email
+    private String password; // mật khẩu
+    private Boolean isEmailVerified = false; // trạng thái xác thực email
+    private AuthProvider authProvider; // nhà cung cấp xác thực
+    private Role role; // quyền
+    private Verify verify; // thông tin xác thực
+    private RentalPackage rentalPackage; // gói thuê
+    private List<Item> cart = new ArrayList<>(); // giỏ hàng
+    private List<Profile> profiles = new ArrayList<>(); // danh sách hồ sơ
+    private List<Device> devices = new ArrayList<>(); // danh sách thiết bị
+    private List<RentedFilm> rentedFilms = new ArrayList<>(); // danh sách phim đã thuê
+    private List<TransactionHistory> transactionHistories = new ArrayList<>(); // lịch sử giao dịch
+    private List<PaymentInfo> paymentInfos = new ArrayList<>(); // thông tin thanh toán
 }

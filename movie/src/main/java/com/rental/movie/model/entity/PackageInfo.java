@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PackageInfo extends BaseEntity {
     @Id
-    private String id;
-    private String packageName;
-    private String description;
-    private Double price;
-    private Integer timeDuration;
+    private String id; // khóa chính
+    private String packageName; // tên gói
+    private String description; // mô tả
+    private Double price; // giá
+    private Integer timeDuration; // thời gian sử dụng
 }
