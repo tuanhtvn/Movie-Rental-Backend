@@ -1,4 +1,4 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
 
 import java.time.Instant;
 import java.time.ZoneId;

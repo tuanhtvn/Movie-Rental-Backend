@@ -1,4 +1,4 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;

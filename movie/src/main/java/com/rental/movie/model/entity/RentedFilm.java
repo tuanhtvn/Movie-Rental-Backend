@@ -1,21 +1,23 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
+
+import java.time.ZonedDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Banner extends BaseEntity {
+public class RentedFilm {
     @Id
     private String id;
-    private String imageUrl;
     @DBRef
     private Film film;
+    private ZonedDateTime expirationDate;
+    private ZonedDateTime expireAt;
+    private ZonedDateTime rentalDate;
 }

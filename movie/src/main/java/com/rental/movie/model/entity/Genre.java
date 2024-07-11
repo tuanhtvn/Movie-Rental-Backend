@@ -1,6 +1,7 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
 
-import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -8,19 +9,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "SupportRequest")
+@Document(collection = "Genre")
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class SupportRequest {
+public class Genre extends BaseEntity {
     @Id
     private String id;
-    private String title;
-    private String content;
-    private ZonedDateTime requestTime;
-    private Boolean isResolved = false;
+    private String genreName;
+
     @DBRef
-    private User user;
+    private List<Film> films = new ArrayList<>();
 }

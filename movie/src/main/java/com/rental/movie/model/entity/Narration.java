@@ -1,7 +1,6 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class Narration {
     @Id
     private String id;
-    @DBRef
-    private Film film;
+    private String language;
+    private String narrationUrl;
 }

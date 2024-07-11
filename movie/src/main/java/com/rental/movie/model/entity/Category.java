@@ -1,4 +1,7 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,16 +11,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "PackageInfo")
+@Document(collection = "Category")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PackageInfo extends BaseEntity {
+public class Category extends BaseEntity {
     @Id
     private String id;
-    private String packageName;
-    private String description;
-    private Double price;
-    private Integer timeDuration;
+    private String categoryName;
+
+    private List<Banner> banners = new ArrayList<>();
+    private List<Album> albums = new ArrayList<>();
 }

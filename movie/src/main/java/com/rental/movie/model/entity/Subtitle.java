@@ -1,4 +1,4 @@
-package com.rental.movie.models.entity;
+package com.rental.movie.model.entity;
 
 import org.springframework.data.annotation.Id;
 
