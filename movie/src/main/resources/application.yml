@@ -13,7 +13,7 @@ spring:
       enabled: DETECT
   data:
     mongodb:
-      uri: ${MONGODB_URI}
+      uri: mongodb+srv://tttn_movie_rental:UMcpzMNABJDkaAxN@clustermovierental.us7bvrr.mongodb.net/?retryWrites=true&w=majority&appName=ClusterMovieRental
       database: dbdev
 
 # swagger-ui custom path
