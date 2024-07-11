@@ -20,3 +20,11 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+open:
+  api:
+    title: Tài liệu API Thuê Phim
+    version: v1.0.0
+    description: Tài liệu API cho ứng dụng thuê phim
+    local-server-url: http://localhost:8080
+    host-server-url: https://hoctuancustomservice.io.vn
+
