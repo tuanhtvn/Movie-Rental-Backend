@@ -28,7 +28,7 @@ public class OpenApiConfig {
         return new OpenAPI().info(new Info().title(this.title)
                 .version(this.version)
                 .description(this.description))
-                .servers(List.of(new Server().url(this.localServerUrl).description("Local server"),
-                        new Server().url(this.hostServerUrl).description("Host server")));
+                .servers(List.of(new Server().url(this.hostServerUrl).description("Host server"),
+                        new Server().url(this.localServerUrl).description("Local server")));
     }
 }
