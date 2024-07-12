@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class RentedFilm {
     @Id
     private String id; // khóa chính
-    @DBRef
+    @DBRef(lazy=true)
     private Film film; // phim
     private ZonedDateTime expirationDate; // ngày hết hạn(30 ngày sau ngày thuê)
     private ZonedDateTime expireAt; // thời gian hết hạn(48h kể từ thời điểm xem phim)

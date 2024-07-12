@@ -24,10 +24,10 @@ public class Invoice {
     private ZonedDateTime issueDate; // ngày tạo hóa đơn
     private PaymentStatus paymentStatus; // trạng thái thanh toán
     private Double totalPrice; // tổng giá
-    @DBRef
+    @DBRef(lazy=true)
     private List<Film> films = new ArrayList<>(); // danh sách phim thuê
-    @DBRef
+    @DBRef(lazy=true)
     private PackageInfo packageInfo; // thông tin gói thuê
-    @DBRef
+    @DBRef(lazy=true)
     private User user; // người thuê
 }

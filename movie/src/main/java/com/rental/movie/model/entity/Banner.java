@@ -16,6 +16,6 @@ public class Banner extends BaseEntity {
     @Id
     private String id; // khóa chính
     private String imageUrl; // đường dẫn ảnh banner
-    @DBRef
+    @DBRef(lazy=true)
     private Film film; // phim
 }

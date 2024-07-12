@@ -21,6 +21,6 @@ public class Notification {
     private String content; // nội dung
     private ZonedDateTime sentTime; // thời gian gửi
     private Boolean isRead = false; // trạng thái đã đọc
-    @DBRef
+    @DBRef(lazy=true)
     private User user; // người nhận
 }

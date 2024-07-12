@@ -26,7 +26,7 @@ public class Profile {
     private Boolean isChild; // trạng thái trẻ em
     private Boolean isDefault; // trạng thái mặc định
 
-    @DBRef
+    @DBRef(lazy=true)
     private List<Film> selectedMovies = new ArrayList<>();
 
     @CreatedDate
