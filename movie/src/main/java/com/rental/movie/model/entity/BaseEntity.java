@@ -20,10 +20,10 @@ public abstract class BaseEntity {
     private Instant updatedAt; // Thời gian cập nhật
 
     public ZonedDateTime getCreatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
+        return createdAt != null ? createdAt.atZone(ZoneId.systemDefault()) : null;
     }
 
     public ZonedDateTime getUpdatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
+        return updatedAt != null ? updatedAt.atZone(ZoneId.systemDefault()) : null;
     }
 }
