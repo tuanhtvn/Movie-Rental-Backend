@@ -18,6 +18,6 @@ public class Album extends BaseEntity {
     @Id
     private String id; // khóa chính
     private String albumName; // tên album
-    @DBRef
+    @DBRef(lazy=true)
     private List<Film> film; // danh sách phim
 }

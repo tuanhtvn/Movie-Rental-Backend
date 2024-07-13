@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class Item {
     @Id
     private String id; // khóa chính
-    @DBRef
+    @DBRef(lazy=true)
     private Film film; // phim
 }

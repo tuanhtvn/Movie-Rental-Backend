@@ -21,6 +21,6 @@ public class SupportRequest {
     private String content; // nội dung
     private ZonedDateTime requestTime; // thời gian gửi
     private Boolean isResolved = false; // trạng thái đã giải quyết
-    @DBRef
+    @DBRef(lazy=true)
     private User user; // người gửi
 }

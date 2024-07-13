@@ -19,7 +19,7 @@ public class Comment {
     @Id
     private String id; // khóa chính
     private String text; // nội dung
-    @DBRef
+    @DBRef(lazy=true)
     private User user; // người bình luận
     @CreatedDate
     private Instant createdAt; // thời gian bình luận

@@ -21,10 +21,10 @@ import java.time.ZonedDateTime;
 public class Banner extends BaseEntity {
     @Id
     @Schema(description = "Unique identifier of Banner")
-    private String id;
+    private String id; // khóa chính
     @Schema(description = "Banner image url", example = "https://admarket.vn/blog/uploads/images/banner-la-gi.jpeg")
-    private String imageUrl;
+    private String imageUrl; // đường dẫn ảnh banner
     @DBRef(lazy=true)
     @Schema(description = "This banner is from this film")
-    private Film film;
+    private Film film; // phim
 }
