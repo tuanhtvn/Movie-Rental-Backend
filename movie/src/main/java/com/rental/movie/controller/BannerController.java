@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/banner")
+@RequestMapping("/api/employee/banner")
 public class BannerController {
     @Autowired
     private BannerService bannerService;
