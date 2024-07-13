@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.rental.movie.model.entity.Film;
 
+import java.util.List;
+
 @Repository
 public interface FilmRepository extends MongoRepository<Film, String> {
-
+    public Film findByFilmNameIgnoreCase(String filmName);
 }
