@@ -1,3 +1,6 @@
+client:
+  url: http://localhost:4200
+
 server:
   port: 8080
 
@@ -15,6 +18,13 @@ spring:
     mongodb:
       uri: mongodb+srv://tttn_movie_rental:UMcpzMNABJDkaAxN@clustermovierental.us7bvrr.mongodb.net/?retryWrites=true&w=majority&appName=ClusterMovieRental
       database: dbdev
+  jwt:
+    rsa:
+      private-key: classpath:certs/private.pem
+      public-key: classpath:certs/public.pem
+    expiresTime: 7
+  cookie:
+    expiresTime: 7
 
 # swagger-ui custom path
 springdoc:

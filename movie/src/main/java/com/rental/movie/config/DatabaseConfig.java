@@ -3,7 +3,7 @@ package com.rental.movie.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
@@ -16,19 +16,18 @@ import com.rental.movie.util.ZonedDateTimeWriteConverter;
 
 @Configuration
 public class DatabaseConfig extends AbstractMongoClientConfiguration {
-    @Value("${spring.data.mongodb.uri}")
-    private String uri;
-    @Value("${spring.data.mongodb.database}")
-    private String database;
+
+    @Autowired
+    private AppConfig appConfig;
 
     @Override
     protected String getDatabaseName() {
-        return database;
+        return appConfig.getDatabase();
     }
 
     @Override
     public MongoClient mongoClient() {
-        return MongoClients.create(uri);
+        return MongoClients.create(appConfig.getUri());
     }
 
     @Override
