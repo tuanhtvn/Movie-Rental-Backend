@@ -27,6 +27,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.rental.movie.component.DelegatedAuthenticationEntryPoint;
 import com.rental.movie.util.CustomAuthenticationConverter;
 
 import jakarta.servlet.http.Cookie;
@@ -36,6 +37,9 @@ import jakarta.servlet.http.HttpServletRequest;
 public class WebSecurityConfig {
     @Autowired
     private AppConfig appConfig;
+
+    @Autowired
+    private DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
 
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -56,15 +60,16 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-ui.html", "/api/auth/**")
                             .permitAll();
-                    auth.requestMatchers("/api/admin/**").hasRole("ROLE_ADMIN");
-                    auth.requestMatchers("/api/employee/**").hasRole("ROLE_EMPLOYEE");
-                    auth.requestMatchers("/api/user/**").hasRole("ROLE_USER");
+                    auth.requestMatchers("/api/admin/**").hasAnyRole("ADMIN");
+                    auth.requestMatchers("/api/employee/**").hasAnyRole("ADMIN", "EMPLOYEE");
+                    auth.requestMatchers("/api/user/**").hasAnyRole("USER");
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2.bearerTokenResolver(req -> this.getTokenFromCookie(req));
                     oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));
                 })
+                .exceptionHandling(handler -> handler.authenticationEntryPoint(this.delegatedAuthenticationEntryPoint))
                 .build();
     }
 
@@ -80,7 +85,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    private JwtEncoder jwtEncoder() {
+    JwtEncoder jwtEncoder() {
         JWK jwk = new RSAKey.Builder(appConfig.getPublicKey())
                 .privateKey(appConfig.getPrivateKey())
                 .build();
