@@ -65,15 +65,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO) {
-        categoryDTO.setId(null);
         Category category = categoryMapper.convertToEntity(categoryDTO);
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 
     @Override
     @Transactional
-    public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO) {
-        if(categoryDTO.getId() == null || !categoryRepository.existsById(categoryDTO.getId())) {
+    public CategoryResponseDTO updateCategory(
+            String categoryId,
+            CategoryRequestDTO categoryDTO
+    ) {
+        if(categoryId == null || !categoryRepository.existsById(categoryId)) {
             throw new NotFoundException("Danh mục không tồn tại");
         }
         boolean anyAlumNotFound = categoryDTO.getAlbumsId().stream().anyMatch(
@@ -88,7 +90,9 @@ public class CategoryServiceImpl implements CategoryService {
         if(anyBannerNotFound) {
             throw new NotFoundException("Banner không tồn tại");
         }
+        categoryDTO.setId(categoryId);
         Category category = categoryMapper.convertToEntity(categoryDTO);
+        System.out.println(category.getBanners());
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 

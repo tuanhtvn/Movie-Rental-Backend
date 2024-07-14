@@ -108,7 +108,7 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                 "Cập nhật danh mục thành công.",
                 HttpStatus.OK.value(),
-                categoryService.updateCategory(categoryDTO)
+                categoryService.updateCategory(categoryId, categoryDTO)
         ));
     }
 
