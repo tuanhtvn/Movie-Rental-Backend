@@ -134,9 +134,41 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
             @ApiResponse(responseCode = "200", description = "Khôi phục danh mục thành công.")
     })
-    @PutMapping("/restore/{categoryId}")
+    @PatchMapping("/restore/{categoryId}")
     public ResponseEntity<BaseResponse> restoreById(@PathVariable String categoryId){
         categoryService.restoreCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Khôi phục danh mục thành công",
+                HttpStatus.OK.value(),
+                null
+        ));
+    }
+
+    // Role Admin || employee
+    @Operation(summary = "Activate danh mục", description = "Activate danh mục theo Id danh mục")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Activate danh mục thành công.")
+    })
+    @PatchMapping("/activate/{categoryId}")
+    public ResponseEntity<BaseResponse> activateById(@PathVariable String categoryId){
+        categoryService.activateCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Activate danh mục thành công",
+                HttpStatus.OK.value(),
+                null
+        ));
+    }
+
+    // Role Admin || employee
+    @Operation(summary = "Deactivate danh mục", description = "Deactivate danh mục đã xoá mềm")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Deactivate danh mục thành công.")
+    })
+    @PatchMapping("/deactivate/{categoryId}")
+    public ResponseEntity<BaseResponse> deactivateById(@PathVariable String categoryId){
+        categoryService.deactivateCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                 "Khôi phục danh mục thành công",
                 HttpStatus.OK.value(),
