@@ -15,22 +15,27 @@ import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 public class OpenApiConfig {
-    @Autowired
-    private AppConfig appConfig;
+        @Autowired
+        private AppConfig appConfig;
 
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI().info(new Info().title(this.appConfig.getTitle())
-                .version(this.appConfig.getVersion())
-                .description(this.appConfig.getDescription()))
-                .servers(List.of(new Server().url(this.appConfig.getHostServerUrl()).description("Host server"),
-                        new Server().url(this.appConfig.getLocalServerUrl()).description("Local server")))
-                .components(
-                        new Components()
-                                .addSecuritySchemes("cookie", new SecurityScheme()
-                                        .type(SecurityScheme.Type.APIKEY)
-                                        .in(SecurityScheme.In.HEADER)
-                                        .name("cookie")))
-                .security(List.of(new SecurityRequirement().addList("cookie")));
-    }
+        @Bean
+        public OpenAPI customOpenAPI() {
+                return new OpenAPI().info(new Info().title(this.appConfig.getTitle())
+                                .version(this.appConfig.getVersion())
+                                .description(this.appConfig.getDescription()))
+                                .servers(List.of(
+                                                new Server().url(this.appConfig.getHostServerUrl())
+                                                                .description("Host server"),
+                                                new Server().url(this.appConfig.getLocalServerUrl())
+                                                                .description("Local server")))
+                                .components(
+                                                new Components()
+                                                                .addSecuritySchemes(
+                                                                                "bearerAuth",
+                                                                                new SecurityScheme()
+                                                                                                .type(SecurityScheme.Type.HTTP)
+                                                                                                .scheme("bearer")
+                                                                                                .bearerFormat("JWT")))
+                                .security(List.of(new SecurityRequirement().addList("bearerAuth")));
+        }
 }

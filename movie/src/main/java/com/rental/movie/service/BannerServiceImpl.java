@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BannerServiceImpl implements BannerService{
+public class BannerServiceImpl implements BannerService {
     @Autowired
     private BannerRepository bannerRepository;
     @Autowired
@@ -35,7 +35,7 @@ public class BannerServiceImpl implements BannerService{
                 .collect(Collectors.toList());
 
         BaseResponse baseResponse;
-        if (listFound.isEmpty()){
+        if (listFound.isEmpty()) {
             baseResponse = BaseResponse.builder()
                     .message("No banners found.")
                     .status(HttpStatus.OK.value())
@@ -67,12 +67,11 @@ public class BannerServiceImpl implements BannerService{
     @Override
     public ResponseEntity<BaseResponse> updateBanner(String id, BannerCreationDTO bannerCreationDTO) {
         Optional<Banner> bannerFound = bannerRepository.findById(id);
-        if (bannerFound.isPresent()){
+        if (bannerFound.isPresent()) {
             Film filmFound = filmRepository.findById(bannerCreationDTO.getIdFilm()).orElse(null);
             if (filmFound == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new BaseResponse("Film not found!", HttpStatus.NOT_FOUND.value(), null)
-                );
+                        new BaseResponse("Film not found!", HttpStatus.NOT_FOUND.value(), null));
             }
 
             Banner newBanner = bannerFound.get();
@@ -84,19 +83,17 @@ public class BannerServiceImpl implements BannerService{
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(newBanner);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Updated banner successfully.", HttpStatus.OK.value(), responseBanner)
-            );
+                    new BaseResponse("Updated banner successfully.", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Banner not found!", HttpStatus.NOT_FOUND.value(), null)
-            );
+                    new BaseResponse("Banner not found!", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 
     @Override
     public ResponseEntity<BaseResponse> softDeleteById(String id) {
         Optional<Banner> bannerFound = bannerRepository.findById(id);
-        if (bannerFound.isPresent()){
+        if (bannerFound.isPresent()) {
             Banner bannerToDelete = bannerFound.get();
             bannerToDelete.setIsDeleted(true);
 
@@ -104,12 +101,10 @@ public class BannerServiceImpl implements BannerService{
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(bannerToDelete);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Soft deleted banner succesfully.", HttpStatus.OK.value(), responseBanner)
-            );
+                    new BaseResponse("Soft deleted banner succesfully.", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banner not found!", HttpStatus.NOT_FOUND.value(), null)
-            );
+                    new BaseResponse("Failed! Banner not found!", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 
@@ -119,24 +114,22 @@ public class BannerServiceImpl implements BannerService{
         List<Banner> bannersFound = new ArrayList<>();
 
         Film filmFound = filmRepository.findByFilmNameIgnoreCase(trimmedInput);
-        if (filmFound != null){
+        if (filmFound != null) {
             bannersFound = (List<Banner>) bannerRepository.findByFilm_Id(filmFound.getId());
         } else {
-            //nếu tìm bằng tên phim không thấy, thử tìm bằng id phim
+            // nếu tìm bằng tên phim không thấy, thử tìm bằng id phim
             bannersFound = bannerRepository.findByFilm_Id(trimmedInput);
         }
 
-        if (bannersFound.isEmpty()){
+        if (bannersFound.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banners not found!", HttpStatus.NOT_FOUND.value(), null)
-            );
+                    new BaseResponse("Failed! Banners not found!", HttpStatus.NOT_FOUND.value(), null));
         } else {
             List<BannerDTO> responseBanners = bannersFound.stream()
                     .map(bannerMapper::convertToDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Banners found.", HttpStatus.OK.value(), responseBanners)
-            );
+                    new BaseResponse("Banners found.", HttpStatus.OK.value(), responseBanners));
         }
     }
 
@@ -148,7 +141,7 @@ public class BannerServiceImpl implements BannerService{
                 .collect(Collectors.toList());
 
         BaseResponse baseResponse;
-        if (listFound.isEmpty()){
+        if (listFound.isEmpty()) {
             baseResponse = BaseResponse.builder()
                     .message("No banners found.")
                     .status(HttpStatus.OK.value())
@@ -167,7 +160,7 @@ public class BannerServiceImpl implements BannerService{
     @Override
     public ResponseEntity<BaseResponse> restoreBannerById(String id) {
         Optional<Banner> bannerFound = bannerRepository.findById(id);
-        if (bannerFound.isPresent()){
+        if (bannerFound.isPresent()) {
             Banner banner = bannerFound.get();
             banner.setIsDeleted(false);
 
@@ -175,12 +168,10 @@ public class BannerServiceImpl implements BannerService{
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(banner);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("OK! Restore banner successfully", HttpStatus.OK.value(), responseBanner)
-            );
+                    new BaseResponse("OK! Restore banner successfully", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banner not found.", HttpStatus.NOT_FOUND.value(), null)
-            );
+                    new BaseResponse("Failed! Banner not found.", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 

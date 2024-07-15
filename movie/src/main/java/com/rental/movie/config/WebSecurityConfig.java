@@ -7,7 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -19,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.util.WebUtils;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -30,10 +31,9 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.rental.movie.component.DelegatedAuthenticationEntryPoint;
 import com.rental.movie.util.CustomAuthenticationConverter;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity()
 public class WebSecurityConfig {
     @Autowired
     private AppConfig appConfig;
@@ -44,7 +44,7 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowedOrigins(Arrays.asList(appConfig.getClientUrl()));
+        configuration.setAllowedOrigins(Arrays.asList("*")); // appConfig.getClientUrl()
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -58,24 +58,15 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(this.corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-ui.html", "/api/auth/**")
+                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/auth/**")
                             .permitAll();
-                    auth.requestMatchers("/api/admin/**").hasAnyRole("ADMIN");
-                    auth.requestMatchers("/api/employee/**").hasAnyRole("ADMIN", "EMPLOYEE");
-                    auth.requestMatchers("/api/user/**").hasAnyRole("USER");
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> {
-                    oauth2.bearerTokenResolver(req -> this.getTokenFromCookie(req));
                     oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));
                 })
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(this.delegatedAuthenticationEntryPoint))
                 .build();
-    }
-
-    private String getTokenFromCookie(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, "Token");
-        return cookie != null ? cookie.getValue() : null;
     }
 
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {

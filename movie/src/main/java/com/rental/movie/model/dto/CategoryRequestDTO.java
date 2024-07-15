@@ -1,17 +1,17 @@
 package com.rental.movie.model.dto;
 
-import com.rental.movie.model.entity.Album;
-import com.rental.movie.model.entity.Banner;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryRequestDTO extends BaseRequestDTO {
