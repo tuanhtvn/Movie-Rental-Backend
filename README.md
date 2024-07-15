@@ -26,3 +26,8 @@
 - Luồng và data trong request: client gửi request -> (DTO)controller -> service -> (Entity)repository
 
 - Luồng và data trong response: repository(Entity) -> service -> (DTO)controller -> client nhận response
+
+3. Thông tin tài khoản - pass: 123456
+- admin: rentalmovie68@gmail.com
+- employee: employee@gmail.com
+- user: user@gmail.com
