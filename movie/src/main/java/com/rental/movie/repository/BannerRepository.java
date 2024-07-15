@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface BannerRepository extends MongoRepository<Banner, String> {
     public List<Banner> findByIsDeletedFalse();
-    public List<Banner> findByFilm_Id(String idFilm);
+    public List<Banner> findByFilmId_AndIsDeletedFalse(String idFilm);
     public List<Banner> findByIsDeletedTrue();
 }

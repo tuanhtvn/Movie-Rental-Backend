@@ -10,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.ZonedDateTime;
-
 @Document(collection = "Banner")
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -22,8 +20,10 @@ public class Banner extends BaseEntity {
     @Id
     @Schema(description = "Unique identifier of Banner")
     private String id; // khóa chính
-    @Schema(description = "Banner image url", example = "https://admarket.vn/blog/uploads/images/banner-la-gi.jpeg")
+
+    @Schema(description = "Banner image url", example = "https://example66.com/image.jpg")
     private String imageUrl; // đường dẫn ảnh banner
+
     @DBRef(lazy=true)
     @Schema(description = "This banner is from this film")
     private Film film; // phim
