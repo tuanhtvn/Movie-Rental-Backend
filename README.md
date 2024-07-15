@@ -1,7 +1,11 @@
 # Movie-Rental-Backend
+
 1. Tài liệu API
+
 - Swagger UI: <https://hoctuancustomservice.io.vn/swagger-ui/index.html>
+
 2. Cấu trúc thư mục trong dự án
+
 ```bash
         Movie-Rental-Backend/
         └── movie/
@@ -18,6 +22,7 @@
                         ├── service (Xử lý logic hệ thống)
                         └── util (Các xử lý khác)
 ```
+
 - Luồng và data trong request: client gửi request -> (DTO)controller -> service -> (Entity)repository
 
 - Luồng và data trong response: repository(Entity) -> service -> (DTO)controller -> client nhận response
