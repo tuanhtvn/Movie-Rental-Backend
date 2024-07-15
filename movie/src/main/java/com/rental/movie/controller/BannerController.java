@@ -27,7 +27,7 @@ public class BannerController {
     @Operation(summary = "Create a new Banner", description = "Required inputs: imageUrl (String), idFilm (String)")
     @ApiResponse(responseCode = "201", description = "Create a new Banner successfully.")
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerCreationDTO bannerCreationDTO){
+    public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerCreationDTO bannerCreationDTO) {
         return bannerService.createBanner(bannerCreationDTO);
     }
 
@@ -38,7 +38,7 @@ public class BannerController {
     })
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse> updateById(@PathVariable String id,
-                                                   @RequestBody @Valid BannerCreationDTO newBanner){
+            @RequestBody @Valid BannerCreationDTO newBanner) {
         return bannerService.updateBanner(id, newBanner);
     }
 
