@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,62 +18,69 @@ public class BannerController {
     @Autowired
     private BannerService bannerService;
 
-    @Operation(summary = "Get all banners")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy danh sách tất cả banner.")
     @ApiResponse(responseCode = "200", description = "OK.")
     @GetMapping("/getAll")
     public ResponseEntity<BaseResponse> getAllBanners() {
         return bannerService.getAllBanners();
     }
 
-    @Operation(summary = "Create a new Banner", description = "Required inputs: imageUrl (String), idFilm (String)")
-    @ApiResponse(responseCode = "201", description = "Create a new Banner successfully.")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Tạo một banner mới", description = "Yêu cầu đầu vào: imageUrl (String), idFilm (String)")
+    @ApiResponse(responseCode = "201", description = "Tạo banner thành công.")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerCreationDTO bannerCreationDTO) {
         return bannerService.createBanner(bannerCreationDTO);
     }
 
-    @Operation(summary = "Update a banner by id", description = "Just update 3 fields: imageUrl (String), idFilm (String), isActive (boolean)")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Cập nhật banner dựa trên id.", description = "Chỉ cập nhật 3 trường: imageUrl (String), idFilm (String), isActive (boolean)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Banner not found!"),
-            @ApiResponse(responseCode = "200", description = "Updated banner successfully.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
+            @ApiResponse(responseCode = "200", description = "Cập nhật banner thành công.")
     })
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse> updateById(@PathVariable String id,
-            @RequestBody @Valid BannerCreationDTO newBanner) {
+                                                   @RequestBody @Valid BannerCreationDTO newBanner) {
         return bannerService.updateBanner(id, newBanner);
     }
 
-    @Operation(summary = "Soft delete a banner by id", description = "Updated field: isDeleted = true")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Xoá mềm banner dựa trên id.", description = "Cập nhật isDeleted = true")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Banner not found."),
-            @ApiResponse(responseCode = "200", description = "Soft deleted banner successfully.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
+            @ApiResponse(responseCode = "200", description = "Xoá mềm banner thành công.")
     })
     @PatchMapping("/softDelete/{id}")
     public ResponseEntity<BaseResponse> softDeleteById(@PathVariable String id) {
         return bannerService.softDeleteById(id);
     }
 
-    @Operation(summary = "Find banner by input (Film name or Film id)")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Tìm banner dựa trên filmName hoặc idFilm.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Failed! Banners not found!"),
-            @ApiResponse(responseCode = "200", description = "OK! Banners found!")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
+            @ApiResponse(responseCode = "200", description = "Tìm thấy banner.")
     })
     @GetMapping("/findBanner")
     public ResponseEntity<BaseResponse> findBannerByFilmName_orByFilmId(@RequestParam String input) {
         return bannerService.findByFilmNameOrFilmId(input);
     }
 
-    @Operation(summary = "Get Soft Deleted Banners")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy danh sách banner đã bị xoá mềm.")
     @ApiResponse(responseCode = "200", description = "OK.")
     @GetMapping("/getSoftDeletedBanners")
     public ResponseEntity<BaseResponse> getSoftDeletedBanners() {
         return bannerService.getSoftDeletedBanners();
     }
 
-    @Operation(summary = "Restore a banner by id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Khôi phục banner đã bị xoá mềm dựa trên id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Failed! Banner not found."),
-            @ApiResponse(responseCode = "200", description = "OK! Restore successfully.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
+            @ApiResponse(responseCode = "200", description = "Khôi phục thành công.")
     })
     @PutMapping("/restore/{id}")
     public ResponseEntity<BaseResponse> restoreById(@PathVariable String id) {

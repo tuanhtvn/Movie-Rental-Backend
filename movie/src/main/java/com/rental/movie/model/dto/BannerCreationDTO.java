@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public class BannerCreationDTO {
 
     //This 2 fields is required
-    @Schema(description = "Banner image URL", example = "https://example66.com/image.jpg")
-    @NotBlank(message = "Image url is mandatory!")
+    @Schema(description = "Đường dẫn ảnh của banner.", example = "https://example66.com/image.jpg")
+    @NotBlank(message = "Bắt buộc phải nhập trường này!")
     private String imageUrl;
 
-    @Schema(description = "ID of the film associated with the banner", example = "66911ea4371ec16ae7a05629")
-    @NotBlank(message = "idFilm is mandatory!")
+    @Schema(description = "ID phim của banner.", example = "66911ea4371ec16ae7a05629")
+    @NotBlank(message = "Bắt buộc phải nhập trường này!")
     private String idFilm;
 
     //created automatically

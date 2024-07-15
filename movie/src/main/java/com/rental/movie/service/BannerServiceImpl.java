@@ -37,13 +37,13 @@ public class BannerServiceImpl implements BannerService {
         BaseResponse baseResponse;
         if (listFound.isEmpty()) {
             baseResponse = BaseResponse.builder()
-                    .message("No banners found.")
+                    .message("Không tìm thấy banner nào.")
                     .status(HttpStatus.OK.value())
                     .data(null)
                     .build();
         } else {
             baseResponse = BaseResponse.builder()
-                    .message("OK! List banners found.")
+                    .message("OK! Đã tìm thấy danh sách banner.")
                     .status(HttpStatus.OK.value())
                     .data(listFound)
                     .build();
@@ -57,7 +57,7 @@ public class BannerServiceImpl implements BannerService {
         bannerRepository.save(banner);
 
         BaseResponse baseResponse = BaseResponse.builder()
-                .message("Banner created successfully.")
+                .message("Tạo banner thành công.")
                 .status(HttpStatus.CREATED.value())
                 .data(bannerCreationDTO)
                 .build();
@@ -71,7 +71,7 @@ public class BannerServiceImpl implements BannerService {
             Film filmFound = filmRepository.findById(bannerCreationDTO.getIdFilm()).orElse(null);
             if (filmFound == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new BaseResponse("Film not found!", HttpStatus.NOT_FOUND.value(), null));
+                        new BaseResponse("Không tìm thấy phim!", HttpStatus.NOT_FOUND.value(), null));
             }
 
             Banner newBanner = bannerFound.get();
@@ -83,10 +83,10 @@ public class BannerServiceImpl implements BannerService {
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(newBanner);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Updated banner successfully.", HttpStatus.OK.value(), responseBanner));
+                    new BaseResponse("Cập nhật banner thành công.", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Banner not found!", HttpStatus.NOT_FOUND.value(), null));
+                    new BaseResponse("Không tìm thấy banner!", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 
@@ -101,10 +101,10 @@ public class BannerServiceImpl implements BannerService {
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(bannerToDelete);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Soft deleted banner succesfully.", HttpStatus.OK.value(), responseBanner));
+                    new BaseResponse("Xoá mềm banner thành công.", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banner not found!", HttpStatus.NOT_FOUND.value(), null));
+                    new BaseResponse("Thất bại! Không tìm thấy banner!", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 
@@ -114,7 +114,7 @@ public class BannerServiceImpl implements BannerService {
         List<Banner> bannersFound = new ArrayList<>();
 
         Film filmFound = filmRepository.findByFilmNameIgnoreCase(trimmedInput);
-        if (filmFound != null){
+        if (filmFound != null) {
             bannersFound = (List<Banner>) bannerRepository.findByFilmId_AndIsDeletedFalse(filmFound.getId());
         } else {
             //nếu tìm bằng tên phim không thấy, thử tìm bằng id phim
@@ -123,13 +123,13 @@ public class BannerServiceImpl implements BannerService {
 
         if (bannersFound.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banners not found!", HttpStatus.NOT_FOUND.value(), null));
+                    new BaseResponse("Thất bại! Không tìm thấy banner nào!", HttpStatus.NOT_FOUND.value(), null));
         } else {
             List<BannerDTO> responseBanners = bannersFound.stream()
                     .map(bannerMapper::convertToDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Banners found.", HttpStatus.OK.value(), responseBanners));
+                    new BaseResponse("Đã tìm thấy banner.", HttpStatus.OK.value(), responseBanners));
         }
     }
 
@@ -143,13 +143,13 @@ public class BannerServiceImpl implements BannerService {
         BaseResponse baseResponse;
         if (listFound.isEmpty()) {
             baseResponse = BaseResponse.builder()
-                    .message("No banners found.")
+                    .message("Không tìm thấy banner nào.")
                     .status(HttpStatus.OK.value())
                     .data(null)
                     .build();
         } else {
             baseResponse = BaseResponse.builder()
-                    .message("OK! List banners found.")
+                    .message("OK! Đã tìm thấy danh sách banner.")
                     .status(HttpStatus.OK.value())
                     .data(listFound)
                     .build();
@@ -168,10 +168,10 @@ public class BannerServiceImpl implements BannerService {
 
             BannerDTO responseBanner = bannerMapper.convertToDTO(banner);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("OK! Restore banner successfully", HttpStatus.OK.value(), responseBanner));
+                    new BaseResponse("OK! Khôi phục banner thành công", HttpStatus.OK.value(), responseBanner));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Failed! Banner not found.", HttpStatus.NOT_FOUND.value(), null));
+                    new BaseResponse("Thất bại! Không tìm thấy banner.", HttpStatus.NOT_FOUND.value(), null));
         }
     }
 
