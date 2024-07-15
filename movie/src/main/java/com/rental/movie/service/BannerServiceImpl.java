@@ -114,11 +114,11 @@ public class BannerServiceImpl implements BannerService {
         List<Banner> bannersFound = new ArrayList<>();
 
         Film filmFound = filmRepository.findByFilmNameIgnoreCase(trimmedInput);
-        if (filmFound != null) {
-            bannersFound = (List<Banner>) bannerRepository.findByFilm_Id(filmFound.getId());
+        if (filmFound != null){
+            bannersFound = (List<Banner>) bannerRepository.findByFilmId_AndIsDeletedFalse(filmFound.getId());
         } else {
-            // nếu tìm bằng tên phim không thấy, thử tìm bằng id phim
-            bannersFound = bannerRepository.findByFilm_Id(trimmedInput);
+            //nếu tìm bằng tên phim không thấy, thử tìm bằng id phim
+            bannersFound = bannerRepository.findByFilmId_AndIsDeletedFalse(trimmedInput);
         }
 
         if (bannersFound.isEmpty()) {

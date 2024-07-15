@@ -88,21 +88,23 @@ public class CategoryController {
                                 categoryService.createCategory(categoryDTO)));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Cập nhật danh mục", description = "Cập nhật danh mục theo Id danh mục")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
-                        @ApiResponse(responseCode = "200", description = "Cập nhật danh mục thành công.")
-        })
-        @PutMapping("/update/{categoryId}")
-        public ResponseEntity<BaseResponse> updateCategory(
-                        @PathVariable String categoryId,
-                        @Valid @RequestBody CategoryRequestDTO categoryDTO) {
-                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                                "Cập nhật danh mục thành công.",
-                                HttpStatus.OK.value(),
-                                categoryService.updateCategory(categoryDTO)));
-        }
+    // Role Admin || employee
+    @Operation(summary = "Cập nhật danh mục", description = "Cập nhật danh mục theo Id danh mục")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Cập nhật danh mục thành công.")
+    })
+    @PutMapping("/update/{categoryId}")
+    public ResponseEntity<BaseResponse> updateCategory(
+            @PathVariable String categoryId,
+            @Valid @RequestBody CategoryRequestDTO categoryDTO
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Cập nhật danh mục thành công.",
+                HttpStatus.OK.value(),
+                categoryService.updateCategory(categoryId, categoryDTO)
+        ));
+    }
 
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Xoá mềm danh mục", description = "Xoá mềm danh mục theo Id danh mục")
@@ -119,18 +121,51 @@ public class CategoryController {
                                 null));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Khôi phục danh mục", description = "Khôi phục danh mục đã xoá mềm")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
-                        @ApiResponse(responseCode = "200", description = "Khôi phục danh mục thành công.")
-        })
-        @PutMapping("/restore/{categoryId}")
-        public ResponseEntity<BaseResponse> restoreById(@PathVariable String categoryId) {
-                categoryService.restoreCategory(categoryId);
-                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                                "Khôi phục danh mục thành công",
-                                HttpStatus.OK.value(),
-                                null));
-        }
+    // Role Admin || employee
+    @Operation(summary = "Khôi phục danh mục", description = "Khôi phục danh mục đã xoá mềm")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Khôi phục danh mục thành công.")
+    })
+    @PatchMapping("/restore/{categoryId}")
+    public ResponseEntity<BaseResponse> restoreById(@PathVariable String categoryId){
+        categoryService.restoreCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Khôi phục danh mục thành công",
+                HttpStatus.OK.value(),
+                null
+        ));
+    }
+
+    // Role Admin || employee
+    @Operation(summary = "Activate danh mục", description = "Activate danh mục theo Id danh mục")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Activate danh mục thành công.")
+    })
+    @PatchMapping("/activate/{categoryId}")
+    public ResponseEntity<BaseResponse> activateById(@PathVariable String categoryId){
+        categoryService.activateCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Activate danh mục thành công",
+                HttpStatus.OK.value(),
+                null
+        ));
+    }
+
+    // Role Admin || employee
+    @Operation(summary = "Deactivate danh mục", description = "Deactivate danh mục đã xoá mềm")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
+            @ApiResponse(responseCode = "200", description = "Deactivate danh mục thành công.")
+    })
+    @PatchMapping("/deactivate/{categoryId}")
+    public ResponseEntity<BaseResponse> deactivateById(@PathVariable String categoryId){
+        categoryService.deactivateCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Khôi phục danh mục thành công",
+                HttpStatus.OK.value(),
+                null
+        ));
+    }
 }

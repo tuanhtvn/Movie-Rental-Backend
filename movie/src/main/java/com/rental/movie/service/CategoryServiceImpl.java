@@ -29,12 +29,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponseDTO> getAllActiveCategories() {
-        return categoryMapper.convertToDTO(categoryRepository.findByIsDeletedFalseAndIsActiveTrue());
+        List<Category> categories = categoryRepository.findByIsDeletedFalseAndIsActiveTrue();
+        if(categories.isEmpty()){
+            throw new NotFoundException("Không có danh mục nào");
+        }
+        return categoryMapper.convertToDTO(categories);
     }
 
     @Override
     public List<CategoryResponseDTO> getAllSoftDeletedCategories() {
-        return categoryMapper.convertToDTO(categoryRepository.findByIsDeletedTrue());
+        List<Category> categories = categoryRepository.findByIsDeletedTrue();
+        if(categories.isEmpty()){
+            throw new NotFoundException("Không tìm thấy danh mục nào");
+        }
+        return categoryMapper.convertToDTO(categories);
     }
 
     @Override
@@ -65,15 +73,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO) {
-        categoryDTO.setId(null);
         Category category = categoryMapper.convertToEntity(categoryDTO);
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 
     @Override
     @Transactional
-    public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO) {
-        if(categoryDTO.getId() == null || !categoryRepository.existsById(categoryDTO.getId())) {
+    public CategoryResponseDTO updateCategory(
+            String categoryId,
+            CategoryRequestDTO categoryDTO
+    ) {
+        if(categoryId == null || !categoryRepository.existsById(categoryId)) {
             throw new NotFoundException("Danh mục không tồn tại");
         }
         boolean anyAlumNotFound = categoryDTO.getAlbumsId().stream().anyMatch(
@@ -88,7 +98,9 @@ public class CategoryServiceImpl implements CategoryService {
         if(anyBannerNotFound) {
             throw new NotFoundException("Banner không tồn tại");
         }
+        categoryDTO.setId(categoryId);
         Category category = categoryMapper.convertToEntity(categoryDTO);
+        System.out.println(category.getBanners());
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 
@@ -99,6 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
                 () -> new NotFoundException("ID danh mục không tồn tại")
         );
         category.setIsDeleted(true);
+        categoryRepository.save(category);
     }
 
     @Override
@@ -108,5 +121,26 @@ public class CategoryServiceImpl implements CategoryService {
                 () -> new NotFoundException("ID danh mục không tồn tại")
         );
         category.setIsDeleted(false);
+        categoryRepository.save(category);
+    }
+
+    @Override
+    @Transactional
+    public void activateCategory(String categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new NotFoundException("ID danh mục không tồn tại")
+        );
+        category.setIsActive(true);
+        categoryRepository.save(category);
+    }
+
+    @Override
+    @Transactional
+    public void deactivateCategory(String categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new NotFoundException("ID danh mục không tồn tại")
+        );
+        category.setIsActive(false);
+        categoryRepository.save(category);
     }
 }

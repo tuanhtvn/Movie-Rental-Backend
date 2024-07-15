@@ -14,7 +14,9 @@ public interface CategoryService {
     public Page<CategoryResponseDTO> getAll(Pageable pageable, String search);
     public CategoryResponseDTO getCategoryById(String categoryId);
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO);
-    public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO);
+    public CategoryResponseDTO updateCategory(String categoryId, CategoryRequestDTO categoryDTO);
     public void softDeleteCategory(String categoryId);
     public void restoreCategory(String categoryId);
+    public void activateCategory(String categoryId);
+    public void deactivateCategory(String categoryId);
 }

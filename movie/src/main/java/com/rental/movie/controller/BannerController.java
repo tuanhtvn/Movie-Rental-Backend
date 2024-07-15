@@ -6,6 +6,7 @@ import com.rental.movie.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,21 +24,21 @@ public class BannerController {
         return bannerService.getAllBanners();
     }
 
-    @Operation(summary = "Create a new Banner", description = "Required inputs: imageUrl (String), idFilm (String, can be null)")
+    @Operation(summary = "Create a new Banner", description = "Required inputs: imageUrl (String), idFilm (String)")
     @ApiResponse(responseCode = "201", description = "Create a new Banner successfully.")
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> createBanner(@RequestBody BannerCreationDTO bannerCreationDTO) {
+    public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerCreationDTO bannerCreationDTO){
         return bannerService.createBanner(bannerCreationDTO);
     }
 
-    @Operation(summary = "Update a banner by id", description = "Just update 3 fields: imageUrl (String), idFilm (String, cannot null), isActive (boolean)")
+    @Operation(summary = "Update a banner by id", description = "Just update 3 fields: imageUrl (String), idFilm (String), isActive (boolean)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Banner not found!"),
             @ApiResponse(responseCode = "200", description = "Updated banner successfully.")
     })
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse> updateById(@PathVariable String id,
-            @RequestBody BannerCreationDTO newBanner) {
+                                                   @RequestBody @Valid BannerCreationDTO newBanner){
         return bannerService.updateBanner(id, newBanner);
     }
 
