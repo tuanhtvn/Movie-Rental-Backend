@@ -4,11 +4,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import com.rental.movie.common.Role;
 import com.rental.movie.config.AppConfig;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +21,12 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private AppConfig appConfig;
+    @Lazy
     @Autowired
     private JwtEncoder jwtEncoder;
 
     @Override
-    public String getToken(String userId, String role) {
+    public String getToken(String userId, Role role) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(appConfig.getExpiresTime(), ChronoUnit.DAYS);
 

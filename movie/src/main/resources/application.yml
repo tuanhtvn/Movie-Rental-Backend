@@ -25,6 +25,17 @@ spring:
     expiresTime: 7
   cookie:
     expiresTime: 7
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 953038709709-sockq7q23pe04qi21nsq2icqiq9v0esd.apps.googleusercontent.com
+            clientSecret: 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
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
 
 # swagger-ui custom path
 springdoc:

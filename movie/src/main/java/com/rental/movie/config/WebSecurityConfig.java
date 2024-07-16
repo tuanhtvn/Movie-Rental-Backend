@@ -29,6 +29,8 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.rental.movie.component.DelegatedAuthenticationEntryPoint;
+import com.rental.movie.component.OAuth2LoginSuccessHandler;
+import com.rental.movie.component.OAuth2AuthenticationFailureHandler;
 import com.rental.movie.util.CustomAuthenticationConverter;
 
 @Configuration
@@ -37,6 +39,10 @@ import com.rental.movie.util.CustomAuthenticationConverter;
 public class WebSecurityConfig {
     @Autowired
     private AppConfig appConfig;
+    @Autowired
+    private OAuth2LoginSuccessHandler successHandler;
+    @Autowired
+    private OAuth2AuthenticationFailureHandler failureHandler;
 
     @Autowired
     private DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
@@ -57,9 +63,17 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(this.corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/auth/**")
+                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/auth/**",
+                            "/oauth2/**", "/api/oauth2/**")
                             .permitAll();
                     auth.anyRequest().authenticated();
+                })
+                .oauth2Login(auth -> {
+                    auth.authorizationEndpoint(point -> point.baseUri(
+                            "/oauth2/authorize"));
+                    auth.redirectionEndpoint(redirect -> redirect.baseUri("/oauth2/callback/*"));
+                    auth.successHandler(successHandler);
+                    auth.failureHandler(failureHandler);
                 })
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));

@@ -24,24 +24,24 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         log.info("Login account: " + loginRequestDTO.getEmail() + " - Auth provider: " + AuthProvider.LOCAL);
         loginRequestDTO.setEmail(loginRequestDTO.getEmail().toLowerCase());
-        return userService.getByEmail(loginRequestDTO.getEmail())
+        return userService.getByEmailAndAuthProvider(loginRequestDTO.getEmail(), AuthProvider.LOCAL)
                 .map(user -> {
                     // check status of user
                     if (user.getIsDeleted() || !user.getIsEmailVerified()) {
                         log.error("User is deleted or email is not verified: " + loginRequestDTO.getEmail());
-                        throw new CustomException("Tài khoản không tồn tại hoặc đã bị xóa",
+                        throw new CustomException("Tài khoản của bạn không tồn tại hoặc đã bị xóa",
                                 HttpStatus.NOT_FOUND.value());
                     }
                     if (!user.getIsActive()) {
                         log.error("User is not active: " + loginRequestDTO.getEmail());
-                        throw new CustomException("Tài khoản đang bị khóa",
+                        throw new CustomException("Tài khoản của bạn đang bị khóa",
                                 HttpStatus.FORBIDDEN.value());
                     }
                     // check password
                     if (BCrypt.checkpw(loginRequestDTO.getPassword(), user.getPassword())) {
                         log.info("Login success: " + loginRequestDTO.getEmail());
                         return LoginResponseDTO.builder()
-                                .token(tokenService.getToken(user.getId(), user.getRole().name()))
+                                .token(tokenService.getToken(user.getId(), user.getRole()))
                                 .fullName(user.getFullName())
                                 .role(user.getRole().name())
                                 .build();
