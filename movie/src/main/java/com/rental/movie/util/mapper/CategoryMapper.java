@@ -50,6 +50,24 @@ public class CategoryMapper {
         return category;
     }
 
+    // Overloading for update category
+    public Category convertToEntity(CategoryRequestDTO dto, Category category) {
+        modelMapper.map(dto, category);
+        // Map Banners
+        category.setBanners(dto.getBannersId().stream().map(id -> {
+            Banner banner = bannerRepository.findById(id).orElseThrow(
+                    () -> new NotFoundException("Không tìm thấy banner "));
+            return banner;
+        }).collect(Collectors.toList()));
+        // Map Albums
+        category.setAlbums(dto.getAlbumsId().stream().map(id -> {
+            Album album = albumRepository.findById(id).orElseThrow(
+                    () -> new NotFoundException("Không tìm thấy Album"));
+            return album;
+        }).collect(Collectors.toList()));
+        return category;
+    }
+
     public List<Category> convertToEntity(List<CategoryRequestDTO> dtos) {
         List<Category> categories = dtos.stream().map(this::convertToEntity).collect(Collectors.toList());
         return categories;

@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public abstract class BaseRequestDTO {
-    private String id;
     private Boolean isActive = true;
     private Boolean isDeleted = false;
 }

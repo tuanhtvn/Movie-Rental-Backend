@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -83,9 +84,8 @@ public class CategoryServiceImpl implements CategoryService {
             String categoryId,
             CategoryRequestDTO categoryDTO
     ) {
-        if(categoryId == null || !categoryRepository.existsById(categoryId)) {
-            throw new NotFoundException("Danh mục không tồn tại");
-        }
+        Category category = categoryRepository.findById(categoryId).orElseThrow(
+                () -> new NotFoundException("Danh mục không tồn tại"));
         boolean anyAlumNotFound = categoryDTO.getAlbumsId().stream().anyMatch(
                 (albumId) -> !albumRepository.existsById(albumId)
         );
@@ -98,9 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
         if(anyBannerNotFound) {
             throw new NotFoundException("Banner không tồn tại");
         }
-        categoryDTO.setId(categoryId);
-        Category category = categoryMapper.convertToEntity(categoryDTO);
-        System.out.println(category.getBanners());
+        category = categoryMapper.convertToEntity(categoryDTO, category);
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 
