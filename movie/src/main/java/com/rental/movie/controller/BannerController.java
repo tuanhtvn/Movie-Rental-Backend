@@ -58,7 +58,7 @@ public class BannerController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Tìm banner dựa trên filmName hoặc idFilm.")
+    @Operation(summary = "Tìm banner dựa trên filmName (nhập chính xác) hoặc idFilm.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
             @ApiResponse(responseCode = "200", description = "Tìm thấy banner.")
