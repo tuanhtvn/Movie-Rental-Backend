@@ -20,15 +20,10 @@ public class BannerMapper {
         if (banner == null) {
             return null;
         }
-        return new BannerDTO(
-                banner.getId(),
-                banner.getImageUrl(),
-                banner.getFilm(),
-                banner.getIsActive(),
-                banner.getIsDeleted(),
-                banner.getCreatedAt(),
-                banner.getUpdatedAt()
-        );
+        BannerDTO responseBanner = modelMapper.map(banner, BannerDTO.class);
+        responseBanner.setCreatedAt(banner.getCreatedAt().toInstant());
+        responseBanner.setUpdatedAt(banner.getUpdatedAt().toInstant());
+        return responseBanner;
     }
 
     public Banner convertToEntity(BannerCreationDTO bannerCreationDTO){

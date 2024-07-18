@@ -60,7 +60,7 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Thay đổi trạng thái Active/Inactive cho gói thuê.")
+    @Operation(summary = "Thay đổi trạng thái Active/Inactive cho gói thuê theo id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê."),
             @ApiResponse(responseCode = "200", description = "Cập nhật trạng thái Active/Inactive cho gói thuê thành công.")
@@ -99,7 +99,7 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách gói thuê đang không active, có phân trang.", description = "Roles: trừ user")
+    @Operation(summary = "Lấy danh sách gói thuê đang inactive, có phân trang.", description = "Roles: trừ user")
     @ApiResponse(responseCode = "200", description = "Thành công.")
     @GetMapping("/getAllInactive")
     public ResponseEntity<BaseResponse> getAllInactive(@ParameterObject Pageable pageable) {
