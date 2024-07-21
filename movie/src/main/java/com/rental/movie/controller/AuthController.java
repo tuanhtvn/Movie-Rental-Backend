@@ -19,7 +19,6 @@ import com.rental.movie.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -31,7 +30,7 @@ public class AuthController {
         private AuthService authService;
 
         @Operation(summary = "Đăng nhập", description = "API đăng nhập vào hệ thống")
-        @ApiResponses(value = @ApiResponse(responseCode = "200", description = "Đăng nhập thành công"))
+        @ApiResponse(responseCode = "200", description = "Đăng nhập thành công")
         @PostMapping("/login")
         public ResponseEntity<BaseResponse> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
                 BaseResponse response = BaseResponse.builder()
@@ -43,7 +42,7 @@ public class AuthController {
         }
 
         @Operation(summary = "Đăng ký tài khoản - Bước 1", description = "API đăng ký tài khoản")
-        @ApiResponses(value = @ApiResponse(responseCode = "200", description = "Mã xác thực đã được gửi đến email"))
+        @ApiResponse(responseCode = "200", description = "Mã xác thực đã được gửi đến email")
         @PostMapping("/register")
         public ResponseEntity<BaseResponse> register(@RequestBody @Valid RegisterRequestDTO registerRequestDTO) {
                 BaseResponse response = BaseResponse.builder()
@@ -55,7 +54,7 @@ public class AuthController {
         }
 
         @Operation(summary = "Đăng ký tài khoản - Bước 2", description = "API xác thực đăng ký tài khoản")
-        @ApiResponses(value = @ApiResponse(responseCode = "201", description = "Đăng ký tài khoản thành công"))
+        @ApiResponse(responseCode = "201", description = "Đăng ký tài khoản thành công")
         @PostMapping("/register/{id}")
         public ResponseEntity<BaseResponse> verifyRegister(@PathVariable("id") String id,
                         @RequestBody @Valid VerifyRequestDTO verifyRequestDTO) {
@@ -68,7 +67,7 @@ public class AuthController {
         }
 
         @Operation(summary = "Quên mật khẩu - Bước 1", description = "API quên mật khẩu")
-        @ApiResponses(value = @ApiResponse(responseCode = "200", description = "Mã xác thực đã được gửi đến email"))
+        @ApiResponse(responseCode = "200", description = "Mã xác thực đã được gửi đến email")
         @PutMapping("/forgot-password")
         public ResponseEntity<BaseResponse> forgotPassword(
                         @RequestBody @Valid ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
@@ -81,7 +80,7 @@ public class AuthController {
         }
 
         @Operation(summary = "Quên mật khẩu - Bước 2", description = "API xác thực quên mật khẩu")
-        @ApiResponses(value = @ApiResponse(responseCode = "200", description = "Đặt lại mật khẩu thành công"))
+        @ApiResponse(responseCode = "200", description = "Đặt lại mật khẩu thành công")
         @PutMapping("/forgot-password/{id}")
         public ResponseEntity<BaseResponse> verifyForgotPassword(@PathVariable("id") String id,
                         @RequestBody @Valid VerifyRequestDTO verifyRequestDTO) {
