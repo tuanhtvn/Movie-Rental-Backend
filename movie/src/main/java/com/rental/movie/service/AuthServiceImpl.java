@@ -92,11 +92,11 @@ public class AuthServiceImpl implements AuthService {
             if (user.getIsDeleted()) {
                 log.error("User is deleted: " + registerRequestDTO.getEmail());
                 throw new CustomException("Email đăng ký đã bị chặn",
-                        HttpStatus.BAD_REQUEST.value());
+                        HttpStatus.FORBIDDEN.value());
             } else if (user.getIsEmailVerified()) {
                 log.error("User is already existed: " + registerRequestDTO.getEmail());
                 throw new CustomException("Email đăng ký đã tồn tại",
-                        HttpStatus.BAD_REQUEST.value());
+                        HttpStatus.CONFLICT.value());
             }
         }
         user = modelMapper.map(registerRequestDTO, User.class);
@@ -129,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
         if (user.getVerify() == null) {
             log.error("Verification code for user not found: {}", id);
             throw new CustomException("Mã xác thực không tồn tại",
-                    HttpStatus.BAD_REQUEST.value());
+                    HttpStatus.NOT_FOUND.value());
         }
         verifyCode(code, user);
         user.setIsEmailVerified(true);
@@ -152,12 +152,12 @@ public class AuthServiceImpl implements AuthService {
             if (user.getVerify().getExpiredAt().isBefore(ZonedDateTime.now())) {
                 log.error("Verify code is expired: " + user.getEmail());
                 throw new CustomException("Mã xác thực đã hết hạn",
-                        HttpStatus.BAD_REQUEST.value());
+                        HttpStatus.UNAUTHORIZED.value());
             }
         } else {
             log.error("Verify code is incorrect: " + user.getEmail());
             throw new CustomException("Mã xác thực không chính xác",
-                    HttpStatus.BAD_REQUEST.value());
+                    HttpStatus.UNAUTHORIZED.value());
         }
     }
 }
