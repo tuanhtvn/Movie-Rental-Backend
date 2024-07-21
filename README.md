@@ -4,7 +4,11 @@
 
 - Swagger UI: <https://hoctuancustomservice.io.vn/swagger-ui/index.html>
 
-2. Cấu trúc thư mục trong dự án
+2. Đặc tả API
+
+- Google Sheets: <https://docs.google.com/spreadsheets/d/1DLbglDcHkxPFnhMuUJhEqARvxVsQB5Zv4YWFK9JopCs/edit?usp=sharing>
+
+3. Cấu trúc thư mục trong dự án
 
 ```bash
         Movie-Rental-Backend/
@@ -27,7 +31,7 @@
 
 - Luồng và data trong response: repository(Entity) -> service -> (DTO)controller -> client nhận response
 
-3. Thông tin tài khoản - pass: 123456
+4. Thông tin tài khoản - pass: 123456
 - admin: rentalmovie68@gmail.com
 - employee: employee@gmail.com
 - user: user@gmail.com

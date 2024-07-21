@@ -7,6 +7,8 @@ server:
 logging:
   level:
     root: DEBUG
+bcrypt:
+  log-rounds: 10
 
 spring:
   application:
@@ -36,6 +38,19 @@ spring:
             scope:
               - email
               - profile
+  mail:
+    verify:
+      expire-time: 5
+    host: smtp.gmail.com
+    port: 587
+    username: rentalmovie68@gmail.com
+    password: whzrdggnyfwerkwe
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 # swagger-ui custom path
 springdoc:

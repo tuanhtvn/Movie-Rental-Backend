@@ -11,4 +11,5 @@ public interface UserService {
 
     public Optional<User> getByEmailAndAuthProvider(String email, AuthProvider authProvider);
 
+    public Optional<User> getById(String id);
 }

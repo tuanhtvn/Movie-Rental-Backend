@@ -35,4 +35,9 @@ public class AppConfig {
     private String localServerUrl;
     @Value("${open.api.host-server-url}")
     private String hostServerUrl;
+
+    @Value("${spring.mail.verify.expire-time}")
+    private Integer verifyExpireTime;
+    @Value("${bcrypt.log-rounds}")
+    private Integer logRounds;
 }
