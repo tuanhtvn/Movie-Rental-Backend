@@ -14,10 +14,12 @@ import com.rental.movie.common.AuthProvider;
 import com.rental.movie.common.Role;
 import com.rental.movie.config.AppConfig;
 import com.rental.movie.exception.CustomException;
+import com.rental.movie.model.dto.ForgotPasswordRequestDTO;
 import com.rental.movie.model.dto.LoginRequestDTO;
 import com.rental.movie.model.dto.LoginResponseDTO;
 import com.rental.movie.model.dto.RegisterRequestDTO;
-import com.rental.movie.model.dto.RegisterResponseDTO;
+import com.rental.movie.model.dto.VerifyRequestDTO;
+import com.rental.movie.model.dto.VerifyResponseDTO;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.model.entity.Verify;
 
@@ -76,15 +78,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO) {
+    public VerifyResponseDTO register(RegisterRequestDTO registerRequestDTO) {
         log.info("Register account: " + registerRequestDTO.getEmail() + " - Auth provider: " + AuthProvider.LOCAL);
         registerRequestDTO.setEmail(registerRequestDTO.getEmail().toLowerCase());
-        if (!registerRequestDTO.getPassword().equals(registerRequestDTO.getPasswordConfirm())) {
-            log.error("Password and confirm password are not matched: " +
-                    registerRequestDTO.getEmail());
-            throw new CustomException("Mật khẩu và xác nhận mật khẩu không khớp",
-                    HttpStatus.BAD_REQUEST.value());
-        }
+        checkMatchPassword(registerRequestDTO.getPassword(), registerRequestDTO.getPasswordConfirm());
         User user = userService.getByEmailAndAuthProvider(registerRequestDTO.getEmail(),
                 AuthProvider.LOCAL).orElse(null);
         String id = (user != null) ? user.getId() : null;
@@ -109,16 +106,16 @@ public class AuthServiceImpl implements AuthService {
         String verifyCode = getVerifyCode();
         user.setVerify(new Verify(BCrypt.hashpw(verifyCode, BCrypt.gensalt(appConfig.getLogRounds())),
                 ZonedDateTime.now().plus(appConfig.getVerifyExpireTime(), ChronoUnit.MINUTES)));
-        user = userService.save(user);
         mailService.sendMailVerify(user.getEmail(), user.getFullName(), verifyCode);
-        return RegisterResponseDTO.builder()
+        user = userService.save(user);
+        return VerifyResponseDTO.builder()
                 .id(user.getId())
                 .expiredAt(user.getVerify().getExpiredAt())
                 .build();
     }
 
     @Override
-    public void verifyRegister(String id, String code) {
+    public void verify(String id, VerifyRequestDTO verifyRequestDTO, Boolean isRegister) {
         log.info("Verify account: " + id);
         User user = userService.getById(id)
                 .orElseThrow(() -> {
@@ -131,10 +128,55 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException("Mã xác thực không tồn tại",
                     HttpStatus.NOT_FOUND.value());
         }
-        verifyCode(code, user);
-        user.setIsEmailVerified(true);
+        // check verify code
+        if (BCrypt.checkpw(verifyRequestDTO.getCode(), user.getVerify().getCode())) {
+            if (user.getVerify().getExpiredAt().isBefore(ZonedDateTime.now())) {
+                log.error("Verify code is expired: " + user.getEmail());
+                user.setVerify(null);
+                user.setPasswordUpdate(null);
+                userService.save(user);
+                throw new CustomException("Mã xác thực đã hết hạn",
+                        HttpStatus.UNAUTHORIZED.value());
+            }
+        } else {
+            log.error("Verify code is incorrect: " + user.getEmail());
+            throw new CustomException("Mã xác thực không chính xác",
+                    HttpStatus.UNAUTHORIZED.value());
+        }
+        //
+        if (isRegister) {
+            user.setIsEmailVerified(true);
+        } else {
+            user.setPassword(user.getPasswordUpdate());
+            user.setPasswordUpdate(null);
+        }
         user.setVerify(null);
         userService.save(user);
+    }
+
+    @Override
+    public VerifyResponseDTO forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO) {
+        log.info("Forgot password: " + forgotPasswordRequestDTO.getEmail());
+        forgotPasswordRequestDTO.setEmail(forgotPasswordRequestDTO.getEmail().toLowerCase());
+        checkMatchPassword(forgotPasswordRequestDTO.getPassword(), forgotPasswordRequestDTO.getPasswordConfirm());
+        User user = userService.getByEmailAndAuthProvider(forgotPasswordRequestDTO.getEmail(),
+                AuthProvider.LOCAL)
+                .orElseThrow(() -> {
+                    log.error("User not found: " + forgotPasswordRequestDTO.getEmail());
+                    throw new CustomException("Tài khoản không tồn tại",
+                            HttpStatus.NOT_FOUND.value());
+                });
+        String verifyCode = getVerifyCode();
+        user.setPasswordUpdate(
+                BCrypt.hashpw(forgotPasswordRequestDTO.getPassword(), BCrypt.gensalt(appConfig.getLogRounds())));
+        user.setVerify(new Verify(BCrypt.hashpw(verifyCode, BCrypt.gensalt(appConfig.getLogRounds())),
+                ZonedDateTime.now().plus(appConfig.getVerifyExpireTime(), ChronoUnit.MINUTES)));
+        mailService.sendMailVerify(user.getEmail(), user.getFullName(), verifyCode);
+        userService.save(user);
+        return VerifyResponseDTO.builder()
+                .id(user.getId())
+                .expiredAt(user.getVerify().getExpiredAt())
+                .build();
     }
 
     //
@@ -147,17 +189,11 @@ public class AuthServiceImpl implements AuthService {
         return verifyCode.toString();
     }
 
-    private void verifyCode(String code, User user) {
-        if (BCrypt.checkpw(code, user.getVerify().getCode())) {
-            if (user.getVerify().getExpiredAt().isBefore(ZonedDateTime.now())) {
-                log.error("Verify code is expired: " + user.getEmail());
-                throw new CustomException("Mã xác thực đã hết hạn",
-                        HttpStatus.UNAUTHORIZED.value());
-            }
-        } else {
-            log.error("Verify code is incorrect: " + user.getEmail());
-            throw new CustomException("Mã xác thực không chính xác",
-                    HttpStatus.UNAUTHORIZED.value());
+    private void checkMatchPassword(String password, String passwordConfirm) {
+        if (!password.equals(passwordConfirm)) {
+            log.error("Password and confirm password are not matched");
+            throw new CustomException("Mật khẩu và xác nhận mật khẩu không khớp",
+                    HttpStatus.BAD_REQUEST.value());
         }
     }
 }

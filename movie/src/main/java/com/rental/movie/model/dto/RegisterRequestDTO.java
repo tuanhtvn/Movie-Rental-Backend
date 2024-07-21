@@ -3,37 +3,18 @@ package com.rental.movie.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class RegisterRequestDTO {
+@EqualsAndHashCode(callSuper = false)
+public class RegisterRequestDTO extends ForgotPasswordRequestDTO {
 
     @NotBlank(message = "Vui lòng nhập họ tên")
     @Size(max = 50, message = "Họ tên không được vượt quá 50 ký tự")
     @Schema(description = "Họ tên", example = "Huỳnh Thanh Tuấn")
     @JsonProperty("FullName")
     private String fullName;
-
-    @NotEmpty(message = "Vui lòng nhập email")
-    @Email(message = "Vui lòng nhập đúng định dạng email")
-    @Schema(description = "Email", example = "huynhthanhtuan2206@gmail.com")
-    @JsonProperty("Email")
-    private String email;
-
-    @NotEmpty(message = "Vui lòng nhập mật khẩu")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\\-+]).{8,20}$", message = "Mật khẩu phải chứa ít nhất 1 chữ số, 1 chữ thường, 1 chữ hoa, 1 ký tự đặc biệt và có độ dài từ 8-20 ký tự")
-    @Schema(description = "Mật khẩu", example = "Example@123")
-    @JsonProperty("Password")
-    private String password;
-
-    @NotEmpty(message = "Vui lòng nhập lại mật khẩu")
-    @Schema(description = "Nhập lại mật khẩu", example = "Example@123")
-    @JsonProperty("PasswordConfirm")
-    private String passwordConfirm;
-
 }

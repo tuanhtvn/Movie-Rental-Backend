@@ -25,6 +25,7 @@ public class User extends BaseEntity {
     private String fullName; // họ tên
     private String email; // email
     private String password; // mật khẩu
+    private String passwordUpdate; // mật khẩu cập nhật
     private Boolean isEmailVerified = false; // trạng thái xác thực email
     private AuthProvider authProvider; // nhà cung cấp xác thực
     private Role role; // quyền

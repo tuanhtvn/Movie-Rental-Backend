@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RegisterResponseDTO {
+public class VerifyResponseDTO {
     @JsonProperty("Id")
     private String id;
     @JsonProperty("ExpiredAt")
