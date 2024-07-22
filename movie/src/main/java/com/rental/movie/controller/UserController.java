@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rental.movie.common.BaseResponse;
+import com.rental.movie.model.dto.ChangePassRequestDTO;
 import com.rental.movie.model.dto.UserInfoRequestDTO;
 import com.rental.movie.service.UserService;
 
@@ -28,10 +29,11 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Tải thông tin cá nhân thành công")
     @GetMapping("/me")
     public ResponseEntity<BaseResponse> getUser() {
-        BaseResponse response = new BaseResponse();
-        response.setStatus(HttpStatus.OK.value());
-        response.setMessage("Tải thông tin cá nhân thành công");
-        response.setData(userService.getUserInfo());
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Tải thông tin cá nhân thành công")
+                .data(userService.getUserInfo())
+                .build();
         return ResponseEntity.ok(response);
     }
 
@@ -39,10 +41,23 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Cập nhật thông tin cá nhân thành công")
     @PutMapping("/me")
     public ResponseEntity<BaseResponse> updateUserInfo(@RequestBody @Valid UserInfoRequestDTO userInfoRequestDTO) {
-        BaseResponse response = new BaseResponse();
-        response.setStatus(HttpStatus.OK.value());
-        response.setMessage("Cập nhật thông tin cá nhân thành công");
-        response.setData(userService.updateUserInfo(userInfoRequestDTO));
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Cập nhật thông tin cá nhân thành công")
+                .data(userService.updateUserInfo(userInfoRequestDTO))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Đổi mật khẩu", description = "API đổi mật khẩu")
+    @ApiResponse(responseCode = "200", description = "Đổi mật khẩu thành công")
+    @PutMapping("/password")
+    public ResponseEntity<BaseResponse> changePassword(@RequestBody @Valid ChangePassRequestDTO changePassRequestDTO) {
+        userService.changePassword(changePassRequestDTO);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Đổi mật khẩu thành công")
+                .build();
         return ResponseEntity.ok(response);
     }
 }
