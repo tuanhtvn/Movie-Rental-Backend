@@ -27,6 +27,10 @@ spring:
     expiresTime: 7
   cookie:
     expiresTime: 7
+  cloudinary:
+    cloudName: dgpfsipnc
+    apiKey: 952137373237171
+    apiSecret: NJNsEwk5DtIBOa1eA-uc3l87_gM
   security:
     oauth2:
       client:

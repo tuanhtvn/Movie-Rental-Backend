@@ -40,4 +40,11 @@ public class AppConfig {
     private Integer verifyExpireTime;
     @Value("${bcrypt.log-rounds}")
     private Integer logRounds;
+
+    @Value("${spring.cloudinary.cloudName}")
+    private String cloudName;
+    @Value("${spring.cloudinary.apiKey}")
+    private String apiKey;
+    @Value("${spring.cloudinary.apiSecret}")
+    private String apiSecret;
 }
