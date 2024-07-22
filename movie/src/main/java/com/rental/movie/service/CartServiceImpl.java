@@ -1,6 +1,8 @@
 package com.rental.movie.service;
 
+import com.rental.movie.common.IAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.rental.movie.exception.NotFoundException;
@@ -21,10 +23,13 @@ public class CartServiceImpl implements CartService {
     private FilmRepository filmRepository;
     @Autowired
     private CartMapper cartMapper;
+    @Lazy
+    @Autowired
+    private IAuthentication authManager;
 
     @Override
     public void addToCart(CartRequestDTO cartRequestDTO) {
-        User user = getAuthenticatedUser();
+        User user = authManager.getUserAuthentication();
         Item item = cartMapper.convertToEntity(cartRequestDTO);
         user.getCart().add(item);
         userRepository.save(user);
@@ -32,13 +37,13 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponseDTO viewCart() {
-        User user = getAuthenticatedUser();
+        User user = authManager.getUserAuthentication();
         return cartMapper.convertToDTO(user);
     }
 
     @Override
     public void removeFromCart(String filmId) {
-        User user = getAuthenticatedUser();
+        User user = authManager.getUserAuthentication();
         Item itemToRemove = user.getCart().stream()
                 .filter(item -> item.getFilm().getId().equals(filmId))
                 .findFirst()
