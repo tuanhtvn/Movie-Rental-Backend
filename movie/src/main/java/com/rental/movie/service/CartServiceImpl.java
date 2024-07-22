@@ -1,0 +1,55 @@
+package com.rental.movie.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.rental.movie.exception.NotFoundException;
+import com.rental.movie.model.dto.CartRequestDTO;
+import com.rental.movie.model.dto.CartResponseDTO;
+import com.rental.movie.model.entity.Item;
+import com.rental.movie.model.entity.User;
+import com.rental.movie.repository.FilmRepository;
+import com.rental.movie.repository.UserRepository;
+import com.rental.movie.util.mapper.CartMapper;
+
+@Service
+public class CartServiceImpl implements CartService {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private FilmRepository filmRepository;
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Override
+    public void addToCart(CartRequestDTO cartRequestDTO) {
+        User user = getAuthenticatedUser();
+        Item item = cartMapper.convertToEntity(cartRequestDTO);
+        user.getCart().add(item);
+        userRepository.save(user);
+    }
+
+    @Override
+    public CartResponseDTO viewCart() {
+        User user = getAuthenticatedUser();
+        return cartMapper.convertToDTO(user);
+    }
+
+    @Override
+    public void removeFromCart(String filmId) {
+        User user = getAuthenticatedUser();
+        Item itemToRemove = user.getCart().stream()
+                .filter(item -> item.getFilm().getId().equals(filmId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy phim trong giỏ hàng"));
+
+        user.getCart().remove(itemToRemove);
+        userRepository.save(user);
+    }
+
+    private User getAuthenticatedUser() {
+        // Implement method to get authenticated user, e.g., from SecurityContext
+        return null; // Replace with actual implementation
+    }
+}
