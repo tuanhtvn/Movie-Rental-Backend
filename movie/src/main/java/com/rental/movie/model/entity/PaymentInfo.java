@@ -33,6 +33,6 @@ public class PaymentInfo {
     }
 
     public ZonedDateTime getUpdatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
+        return updatedAt.atZone(ZoneId.systemDefault());
     }
 }

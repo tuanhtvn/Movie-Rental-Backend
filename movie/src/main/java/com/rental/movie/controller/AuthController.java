@@ -63,7 +63,7 @@ public class AuthController {
                                 .message("Đăng ký tài khoản thành công")
                                 .status(HttpStatus.CREATED.value())
                                 .build();
-                return ResponseEntity.ok(response);
+                return ResponseEntity.status(response.getStatus()).body(response);
         }
 
         @Operation(summary = "Quên mật khẩu - Bước 1", description = "API quên mật khẩu")

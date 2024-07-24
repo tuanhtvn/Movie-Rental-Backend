@@ -1,0 +1,90 @@
+package com.rental.movie.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.rental.movie.common.BaseResponse;
+import com.rental.movie.model.dto.ProfileRequestDTO;
+import com.rental.movie.service.ProfileService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api")
+public class ProfileController {
+
+    @Autowired
+    private ProfileService profileService;
+
+    @Operation(summary = "Tạo hồ sơ", description = "API tạo hồ sơ")
+    @ApiResponse(responseCode = "201", description = "Tạo hồ sơ thành công")
+    @PostMapping("/profile")
+    public ResponseEntity<BaseResponse> createProfile(@RequestBody @Valid ProfileRequestDTO profileRequestDTO) {
+        profileService.create(profileRequestDTO);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Tạo hồ sơ thành công")
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(response);
+    }
+
+    @Operation(summary = "Tải danh sách hồ sơ", description = "API tải danh sách hồ sơ")
+    @ApiResponse(responseCode = "200", description = "Tải danh sách hồ sơ thành công")
+    @GetMapping("/profiles")
+    public ResponseEntity<BaseResponse> getProfiles() {
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Tải danh sách hồ sơ thành công")
+                .data(profileService.getAll())
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Tải hồ sơ chi tiết", description = "API tải hồ sơ chi tiết")
+    @ApiResponse(responseCode = "200", description = "Tải hồ sơ thành công")
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<BaseResponse> getProfile(@PathVariable("id") String id) {
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Tải hồ sơ thành công")
+                .data(profileService.get(id))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Cập nhật hồ sơ", description = "API cập nhật hồ sơ")
+    @ApiResponse(responseCode = "200", description = "Cập nhật hồ sơ thành công")
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<BaseResponse> updateProfile(@PathVariable("id") String id,
+            @RequestBody @Valid ProfileRequestDTO profileRequestDTO) {
+        profileService.update(id, profileRequestDTO);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Cập nhật hồ sơ thành công")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Xóa hồ sơ theo ID", description = "API xóa hồ sơ theo ID")
+    @ApiResponse(responseCode = "200", description = "Xóa hồ sơ thành công")
+    @DeleteMapping("/profile/{id}")
+    public ResponseEntity<BaseResponse> deleteProfile(@PathVariable("id") String id) {
+        profileService.delete(id);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Xóa hồ sơ thành công")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+}

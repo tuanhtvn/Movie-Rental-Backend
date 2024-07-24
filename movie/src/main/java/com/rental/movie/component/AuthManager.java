@@ -1,6 +1,7 @@
 package com.rental.movie.component;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class AuthManager implements IAuthentication {
-
+    
+    @Lazy
     @Autowired
     private UserService userService;
 

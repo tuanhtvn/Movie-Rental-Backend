@@ -14,29 +14,36 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.service.CloudinaryService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/api")
 public class CloudinaryController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Operation(summary = "Tải ảnh lên", description = "API tải ảnh lên")
+    @ApiResponse(responseCode = "200", description = "Tải ảnh lên thành công")
     @PostMapping(path = "/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse> uploadImage(@RequestParam(name = "image", required = true) MultipartFile file)
             throws Exception {
         BaseResponse response = BaseResponse.builder()
                 .message("Tải ảnh lên thành công")
                 .status(HttpStatus.OK.value())
-                .data(cloudinaryService.upload(file, true))
+                .data(cloudinaryService.upload(file))
                 .build();
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @DeleteMapping({ "/image/delete", "/video/delete" })
-    public ResponseEntity<BaseResponse> delete(@RequestParam(name = "url", required = true) String url)
+    @Operation(summary = "Xoá ảnh theo url", description = "API xoá ảnh theo url")
+    @ApiResponse(responseCode = "200", description = "Xoá ảnh thành công")
+    @DeleteMapping("/image/delete")
+    public ResponseEntity<BaseResponse> deleteImage(@RequestParam(name = "url", required = true) String url)
             throws Exception {
         cloudinaryService.delete(url);
         BaseResponse response = BaseResponse.builder()
-                .message("Xoá file thành công")
+                .message("Xoá ảnh thành công")
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.status(response.getStatus()).body(response);
