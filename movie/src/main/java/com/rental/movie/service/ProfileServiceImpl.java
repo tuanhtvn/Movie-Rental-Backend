@@ -6,6 +6,9 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -140,10 +143,15 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<FilmResponseDTO> getAllFilm(String profileId) {
+    public Page<FilmResponseDTO> getAllFilm(String profileId, Pageable pageable) {
         User user = authManager.getUserAuthentication();
         Profile profile = getById(profileId, user);
         log.info("Get all films for profile id: {} for user id: {}", profileId, user.getId());
-        return profile.getSelectedMovies().stream().map(film -> modelMapper.map(film, FilmResponseDTO.class)).toList();
+        List<Film> films = profile.getSelectedMovies();
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), films.size());
+        films = films.subList(start, end);
+        Page<Film> pageFilm = new PageImpl<>(films, pageable, films.size());
+        return pageFilm.map(film -> modelMapper.map(film, FilmResponseDTO.class));
     }
 }

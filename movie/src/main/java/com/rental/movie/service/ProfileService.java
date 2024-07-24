@@ -2,6 +2,9 @@ package com.rental.movie.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.ProfileRequestDTO;
 import com.rental.movie.model.dto.ProfileResponseDTO;
@@ -21,5 +24,5 @@ public interface ProfileService {
 
     public void popFilm(String profileId, String filmId);
 
-    public List<FilmResponseDTO> getAllFilm(String profileId);
+    public Page<FilmResponseDTO> getAllFilm(String profileId, Pageable pageable);
 }
