@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.exception.CustomException;
+import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.ProfileRequestDTO;
 import com.rental.movie.model.dto.ProfileResponseDTO;
+import com.rental.movie.model.entity.Film;
 import com.rental.movie.model.entity.Profile;
 import com.rental.movie.model.entity.User;
 
@@ -29,6 +31,11 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ModelMapper modelMapper;
     private Integer limitProfile = 10;
+
+    //
+    @Autowired
+    private FilmService filmService;
+    //
 
     @Override
     public void create(ProfileRequestDTO profileRequestDTO) {
@@ -99,5 +106,44 @@ public class ProfileServiceImpl implements ProfileService {
             log.error("Profile: {} not found", id);
             throw new CustomException("Không tìm thấy hồ sơ", HttpStatus.NOT_FOUND.value());
         });
+    }
+
+    // Film
+    @Override
+    public void pushFilm(String profileId, String filmId) {
+        Film film = filmService.getById(filmId);
+        User user = authManager.getUserAuthentication();
+        Profile profile = getById(profileId, user);
+        log.info("Push film id: {} to profile id: {} for user id: {}", filmId, profileId, user.getId());
+        if (profile.getSelectedMovies().contains(film)) {
+            log.error("Film: {} already exists in profile: {}", filmId, profileId);
+            throw new CustomException("Phim đã tồn tại trong danh sách phim đã chọn của hồ sơ",
+                    HttpStatus.BAD_REQUEST.value());
+        }
+        profile.getSelectedMovies().add(film);
+        userService.save(user);
+    }
+
+    @Override
+    public void popFilm(String profileId, String filmId) {
+        Film film = filmService.getById(filmId);
+        User user = authManager.getUserAuthentication();
+        Profile profile = getById(profileId, user);
+        log.info("Pop film id: {} from profile id: {} for user id: {}", filmId, profileId, user.getId());
+        if (!profile.getSelectedMovies().contains(film)) {
+            log.error("Film: {} not found in profile: {}", filmId, profileId);
+            throw new CustomException("Phim không tồn tại trong danh sách phim đã chọn của hồ sơ",
+                    HttpStatus.BAD_REQUEST.value());
+        }
+        profile.getSelectedMovies().remove(film);
+        userService.save(user);
+    }
+
+    @Override
+    public List<FilmResponseDTO> getAllFilm(String profileId) {
+        User user = authManager.getUserAuthentication();
+        Profile profile = getById(profileId, user);
+        log.info("Get all films for profile id: {} for user id: {}", profileId, user.getId());
+        return profile.getSelectedMovies().stream().map(film -> modelMapper.map(film, FilmResponseDTO.class)).toList();
     }
 }

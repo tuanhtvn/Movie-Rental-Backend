@@ -87,4 +87,43 @@ public class ProfileController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    // Film
+    @Operation(summary = "Tải danh sách phim đã chọn của hồ sơ", description = "API tải danh sách phim đã chọn của hồ sơ")
+    @ApiResponse(responseCode = "200", description = "Tải danh sách phim đã chọn thành công")
+    @GetMapping("/profile/{profileId}/films")
+    public ResponseEntity<BaseResponse> getAllFilm(@PathVariable("profileId") String profileId) {
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Tải danh sách phim đã chọn thành công")
+                .data(profileService.getAllFilm(profileId))
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Thêm phim vào hồ sơ", description = "API thêm phim vào hồ sơ")
+    @ApiResponse(responseCode = "200", description = "Thêm phim vào hồ sơ thành công")
+    @PostMapping("/profile/{profileId}/film/{filmId}")
+    public ResponseEntity<BaseResponse> pushFilm(@PathVariable("profileId") String profileId,
+            @PathVariable("filmId") String filmId) {
+        profileService.pushFilm(profileId, filmId);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Thêm phim vào hồ sơ thành công")
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Xóa phim khỏi hồ sơ", description = "API xóa phim khỏi hồ sơ")
+    @ApiResponse(responseCode = "200", description = "Xóa phim khỏi hồ sơ thành công")
+    @DeleteMapping("/profile/{profileId}/film/{filmId}")
+    public ResponseEntity<BaseResponse> popFilm(@PathVariable("profileId") String profileId,
+            @PathVariable("filmId") String filmId) {
+        profileService.popFilm(profileId, filmId);
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Xóa phim khỏi hồ sơ thành công")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 }
