@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 public class ProfileController {
 
         @Autowired
@@ -36,6 +37,7 @@ public class ProfileController {
 
         @Operation(summary = "Tạo hồ sơ", description = "API tạo hồ sơ")
         @ApiResponse(responseCode = "201", description = "Tạo hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @PostMapping("/profile")
         public ResponseEntity<BaseResponse> createProfile(@RequestBody @Valid ProfileRequestDTO profileRequestDTO) {
                 profileService.create(profileRequestDTO);
@@ -48,6 +50,7 @@ public class ProfileController {
 
         @Operation(summary = "Tải danh sách hồ sơ", description = "API tải danh sách hồ sơ")
         @ApiResponse(responseCode = "200", description = "Tải danh sách hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @GetMapping("/profiles")
         public ResponseEntity<BaseResponse> getProfiles() {
                 BaseResponse response = BaseResponse.builder()
@@ -60,6 +63,7 @@ public class ProfileController {
 
         @Operation(summary = "Tải hồ sơ chi tiết", description = "API tải hồ sơ chi tiết")
         @ApiResponse(responseCode = "200", description = "Tải hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @GetMapping("/profile/{id}")
         public ResponseEntity<BaseResponse> getProfile(@PathVariable("id") String id) {
                 BaseResponse response = BaseResponse.builder()
@@ -72,6 +76,7 @@ public class ProfileController {
 
         @Operation(summary = "Cập nhật hồ sơ", description = "API cập nhật hồ sơ")
         @ApiResponse(responseCode = "200", description = "Cập nhật hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @PutMapping("/profile/{id}")
         public ResponseEntity<BaseResponse> updateProfile(@PathVariable("id") String id,
                         @RequestBody @Valid ProfileRequestDTO profileRequestDTO) {
@@ -85,6 +90,7 @@ public class ProfileController {
 
         @Operation(summary = "Xóa hồ sơ theo ID", description = "API xóa hồ sơ theo ID")
         @ApiResponse(responseCode = "200", description = "Xóa hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @DeleteMapping("/profile/{id}")
         public ResponseEntity<BaseResponse> deleteProfile(@PathVariable("id") String id) {
                 profileService.delete(id);
@@ -98,6 +104,7 @@ public class ProfileController {
         // Film
         @Operation(summary = "Tải danh sách phim đã chọn của hồ sơ", description = "API tải danh sách phim đã chọn của hồ sơ")
         @ApiResponse(responseCode = "200", description = "Tải danh sách phim đã chọn thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @GetMapping("/profile/{profileId}/films")
         public ResponseEntity<BaseResponse> getAllFilm(@PathVariable("profileId") String profileId,
                         @RequestParam(name = "page", defaultValue = "0", required = false) int page,
@@ -122,6 +129,7 @@ public class ProfileController {
 
         @Operation(summary = "Thêm phim vào hồ sơ", description = "API thêm phim vào hồ sơ")
         @ApiResponse(responseCode = "200", description = "Thêm phim vào hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @PostMapping("/profile/{profileId}/film/{filmId}")
         public ResponseEntity<BaseResponse> pushFilm(@PathVariable("profileId") String profileId,
                         @PathVariable("filmId") String filmId) {
@@ -135,6 +143,7 @@ public class ProfileController {
 
         @Operation(summary = "Xóa phim khỏi hồ sơ", description = "API xóa phim khỏi hồ sơ")
         @ApiResponse(responseCode = "200", description = "Xóa phim khỏi hồ sơ thành công")
+        @PreAuthorize("hasRole('ROLE_USER')")
         @DeleteMapping("/profile/{profileId}/film/{filmId}")
         public ResponseEntity<BaseResponse> popFilm(@PathVariable("profileId") String profileId,
                         @PathVariable("filmId") String filmId) {
