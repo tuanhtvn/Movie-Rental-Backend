@@ -124,6 +124,7 @@ public class ProfileServiceImpl implements ProfileService {
                     HttpStatus.BAD_REQUEST.value());
         }
         profile.getSelectedMovies().add(film);
+        profile.setUpdatedAt(Instant.now());
         userService.save(user);
     }
 
@@ -139,6 +140,7 @@ public class ProfileServiceImpl implements ProfileService {
                     HttpStatus.BAD_REQUEST.value());
         }
         profile.getSelectedMovies().remove(film);
+        profile.setUpdatedAt(Instant.now());
         userService.save(user);
     }
 
