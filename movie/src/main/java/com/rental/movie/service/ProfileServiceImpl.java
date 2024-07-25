@@ -123,7 +123,7 @@ public class ProfileServiceImpl implements ProfileService {
             throw new CustomException("Phim đã tồn tại trong danh sách phim đã chọn của hồ sơ",
                     HttpStatus.BAD_REQUEST.value());
         }
-        profile.getSelectedMovies().add(film);
+        profile.getSelectedMovies().add(0, film);
         profile.setUpdatedAt(Instant.now());
         userService.save(user);
     }
