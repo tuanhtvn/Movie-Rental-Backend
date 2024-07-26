@@ -1,5 +1,10 @@
 package com.rental.movie.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+
+import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.entity.Film;
 
 public interface FilmService {

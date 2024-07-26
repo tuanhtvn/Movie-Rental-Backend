@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FilmResponseDTO {
+public class FilmRequestDTO {
     @JsonProperty("Id")
     private String id;
     @JsonProperty("FilmName")
