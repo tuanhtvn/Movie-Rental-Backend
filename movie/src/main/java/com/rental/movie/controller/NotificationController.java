@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -23,6 +25,8 @@ public class NotificationController {
     @Operation(summary = "Gửi thông báo cho người dùng",description = "Gửi thông báo cho người dùng")
     @ApiResponse(responseCode = "200", description = "Thông báo đã được gửi thành công")
     @PostMapping("/send")
+    @MessageMapping("/send")
+    @SendTo("/topic/notification")
     public ResponseEntity<NotificationDTO> sendNotification(@RequestBody NotificationDTO notificationDTO) {
         notificationService.sendNotificationToUser(notificationDTO.getUserId(), notificationDTO);
         return new ResponseEntity<>(notificationDTO, HttpStatus.CREATED);
@@ -67,14 +71,16 @@ public class NotificationController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     @Operation(summary = "Cập nhật thông báo",description = "Cập nhật thông báo")
     @ApiResponse(responseCode = "200", description = "Cập nhật thông báo thành công")
-    @PutMapping("/{id}/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<NotificationDTO> updateNotification(@PathVariable String id, @RequestBody NotificationDTO notificationDTO) {
         NotificationDTO updatedNotification = notificationService.updateNotification(id, notificationDTO);
         return ResponseEntity.ok(updatedNotification);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE', 'ROLE_USER')")
-    @DeleteMapping("/{id}/delete")
+    @Operation(summary = "Xóa thông báo",description = "Xóa thông báo")
+    @ApiResponse(responseCode = "200", description = "Xóa thông báo thành công")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteNotification(@PathVariable String id) {
         notificationService.deleteNotification(id);
         return ResponseEntity.noContent().build();
@@ -83,7 +89,7 @@ public class NotificationController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Đánh dấu thông báo đã đọc",description = "Đánh dấu thông báo đã đọc")
     @ApiResponse(responseCode = "200", description = "Đánh dấu thông báo đã đọc thành công")
-    @PatchMapping("/{id}/mark-read")
+    @PatchMapping("/mark-read/{id}")
     public ResponseEntity<Void> markNotificationAsRead(@PathVariable String id) {
         notificationService.markNotificationAsRead(id);
         return ResponseEntity.noContent().build();
