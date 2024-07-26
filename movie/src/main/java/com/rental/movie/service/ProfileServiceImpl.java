@@ -152,8 +152,8 @@ public class ProfileServiceImpl implements ProfileService {
         List<Film> films = profile.getSelectedMovies();
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), films.size());
-        films = films.subList(start, end);
-        Page<Film> pageFilm = new PageImpl<>(films, pageable, films.size());
+        List<Film> filmSubList = films.subList(start, end);
+        Page<Film> pageFilm = new PageImpl<>(filmSubList, pageable, films.size());
         return pageFilm.map(film -> modelMapper.map(film, FilmResponseDTO.class));
     }
 }
