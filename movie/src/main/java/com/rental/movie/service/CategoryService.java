@@ -5,12 +5,10 @@ import com.rental.movie.model.dto.CategoryResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface CategoryService {
-    public List<CategoryResponseDTO> getAllActiveCategories(); //isActive=true && isDeleted=false
-    public List<CategoryResponseDTO> getAllSoftDeletedCategories(); //isDeleted=true
-    public List<CategoryResponseDTO> getAll(); //get All
+    public Page<CategoryResponseDTO> getAllActiveCategories(Pageable pageable, String search); //isActive=true && isDeleted=false
+    public Page<CategoryResponseDTO> getAllInactiveCategories(Pageable pageable, String search); //isActive=false && isDeleted=false
+    public Page<CategoryResponseDTO> getAllSoftDeletedCategories(Pageable pageable, String search); //isDeleted=true
     public Page<CategoryResponseDTO> getAll(Pageable pageable, String search);
     public CategoryResponseDTO getCategoryById(String categoryId);
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO);

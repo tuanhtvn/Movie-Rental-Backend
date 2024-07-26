@@ -1,80 +1,104 @@
 package com.rental.movie.service;
 
-import com.rental.movie.exception.NotFoundException;
+import com.rental.movie.common.IAuthentication;
+import com.rental.movie.common.Role;
+import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.CategoryRequestDTO;
 import com.rental.movie.model.dto.CategoryResponseDTO;
 import com.rental.movie.model.entity.Category;
+import com.rental.movie.model.entity.User;
 import com.rental.movie.repository.AlbumRepository;
 import com.rental.movie.repository.BannerRepository;
 import com.rental.movie.repository.CategoryRepository;
 import com.rental.movie.util.mapper.CategoryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    BannerRepository bannerRepository;
+    private BannerRepository bannerRepository;
     @Autowired
-    AlbumRepository albumRepository;
+    private AlbumRepository albumRepository;
     @Autowired
-    CategoryMapper categoryMapper;
-
-    @Override
-    public List<CategoryResponseDTO> getAllActiveCategories() {
-        List<Category> categories = categoryRepository.findByIsDeletedFalseAndIsActiveTrue();
-        if(categories.isEmpty()){
-            throw new NotFoundException("Không có danh mục nào");
-        }
-        return categoryMapper.convertToDTO(categories);
-    }
-
-    @Override
-    public List<CategoryResponseDTO> getAllSoftDeletedCategories() {
-        List<Category> categories = categoryRepository.findByIsDeletedTrue();
-        if(categories.isEmpty()){
-            throw new NotFoundException("Không tìm thấy danh mục nào");
-        }
-        return categoryMapper.convertToDTO(categories);
-    }
-
-    @Override
-    public List<CategoryResponseDTO> getAll() {
-        List<Category> categories = (List<Category>) categoryRepository.findAll();
-        if(categories.isEmpty()) {
-            throw new NotFoundException("Không có danh mục nào");
-        }
-        return categoryMapper.convertToDTO(categories);
-    }
+    private CategoryMapper categoryMapper;
+    @Autowired
+    private IAuthentication authManager;
 
     @Override
     public Page<CategoryResponseDTO> getAll(Pageable pageable, String search) {
-        Page<CategoryResponseDTO> categories = categoryRepository.findContaining(pageable, search).map(categoryMapper::convertToDTO);
+        Page<Category> categories = categoryRepository.findAll(pageable, search);
+        log.info("Get all categories: {}", categories.getContent().toString());
         if(categories.isEmpty()) {
-            throw new NotFoundException("Không có danh mục nào");
+            log.error("No categories found");
+            throw new CustomException("Không có danh mục nào", HttpStatus.NOT_FOUND.value());
         }
-        return categories;
+        return categoryMapper.convertToDTO(categories);
+    }
+
+    @Override
+    public Page<CategoryResponseDTO> getAllActiveCategories(Pageable pageable, String search) {
+        Page<Category> categories = categoryRepository.findAllActive(pageable, search);
+        log.info("Get all active categories: {}", categories.getContent().toString());
+        if(categories.isEmpty()){
+            log.error("No active categories found");
+            throw new CustomException("Không có danh mục nào", HttpStatus.NOT_FOUND.value());
+        }
+        return categoryMapper.convertToDTO(categories);
+    }
+
+    @Override
+    public Page<CategoryResponseDTO> getAllInactiveCategories(Pageable pageable, String search) {
+        Page<Category> categories = categoryRepository.findAllInActive(pageable, search);
+        log.info("Get all inactive categories: {}", categories.getContent().toString());
+        if(categories.isEmpty()){
+            log.error("No inactive categories found");
+            throw new CustomException("Không có danh mục nào", HttpStatus.NOT_FOUND.value());
+        }
+        return categoryMapper.convertToDTO(categories);
+    }
+
+    @Override
+    public Page<CategoryResponseDTO> getAllSoftDeletedCategories(Pageable pageable, String search) {
+        Page<Category> categories = categoryRepository.findAllSoftDelete(pageable, search);
+        log.info("Get all soft delete categories: {}", categories.getContent().toString());
+        if(categories.isEmpty()){
+            log.error("No soft delete categories found");
+            throw new CustomException("Không tìm thấy danh mục nào", HttpStatus.NOT_FOUND.value());
+        }
+        return categoryMapper.convertToDTO(categories);
     }
 
     @Override
     public CategoryResponseDTO getCategoryById(String categoryId) {
-        return categoryMapper.convertToDTO(
-                categoryRepository.findById(categoryId)
-                        .orElseThrow(() -> new NotFoundException("Không tìm thấy danh mục")));
+        User user = authManager.getUserAuthentication();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("Không tìm thấy danh mục", HttpStatus.NOT_FOUND.value());
+                });
+        if(user.getRole().equals(Role.USER) && category.getIsActive().equals(false)) {
+            log.error("User get inactive category");
+            throw new CustomException("Bạn không có quyền truy cập danh mục", HttpStatus.METHOD_NOT_ALLOWED.value());
+        }
+        log.info("Get category by id {}", category.toString());
+        return categoryMapper.convertToDTO(category);
     }
 
     @Override
     @Transactional
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO) {
         Category category = categoryMapper.convertToEntity(categoryDTO);
+        log.info("Create category {}", category.toString());
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
 
@@ -84,20 +108,26 @@ public class CategoryServiceImpl implements CategoryService {
             String categoryId,
             CategoryRequestDTO categoryDTO
     ) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new NotFoundException("Danh mục không tồn tại"));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("Danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+                });
         boolean anyAlumNotFound = categoryDTO.getAlbumsId().stream().anyMatch(
                 (albumId) -> !albumRepository.existsById(albumId)
         );
         if(anyAlumNotFound) {
-            throw new NotFoundException("Album không tồn tại");
+            log.error("Album not found");
+            throw new CustomException("Album không tồn tại", HttpStatus.NOT_FOUND.value());
         }
         boolean anyBannerNotFound = categoryDTO.getBannersId().stream().anyMatch(
                 (bannerId) -> !bannerRepository.existsById(bannerId)
         );
         if(anyBannerNotFound) {
-            throw new NotFoundException("Banner không tồn tại");
+            log.error("Banner not found");
+            throw new CustomException("Banner không tồn tại", HttpStatus.NOT_FOUND.value());
         }
+        log.info("Update category {}", category.toString());
         category = categoryMapper.convertToEntity(categoryDTO, category);
         return categoryMapper.convertToDTO(categoryRepository.save(category));
     }
@@ -105,40 +135,52 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void softDeleteCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new NotFoundException("ID danh mục không tồn tại")
-        );
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+                });
         category.setIsDeleted(true);
         categoryRepository.save(category);
+        log.info("Soft delete category {}", category.toString());
     }
 
     @Override
     @Transactional
     public void restoreCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new NotFoundException("ID danh mục không tồn tại")
-        );
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+                });
         category.setIsDeleted(false);
         categoryRepository.save(category);
+        log.info("Restore category {}", category.toString());
     }
 
     @Override
     @Transactional
     public void activateCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new NotFoundException("ID danh mục không tồn tại")
-        );
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+                });
         category.setIsActive(true);
         categoryRepository.save(category);
+        log.info("Activate category {}", category.toString());
     }
 
     @Override
     @Transactional
     public void deactivateCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(
-                () -> new NotFoundException("ID danh mục không tồn tại")
-        );
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("Category not found");
+                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+                });
         category.setIsActive(false);
         categoryRepository.save(category);
+        log.info("Deactivate category {}", category.toString());
     }
 }

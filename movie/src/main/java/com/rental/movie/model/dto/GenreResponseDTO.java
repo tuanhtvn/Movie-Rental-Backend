@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlbumResponseDTO extends BaseResponseDTO {
-    private String albumName; // tên album
-    private List<FilmResponseDTO> film = new ArrayList<>(); // danh sách phim * Chưa có film DTO nên tạm để Film
+public class GenreResponseDTO extends BaseResponseDTO {
+    private String genreName; // tên thể loại
+    private List<FilmResponseDTO> filmsId = new ArrayList<>(); // danh sách phim
 }
