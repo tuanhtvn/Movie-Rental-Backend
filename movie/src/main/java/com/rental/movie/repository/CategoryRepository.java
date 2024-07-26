@@ -9,14 +9,23 @@ import org.springframework.stereotype.Repository;
 import com.rental.movie.model.entity.Category;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface CategoryRepository extends MongoRepository<Category, String> {
-    public List<Category> findByIsDeletedFalseAndIsActiveTrue();
-    public List<Category> findByIsDeletedTrue();
+    @Query("{ 'categoryName' : { $regex: ?0, $options: 'i' } }")
+    public Page<Category> findAll(Pageable pageable, String search);
+    @Query("{'isActive': false , 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
+            ", { 'categoryName': { $regex: ?0, $options: 'i' } } ] }")
+    public Page<Category> findAllInActive(Pageable pageable, String search);
     @Query("{'isActive': true , 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
             ", { 'categoryName': { $regex: ?0, $options: 'i' } } ] }")
-    public Page<Category> findContaining(Pageable pageable, String search);
+    public Page<Category> findAllActive(Pageable pageable, String search);
+    @Query("{'isDeleted': true, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
+            ", { 'categoryName': { $regex: ?0, $options: 'i' } } ] }")
+    public Page<Category> findAllSoftDelete(Pageable pageable, String search);
+    @Override
+    @Query("{ '_id': ?0, 'isDeleted': false }")
+    public Optional<Category> findById(String id);
 }

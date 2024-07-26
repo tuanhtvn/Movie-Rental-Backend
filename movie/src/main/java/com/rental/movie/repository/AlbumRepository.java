@@ -8,15 +8,23 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface AlbumRepository extends MongoRepository<Album, String> {
-    public List<Album> findByIsDeletedFalseAndIsActiveTrue();
-    public List<Album> findByIsDeletedTrue();
+    @Query("{ 'albumName' : { $regex: ?0, $options: 'i' } }")
+    public Page<Album> findAll(Pageable pageable, String search);
+    @Query("{'isActive': false , 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
+            ", { 'albumName': { $regex: ?0, $options: 'i' } } ] }")
+    public Page<Album> findAllInActive(Pageable pageable, String search);
     @Query("{'isActive': true , 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
             ", { 'albumName': { $regex: ?0, $options: 'i' } } ] }")
-    public Page<Album> findContaining(Pageable pageable, String search);
-    public List<Album> findByFilm_Id(String filmId);
+    public Page<Album> findAllActive(Pageable pageable, String search);
+    @Query("{'isDeleted': true, $or: [ { '_id': { $regex: ?0, $options: 'i' } }" +
+            ", { 'albumName': { $regex: ?0, $options: 'i' } } ] }")
+    public Page<Album> findAllSoftDelete(Pageable pageable, String search);
+    @Override
+    @Query("{ '_id': ?0, 'isDeleted': false }")
+    public Optional<Album> findById(String id);
 }
