@@ -16,9 +16,11 @@ import com.rental.movie.service.CloudinaryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Cloudinary Controller")
 public class CloudinaryController {
     @Autowired
     private CloudinaryService cloudinaryService;

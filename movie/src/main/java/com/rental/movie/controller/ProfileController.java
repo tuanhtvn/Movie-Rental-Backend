@@ -26,10 +26,12 @@ import com.rental.movie.service.ProfileService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "Profile Controller")
 public class ProfileController {
 
         @Autowired

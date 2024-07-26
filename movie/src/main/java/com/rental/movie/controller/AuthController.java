@@ -20,6 +20,7 @@ import com.rental.movie.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -32,11 +33,11 @@ public class AuthController {
         @Operation(summary = "Đăng nhập", description = "API đăng nhập vào hệ thống")
         @ApiResponse(responseCode = "200", description = "Đăng nhập thành công")
         @PostMapping("/login")
-        public ResponseEntity<BaseResponse> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) {
+        public ResponseEntity<BaseResponse> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
                 BaseResponse response = BaseResponse.builder()
                                 .message("Đăng nhập thành công")
                                 .status(HttpStatus.OK.value())
-                                .data(authService.login(loginRequestDTO))
+                                .data(authService.login(loginRequestDTO, request))
                                 .build();
                 return ResponseEntity.ok(response);
         }

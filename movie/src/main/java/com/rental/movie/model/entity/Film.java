@@ -54,7 +54,7 @@ public class Film extends BaseEntity {
             return false;
         }
         Film film = (Film) obj;
-        return id.equals(film.id);
+        return Objects.equals(id, film.id);
     }
 
     @Override

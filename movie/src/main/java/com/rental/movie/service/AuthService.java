@@ -7,8 +7,10 @@ import com.rental.movie.model.dto.RegisterRequestDTO;
 import com.rental.movie.model.dto.VerifyRequestDTO;
 import com.rental.movie.model.dto.VerifyResponseDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public interface AuthService {
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, HttpServletRequest request);
 
     public VerifyResponseDTO register(RegisterRequestDTO registerRequestDTO);
 
