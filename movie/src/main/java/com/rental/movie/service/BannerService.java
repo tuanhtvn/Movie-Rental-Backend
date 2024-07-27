@@ -1,16 +1,16 @@
 package com.rental.movie.service;
 
 import com.rental.movie.common.BaseResponse;
-import com.rental.movie.model.dto.BannerCreationDTO;
+import com.rental.movie.model.dto.BannerRequestDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface BannerService {
     public ResponseEntity<BaseResponse> getAllBanners(Pageable pageable);
 
-    public ResponseEntity<BaseResponse> createBanner(BannerCreationDTO bannerCreationDTO);
+    public ResponseEntity<BaseResponse> createBanner(BannerRequestDTO bannerRequestDTO);
 
-    public ResponseEntity<BaseResponse> updateBanner(String id, BannerCreationDTO bannerCreationDTO);
+    public ResponseEntity<BaseResponse> updateBanner(String id, BannerRequestDTO bannerRequestDTO);
 
     public ResponseEntity<BaseResponse> softDeleteById(String id);
 

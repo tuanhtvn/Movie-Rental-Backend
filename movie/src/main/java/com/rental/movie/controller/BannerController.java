@@ -1,7 +1,7 @@
 package com.rental.movie.controller;
 
 import com.rental.movie.common.BaseResponse;
-import com.rental.movie.model.dto.BannerCreationDTO;
+import com.rental.movie.model.dto.BannerRequestDTO;
 import com.rental.movie.service.BannerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,8 +32,8 @@ public class BannerController {
     @Operation(summary = "Tạo mới banner.", description = "Yêu cầu đầu vào: imageUrl (String), idFilm (String)")
     @ApiResponse(responseCode = "201", description = "Tạo banner thành công.")
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerCreationDTO bannerCreationDTO) {
-        return bannerService.createBanner(bannerCreationDTO);
+    public ResponseEntity<BaseResponse> createBanner(@RequestBody @Valid BannerRequestDTO bannerRequestDTO) {
+        return bannerService.createBanner(bannerRequestDTO);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
@@ -44,7 +44,7 @@ public class BannerController {
     })
     @PutMapping("/update/{id}")
     public ResponseEntity<BaseResponse> updateById(@PathVariable String id,
-                                                   @RequestBody @Valid BannerCreationDTO newBanner) {
+                                                   @RequestBody @Valid BannerRequestDTO newBanner) {
         return bannerService.updateBanner(id, newBanner);
     }
 

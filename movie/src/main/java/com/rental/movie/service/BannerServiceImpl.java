@@ -1,8 +1,8 @@
 package com.rental.movie.service;
 
 import com.rental.movie.common.BaseResponse;
-import com.rental.movie.model.dto.BannerCreationDTO;
-import com.rental.movie.model.dto.BannerDTO;
+import com.rental.movie.model.dto.BannerRequestDTO;
+import com.rental.movie.model.dto.BannerResponseDTO;
 import com.rental.movie.model.entity.Banner;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.repository.BannerRepository;
@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class BannerServiceImpl implements BannerService {
@@ -31,7 +28,7 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public ResponseEntity<BaseResponse> getAllBanners(Pageable pageable) {
-        Page<BannerDTO> bannerDTOs = bannerRepository.findByIsDeletedFalse(pageable)
+        Page<BannerResponseDTO> bannerDTOs = bannerRepository.findByIsDeletedFalse(pageable)
                 .map(bannerMapper::convertToDTO);
         BaseResponse baseResponse;
         if (bannerDTOs.isEmpty()) {
@@ -51,9 +48,9 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> createBanner(BannerCreationDTO bannerCreationDTO) {
-        Banner banner = bannerMapper.convertToEntity(bannerCreationDTO);
-        BannerDTO responseBanner = bannerMapper.convertToDTO(
+    public ResponseEntity<BaseResponse> createBanner(BannerRequestDTO bannerRequestDTO) {
+        Banner banner = bannerMapper.convertToEntity(bannerRequestDTO);
+        BannerResponseDTO responseBanner = bannerMapper.convertToDTO(
                 bannerRepository.save(banner));
 
         BaseResponse baseResponse = BaseResponse.builder()
@@ -65,10 +62,10 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> updateBanner(String id, BannerCreationDTO bannerCreationDTO) {
+    public ResponseEntity<BaseResponse> updateBanner(String id, BannerRequestDTO bannerRequestDTO) {
         Optional<Banner> bannerFound = bannerRepository.findById(id);
         if (bannerFound.isPresent()) {
-            Film filmFound = filmRepository.findById(bannerCreationDTO.getIdFilm()).orElse(null);
+            Film filmFound = filmRepository.findById(bannerRequestDTO.getIdFilm()).orElse(null);
             if (filmFound == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new BaseResponse("Không tìm thấy phim có id này!",
@@ -77,11 +74,11 @@ public class BannerServiceImpl implements BannerService {
             }
 
             Banner newBanner = bannerFound.get();
-            newBanner.setImageUrl(bannerCreationDTO.getImageUrl());
+            newBanner.setImageUrl(bannerRequestDTO.getImageUrl());
             newBanner.setFilm(filmFound);
-            newBanner.setIsActive(bannerCreationDTO.getIsActive());
+            newBanner.setIsActive(bannerRequestDTO.getIsActive());
 
-            BannerDTO responseBanner = bannerMapper.convertToDTO(
+            BannerResponseDTO responseBanner = bannerMapper.convertToDTO(
                     bannerRepository.save(newBanner));
 
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -99,7 +96,7 @@ public class BannerServiceImpl implements BannerService {
             Banner bannerToDelete = bannerFound.get();
             bannerToDelete.setIsDeleted(true);
 
-            BannerDTO responseBanner = bannerMapper.convertToDTO(
+            BannerResponseDTO responseBanner = bannerMapper.convertToDTO(
                     bannerRepository.save(bannerToDelete));
 
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -114,7 +111,7 @@ public class BannerServiceImpl implements BannerService {
     public ResponseEntity<BaseResponse> findByFilmNameOrFilmId(Pageable pageable, String input) {
         String trimmedInput = input.trim();
 
-        Page<BannerDTO> bannerDTOs;
+        Page<BannerResponseDTO> bannerDTOs;
         Film filmFound = filmRepository.findByFilmNameIgnoreCase(trimmedInput);
         if (filmFound != null) {
             bannerDTOs = bannerRepository.findByFilmId_AndIsDeletedFalse(pageable, filmFound.getId())
@@ -140,7 +137,7 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public ResponseEntity<BaseResponse> getSoftDeletedBanners(Pageable pageable) {
-        Page<BannerDTO> bannerDTOs = bannerRepository.findByIsDeletedTrue(pageable)
+        Page<BannerResponseDTO> bannerDTOs = bannerRepository.findByIsDeletedTrue(pageable)
                 .map(bannerMapper::convertToDTO);
 
         BaseResponse baseResponse;
@@ -167,7 +164,7 @@ public class BannerServiceImpl implements BannerService {
             Banner banner = bannerFound.get();
             banner.setIsDeleted(false);
 
-            BannerDTO responseBanner = bannerMapper.convertToDTO(
+            BannerResponseDTO responseBanner = bannerMapper.convertToDTO(
                     bannerRepository.save(banner));
 
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -180,7 +177,7 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public ResponseEntity<BaseResponse> getAllActiveOrInactive(Pageable pageable, Boolean flag) {
-        Page<BannerDTO> bannerDTOs = bannerRepository.findByIsActiveAndIsDeletedFalse(pageable, flag)
+        Page<BannerResponseDTO> bannerDTOs = bannerRepository.findByIsActiveAndIsDeletedFalse(pageable, flag)
                 .map(bannerMapper::convertToDTO);
         if (bannerDTOs.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -201,7 +198,7 @@ public class BannerServiceImpl implements BannerService {
 
             String message = "Cập nhật thành công. Trạng thái hiện tại: "
                     + (newBanner.getIsActive() ? "Active" : "Inactive");
-            BannerDTO responseBanner = bannerMapper.convertToDTO(
+            BannerResponseDTO responseBanner = bannerMapper.convertToDTO(
                     bannerRepository.save(newBanner));
 
             return ResponseEntity.status(HttpStatus.OK).body(

@@ -1,18 +1,16 @@
 package com.rental.movie.model.dto;
 
 import com.rental.movie.model.entity.BaseEntity;
-import com.rental.movie.model.entity.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BannerDTO extends BaseEntity {
+public class BannerResponseDTO extends BaseEntity {
     private String id;
     private String imageUrl;
-    private Film film;
+    private String filmId; // khóa chính phim
+    private String filmName; // tên phim
 }
