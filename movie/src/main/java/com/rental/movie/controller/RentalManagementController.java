@@ -21,7 +21,7 @@ public class RentalManagementController {
     @Operation(summary = "Lấy gói thuê dựa trên userId.",
             description = "Return: RentalPackage, minutesLeft (số phút sử dụng còn lại).")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc gói thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc gói thuê."),
             @ApiResponse(responseCode = "200", description = "Thành công.")
     })
     @GetMapping("/getRentalPackage/{userId}")
@@ -32,7 +32,7 @@ public class RentalManagementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Huỷ gia hạn tự động cho gói thuê.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc gói thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc gói thuê."),
             @ApiResponse(responseCode = "200", description = "Thành công.")
     })
     @PutMapping("/disableAutoRenewal")
@@ -43,7 +43,7 @@ public class RentalManagementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Bật gia hạn tự động cho gói thuê.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc gói thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc gói thuê."),
             @ApiResponse(responseCode = "200", description = "Thành công.")
     })
     @PutMapping("/enableAutoRenewal")
@@ -57,7 +57,7 @@ public class RentalManagementController {
     @Operation(summary = "Lấy danh sách phim thuê theo userId, sắp xếp theo thứ tự tăng dần của minutesLeft.",
             description = "Trả về danh sách phim thuê kèm theo thời gian sử dụng còn lại (minutesLeft) của từng phim thuê.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc phim thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách phim thuê.")
     })
     @GetMapping("/getRentedFilms/{userId}")
@@ -69,7 +69,7 @@ public class RentalManagementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Kích hoạt tính giờ phim thuê.", description = "Gọi khi user click vào xem phim.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc phim thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "400", description = "Phim thuê này đã được kích hoạt trước đó rồi!"),
             @ApiResponse(responseCode = "200", description = "Đã kích hoạt tính giờ phim thuê."),
     })
@@ -81,7 +81,7 @@ public class RentalManagementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Tìm phim thuê dựa trên id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc phim thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm phim thuê thành công."),
     })
     @GetMapping("/getRentedFilmById/{rentedFilmId}")
@@ -92,7 +92,7 @@ public class RentalManagementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Tìm phim thuê dựa trên tên phim.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Không tìm thấy người dùng hoặc phim thuê."),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm phim thuê thành công."),
     })
     @GetMapping("/getRentedFilmByFilmName")

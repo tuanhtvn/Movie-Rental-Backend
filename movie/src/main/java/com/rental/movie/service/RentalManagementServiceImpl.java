@@ -54,11 +54,11 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     public ResponseEntity<BaseResponse> getRentalPackageByUserId(String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
         RentalPackage rentalPackage = user.getRentalPackage();
         if (rentalPackage == null) {
-            throw new NotFoundException("Không tìm thấy gói thuê!");
+            throw new CustomException("Không tìm thấy gói thuê!", HttpStatus.NOT_FOUND.value());
         }
 
         RentalPackageResponseDTO rentalPackageResponse = rentalPackageMapper.convertToDTO(rentalPackage);
@@ -71,11 +71,11 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     public ResponseEntity<BaseResponse> disableAutoRenewal() {
         User user = authManager.getUserAuthentication();
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
         RentalPackage rentalPackage = user.getRentalPackage();
         if (rentalPackage == null) {
-            throw new NotFoundException("Không tìm thấy gói thuê!");
+            throw new CustomException("Không tìm thấy gói thuê!", HttpStatus.NOT_FOUND.value());
         }
 
         rentalPackage.setIsRenewal(false);
@@ -92,11 +92,11 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     public ResponseEntity<BaseResponse> enableAutoRenewal() {
         User user = authManager.getUserAuthentication();
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
         RentalPackage rentalPackage = user.getRentalPackage();
         if (rentalPackage == null) {
-            throw new NotFoundException("Không tìm thấy gói thuê!");
+            throw new CustomException("Không tìm thấy gói thuê!", HttpStatus.NOT_FOUND.value());
         }
 
         rentalPackage.setIsRenewal(true);
@@ -113,12 +113,12 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     private List<RentedFilm> getRentedFilmsByCurrentUser(){
         User user = authManager.getUserAuthentication();
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
 
         List<RentedFilm> rentedFilms = user.getRentedFilms();
         if (rentedFilms.isEmpty()) {
-            throw new NotFoundException("Không tìm thấy phim thuê!");
+            throw new CustomException("Không tìm thấy phim thuê!", HttpStatus.NOT_FOUND.value());
         }
         return rentedFilms;
     }
@@ -127,12 +127,12 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     public ResponseEntity<BaseResponse> getRentedFilmsByUserId(String userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
 
         List<RentedFilm> rentedFilms = user.getRentedFilms();
         if (rentedFilms.isEmpty()) {
-            throw new NotFoundException("Không tìm thấy phim thuê!");
+            throw new CustomException("Không tìm thấy phim thuê!", HttpStatus.NOT_FOUND.value());
         }
 
         List<RentedFilmResponseDTO> rentedFilmsDTO = rentedFilms
@@ -150,12 +150,12 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     public ResponseEntity<BaseResponse> startTimmingRentedFilm(String rentedFilmId) {
         User user = authManager.getUserAuthentication();
         if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
         }
 
         List<RentedFilm> rentedFilms = user.getRentedFilms();
         if (rentedFilms.isEmpty()) {
-            throw new NotFoundException("Không tìm thấy phim thuê!");
+            throw new CustomException("Không tìm thấy phim thuê!", HttpStatus.NOT_FOUND.value());
         }
 
         for (RentedFilm rentedFilm : rentedFilms) {
