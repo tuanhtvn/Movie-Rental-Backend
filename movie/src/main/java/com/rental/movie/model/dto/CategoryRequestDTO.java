@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryRequestDTO extends BaseRequestDTO {
     @NotBlank(message = "Chưa có tên danh mục")
-    @Size(max = 255, message = "Tên danh mục tên ít hơn 255 ký tự")
+    @Size(max = 255, message = "Tên danh mục nên ít hơn 255 ký tự")
     private String categoryName; // tên danh mục
     private List<String> bannersId = new ArrayList<>(); // danh sách banner
     private List<String> albumsId = new ArrayList<>(); // danh sách album

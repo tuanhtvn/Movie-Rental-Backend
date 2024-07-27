@@ -23,6 +23,7 @@ import com.rental.movie.model.dto.VerifyResponseDTO;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.model.entity.Verify;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -40,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private ModelMapper modelMapper;
 
     @Override
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
         log.info("Login account: " + loginRequestDTO.getEmail() + " - Auth provider: " + AuthProvider.LOCAL);
         loginRequestDTO.setEmail(loginRequestDTO.getEmail().toLowerCase());
         return userService.getByEmailAndAuthProvider(loginRequestDTO.getEmail(), AuthProvider.LOCAL)
@@ -60,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
                     if (BCrypt.checkpw(loginRequestDTO.getPassword(), user.getPassword())) {
                         log.info("Login success: " + loginRequestDTO.getEmail());
                         return LoginResponseDTO.builder()
-                                .token(tokenService.getToken(user.getId(), user.getRole()))
+                                .token(tokenService.getToken(user.getId(), user.getRole(), request))
                                 .fullName(user.getFullName())
                                 .role(user.getRole().name())
                                 .build();

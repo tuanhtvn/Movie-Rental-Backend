@@ -23,5 +23,5 @@ public class Genre extends BaseEntity {
     private String genreName; // tên thể loại
 
     @DBRef(lazy=true)
-    private List<Film> films = new ArrayList<>(); // danh sách phim
+    private List<Film> film = new ArrayList<>(); // danh sách phim
 }

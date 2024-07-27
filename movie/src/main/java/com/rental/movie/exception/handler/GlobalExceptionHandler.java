@@ -2,6 +2,7 @@ package com.rental.movie.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -44,6 +45,17 @@ public class GlobalExceptionHandler {
         String message = "Yêu cầu của bạn không được xác thực. Vui lòng đăng nhập và thử lại.";
         baseResponse.setMessage(message);
         baseResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        baseResponse.setData(null);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
+    }
+    // Access Denied Error
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse> handleAccessDeniedException(Exception exception) {
+        log.error("Exception: " + exception.getMessage());
+        BaseResponse baseResponse = new BaseResponse();
+        String message = "Bạn không có quyền truy cập vào tài nguyên này.";
+        baseResponse.setMessage(message);
+        baseResponse.setStatus(HttpStatus.FORBIDDEN.value());
         baseResponse.setData(null);
         return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }

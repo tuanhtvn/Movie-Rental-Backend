@@ -6,9 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import lombok.AllArgsConstructor;
@@ -26,19 +24,17 @@ public class Profile {
     private Boolean isChild; // trạng thái trẻ em
     private Boolean isDefault; // trạng thái mặc định
 
-    @DBRef(lazy=true)
+    @DBRef(lazy = true)
     private List<Film> selectedMovies = new ArrayList<>();
 
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
+    private Instant createdAt = Instant.now();
+    private Instant updatedAt = Instant.now();
 
     public ZonedDateTime getCreatedAt() {
         return createdAt.atZone(ZoneId.systemDefault());
     }
 
     public ZonedDateTime getUpdatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
+        return updatedAt.atZone(ZoneId.systemDefault());
     }
 }

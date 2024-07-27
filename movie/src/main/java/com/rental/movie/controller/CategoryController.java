@@ -21,30 +21,63 @@ public class CategoryController {
         @Autowired
         private CategoryService categoryService;
 
-        @PreAuthorize("hasRole('ROLE_USER')")
-        @Operation(summary = "Lấy danh sách các danh mục không phân trang", description = "Lấy ra tất cả danh mục không bao gồm danh mục đã xoá mềm và danh mục không được active")
+        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+        @Operation(summary = "Lấy danh sách các danh mục có phân trang", description = "Lấy ra tất cả danh mục không bao gồm danh mục đã xoá mềm")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các danh mục.")
-        @GetMapping("/getAllNonePage")
-        public ResponseEntity<BaseResponse> getAllCategoriesNonePage() {
-                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                                "Tìm thấy danh sách các danh mục",
-                                HttpStatus.OK.value(),
-                                categoryService.getAllActiveCategories()));
-        }
-
-        @PreAuthorize("hasRole('ROLE_USER')")
-        @Operation(summary = "Lấy danh sách các danh mục có phân trang", description = "Lấy ra tất cả danh mục không bao gồm danh mục đã xoá mềm và danh mục không được active")
-        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các danh mục.")
-        @GetMapping("/getAllPage")
+        @GetMapping("/getAll")
         public ResponseEntity<BaseResponse> getAllCategoriesPage(
                         @ParameterObject Pageable pageable,
-                        @RequestParam(defaultValue = "") String search) {
+                        @RequestParam(defaultValue = "") String search
+        ) {
                 return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                                 "Tìm thấy danh sách các danh mục",
                                 HttpStatus.OK.value(),
                                 categoryService.getAll(pageable, search)));
         }
 
+        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+        @Operation(summary = "Lấy danh sách các danh mục không phân trang", description = "Lấy ra tất cả danh mục đang được active và không bao gồm danh mục đã xoá mềm")
+        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các danh mục.")
+        @GetMapping("/getAllActive")
+        public ResponseEntity<BaseResponse> getAllActiveCategoriesPage(
+                @ParameterObject Pageable pageable,
+                @RequestParam(defaultValue = "") String search
+        ) {
+                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                        "Tìm thấy danh sách các danh mục",
+                        HttpStatus.OK.value(),
+                        categoryService.getAllActiveCategories(pageable, search)));
+        }
+
+        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+        @Operation(summary = "Lấy danh sách các danh mục không phân trang", description = "Lấy ra tất cả danh mục đang không active và không bao gồm danh mục đã xoá mềm")
+        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các danh mục.")
+        @GetMapping("/getAllInActive")
+        public ResponseEntity<BaseResponse> getAllInActiveCategoriesPage(
+                @ParameterObject Pageable pageable,
+                @RequestParam(defaultValue = "") String search
+        ) {
+                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                        "Tìm thấy danh sách các danh mục",
+                        HttpStatus.OK.value(),
+                        categoryService.getAllInactiveCategories(pageable, search)));
+        }
+
+        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+        @Operation(summary = "Lấy danh mục đã xoá mềm", description = "Lấy danh sách các danh mục đã xoá mềm")
+        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách danh mục.")
+        @GetMapping("/getAllSoftDelete")
+        public ResponseEntity<BaseResponse> getAllSoftDeletedCategories(
+                @ParameterObject Pageable pageable,
+                @RequestParam(defaultValue = "") String search
+        ) {
+                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                        "Tìm thấy danh sách danh mục",
+                        HttpStatus.OK.value(),
+                        categoryService.getAllSoftDeletedCategories(pageable, search)));
+        }
+
+        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy danh mục theo Id", description = "Lấy danh mục theo Id danh mục")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh mục.")
         @GetMapping("/getOne/{categoryId}")
@@ -53,28 +86,6 @@ public class CategoryController {
                                 "Tìm thấy danh mục",
                                 HttpStatus.OK.value(),
                                 categoryService.getCategoryById(categoryId)));
-        }
-
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Lấy danh mục đã xoá mềm", description = "Lấy danh sách các danh mục đã xoá mềm")
-        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách danh mục.")
-        @GetMapping("/getAllSoftDelete")
-        public ResponseEntity<BaseResponse> getAllSoftDeletedCategories() {
-                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                                "Tìm thấy danh sách danh mục",
-                                HttpStatus.OK.value(),
-                                categoryService.getAllSoftDeletedCategories()));
-        }
-
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Lấy danh sách các danh mục", description = "Lấy ra tất cả danh mục bao gồm cả danh mục đã xoá mềm")
-        @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các danh mục.")
-        @GetMapping("/getAll")
-        public ResponseEntity<BaseResponse> getAllCategories() {
-                return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                                "Tìm thấy danh sách các danh mục",
-                                HttpStatus.OK.value(),
-                                categoryService.getAll()));
         }
 
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
@@ -150,7 +161,7 @@ public class CategoryController {
         }
 
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Deactivate danh mục", description = "Deactivate danh mục đã xoá mềm")
+        @Operation(summary = "Deactivate danh mục", description = "Deactivate danh mục theo Id danh mục")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "404", description = "Không tìm thấy danh mục!"),
                         @ApiResponse(responseCode = "200", description = "Deactivate danh mục thành công.")

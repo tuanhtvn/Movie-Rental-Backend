@@ -18,16 +18,12 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private Cloudinary cloudinary;
 
     @Override
-    public String upload(MultipartFile file, Boolean isImage) throws Exception {
+    public String upload(MultipartFile file) throws Exception {
         String secureUrl = null;
-        if (isImage) {
-            log.info("Uploading image to cloudinary");
-            Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), null);
-            secureUrl = (String) result.get("secure_url");
-            log.info("Uploaded image to cloudinary with secureUrl: " + secureUrl);
-        } else {
-            log.info("Uploading video to cloudinary");
-        }
+        log.info("Uploading image to cloudinary");
+        Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), null);
+        secureUrl = (String) result.get("secure_url");
+        log.info("Uploaded image to cloudinary with secureUrl: " + secureUrl);
         return secureUrl;
     }
 

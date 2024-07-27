@@ -16,10 +16,12 @@ import com.rental.movie.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("api")
+@Tag(name = "User Controller")
 public class UserController {
 
     @Autowired

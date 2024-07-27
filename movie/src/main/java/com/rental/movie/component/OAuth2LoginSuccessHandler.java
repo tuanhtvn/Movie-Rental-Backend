@@ -77,7 +77,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
             targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("status", this.status)
                     .queryParam("message", this.message)
-                    .queryParam("token", this.tokenService.getToken(this.user.getId(), this.user.getRole()))
+                    .queryParam("token", this.tokenService.getToken(this.user.getId(), this.user.getRole(), request))
                     .queryParam("fullname", this.encoder.encode(this.user.getFullName()))
                     .queryParam("role", this.user.getRole())
                     .build().toUriString();
