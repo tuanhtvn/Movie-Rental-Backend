@@ -76,7 +76,9 @@ public class WebSecurityConfig {
                     auth.failureHandler(failureHandler);
                 })
                 .oauth2ResourceServer(oauth2 -> {
-                    oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));
+                    oauth2
+                            .authenticationEntryPoint(this.delegatedAuthenticationEntryPoint)
+                            .jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));
                 })
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(this.delegatedAuthenticationEntryPoint))
                 .build();
