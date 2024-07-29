@@ -37,7 +37,8 @@ public class RentalManagementController {
     })
     @PutMapping("/disableAutoRenewal")
     public ResponseEntity<BaseResponse> disableAutoRenewal() {
-        return rentalManagementService.disableAutoRenewal();
+        boolean enabled = false;
+        return rentalManagementService.setAutoRenewal(enabled);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -48,7 +49,8 @@ public class RentalManagementController {
     })
     @PutMapping("/enableAutoRenewal")
     public ResponseEntity<BaseResponse> enableAutoRenewal() {
-        return rentalManagementService.enableAutoRenewal();
+        boolean enabled = true;
+        return rentalManagementService.setAutoRenewal(enabled);
     }
 
 
@@ -79,7 +81,7 @@ public class RentalManagementController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Tìm phim thuê dựa trên id.")
+    @Operation(summary = "Tìm phim thuê của người dùng hiện tại (dựa trên rentedFilmId).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm phim thuê thành công."),
@@ -90,7 +92,7 @@ public class RentalManagementController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Tìm phim thuê dựa trên tên phim.")
+    @Operation(summary = "Tìm phim thuê của người dùng hiện tại (dựa trên tên phim).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm phim thuê thành công."),
