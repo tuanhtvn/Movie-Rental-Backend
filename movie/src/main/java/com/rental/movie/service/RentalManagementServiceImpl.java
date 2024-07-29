@@ -3,10 +3,8 @@ package com.rental.movie.service;
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.exception.CustomException;
-import com.rental.movie.exception.NotFoundException;
 import com.rental.movie.model.dto.RentalPackageResponseDTO;
 import com.rental.movie.model.dto.RentedFilmResponseDTO;
-import com.rental.movie.model.dto.UserInfoResponseDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.model.entity.RentalPackage;
 import com.rental.movie.model.entity.RentedFilm;
@@ -17,20 +15,12 @@ import com.rental.movie.util.mapper.RentalPackageMapper;
 import com.rental.movie.util.mapper.RentedFilmMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -68,7 +58,7 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     }
 
     @Override
-    public ResponseEntity<BaseResponse> disableAutoRenewal() {
+    public ResponseEntity<BaseResponse> setAutoRenewal(boolean enabled) {
         User user = authManager.getUserAuthentication();
         if (user == null) {
             throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
@@ -78,51 +68,21 @@ public class RentalManagementServiceImpl implements RentalManagementService {
             throw new CustomException("Không tìm thấy gói thuê!", HttpStatus.NOT_FOUND.value());
         }
 
-        rentalPackage.setIsRenewal(false);
+        rentalPackage.setIsRenewal(enabled);
+        user.setRentalPackage(rentalPackage);
         userRepository.save(user);
 
-        return ResponseEntity.ok(
-                new BaseResponse("Đã huỷ gia hạn gói thuê tự động.",
-                        HttpStatus.OK.value(),
-                        rentalPackageMapper.convertToDTO(rentalPackage))
-        );
-    }
-
-    @Override
-    public ResponseEntity<BaseResponse> enableAutoRenewal() {
-        User user = authManager.getUserAuthentication();
-        if (user == null) {
-            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
-        }
-        RentalPackage rentalPackage = user.getRentalPackage();
-        if (rentalPackage == null) {
-            throw new CustomException("Không tìm thấy gói thuê!", HttpStatus.NOT_FOUND.value());
-        }
-
-        rentalPackage.setIsRenewal(true);
-        userRepository.save(user);
+        String message = "Đã " + (rentalPackage.getIsRenewal() ? "bật" : "huỷ") +
+                " gia hạn gói thuê tự động.";
 
         return ResponseEntity.ok(
-                new BaseResponse("Đã bật gia hạn gói thuê tự động.",
+                new BaseResponse(message,
                         HttpStatus.OK.value(),
                         rentalPackageMapper.convertToDTO(rentalPackage))
         );
     }
 
     //Phim Thuê
-    private List<RentedFilm> getRentedFilmsByCurrentUser(){
-        User user = authManager.getUserAuthentication();
-        if (user == null) {
-            throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());
-        }
-
-        List<RentedFilm> rentedFilms = user.getRentedFilms();
-        if (rentedFilms.isEmpty()) {
-            throw new CustomException("Không tìm thấy phim thuê!", HttpStatus.NOT_FOUND.value());
-        }
-        return rentedFilms;
-    }
-
     @Override
     public ResponseEntity<BaseResponse> getRentedFilmsByUserId(String userId) {
         User user = userRepository.findById(userId).orElse(null);
@@ -185,7 +145,7 @@ public class RentalManagementServiceImpl implements RentalManagementService {
 
     @Override
     public ResponseEntity<BaseResponse> getRentedFilmById(String rentedFilmId) {
-        List<RentedFilm> rentedFilms = getRentedFilmsByCurrentUser();
+        List<RentedFilm> rentedFilms = rentalService.getRentedFilmsByCurrentUser();
 
         for (RentedFilm rentedFilm : rentedFilms) {
             if (rentedFilm.getId().equals(rentedFilmId))
@@ -203,7 +163,7 @@ public class RentalManagementServiceImpl implements RentalManagementService {
 
     @Override
     public ResponseEntity<BaseResponse> getRentedFilmByFilmName(String filmName) {
-        List<RentedFilm> rentedFilms = getRentedFilmsByCurrentUser();
+        List<RentedFilm> rentedFilms = rentalService.getRentedFilmsByCurrentUser();
         Film film = filmRepository.findByFilmNameIgnoreCase(filmName);
 
         if (film != null) {
