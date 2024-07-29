@@ -1,17 +1,21 @@
 package com.rental.movie.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.FilmResponseDTO;
+import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.repository.FilmRepository;
+import com.rental.movie.util.mapper.FilmMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +38,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmResponseDTO> getAllActivedFilm() {
+    public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByActived(pageable, search);
         log.info("Get all actived films: {}", films.getContent().toString());
         if (films.isEmpty()) {
@@ -45,7 +49,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmResponseDTO> getAllNotDeletedFilm() {
+    public Page<FilmResponseDTO> getAllNotDeletedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByNotDeleted(pageable, search);
         log.info("Get all not deleted films: {}", films.getContent().toString());
         if (films.isEmpty()) {
@@ -56,7 +60,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmResponseDTO> getAllDeletedFilm() {
+    public Page<FilmResponseDTO> getAllDeletedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByDeleted(pageable, search);
         log.info("Get all deleted films: {}", films.getContent().toString());
         if (films.isEmpty()) {
@@ -67,20 +71,17 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Page<FilmResponseDTO> searchFilmByName(String keywords) {
-        List<Film> films = filmRepository.findDeletedFilmsByTitleContainingIgnoreCase(title);
+    public List<Film> searchFilmByName(String keywords) {
+        List<Film> films = filmRepository.findByKeywords(keywords);
         if (films.isEmpty()) {
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
         }
-        return films.stream().map(filmMapper::convertToDTO).collect(Collectors.toList());
+        return films;
     }
 
     @Override
-    public FilmResponseDTO createFilm(FilmResponseDTO filmDTO) {
+    public FilmResponseDTO createFilm(FilmRequestDTO filmDTO) {
         Film film = filmMapper.convertToEntity(filmDTO);
-
-        film.setActive(false);
-        film.setDeleted(false);
 
         log.info("Create film {}", film.toString());
         Film savedFilm = filmRepository.save(film);
@@ -90,10 +91,10 @@ public class FilmServiceImpl implements FilmService {
     @Override
     @Transactional
     public FilmResponseDTO deleteFilmById(String filmId) {
-        Film film = filmRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setDeleted(true);
+        //film.setDeleted(true);
 
         log.info("Soft delete film {}", film.toString());
         Film deletedFilm = filmRepository.save(film);
@@ -102,22 +103,22 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     @Transactional
-    public FilmResponseDTO updateFilmById(String filmId, FilmResponseDTO filmDTO) {
-        Film film = filmRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+    public FilmResponseDTO updateFilmById(String filmId, FilmRequestDTO filmDTO) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
         log.info("Update film {}", film.toString());
-        Film updateFilm = filmMapper.convertToEntity(FilmDTO, film);
+        Film updateFilm = filmMapper.convertToEntity(filmDTO, film);
         return filmMapper.convertToDTO(filmRepository.save(updateFilm));
     }
 
     @Override
     @Transactional
     public FilmResponseDTO changeStatusFilm(String filmId) {
-        Film film = filmRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setActive(!film.isActive());
+        //film.setActive(!film.isActive());
 
         log.info("Change status film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
@@ -126,11 +127,11 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     @Transactional
-    public void restoreFilmById(String filmId) {
-        Film film = filmRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+    public FilmResponseDTO restoreFilmById(String filmId) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setDeleted(false);
+        //film.setDeleted(false);
 
         log.info("Restore film {}", film.toString());
         Film restoredFilm = filmRepository.save(film);

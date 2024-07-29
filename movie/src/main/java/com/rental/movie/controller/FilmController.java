@@ -14,7 +14,9 @@ import java.util.List;
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
+import com.rental.movie.model.entity.Film;
 import com.rental.movie.service.FilmService;
+import com.rental.movie.exception.CustomException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,26 +33,26 @@ public class FilmController {
      @Operation(summary = "Lấy danh sách tất cả phim đang hoạt động", description = "Lấy tất cả phim đã active và không xóa mềm") //isActive=true && isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/films")
-     public ResponseEntity<BaseResponse> getAllActivedFilm() {
+     public ResponseEntity<BaseResponse> getAllActivedFilm(Pageable pageable, String search) {
          try{
-             BaseResponse response = new BaseResponse("Lấy danh sách thành công", filmService.getAllActivedFilm());
+             BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllActivedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          }
     }
 
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim không xóa mềm", description = "Lấy tất cả phim không xóa mềm") // isDeleted=false
-             @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
+     @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/films")
-     public ResponseEntity<BaseResponse> getAllNotDeletedFilm() {
+     public ResponseEntity<BaseResponse> getAllNotDeletedFilm(Pageable pageable, String search) {
          try {
-             BaseResponse response = new BaseResponse("Lấy danh sách thành công", filmService.getAllNotDeletedFilm());
+             BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllNotDeletedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          }
      }
@@ -59,12 +61,12 @@ public class FilmController {
      @Operation(summary = "Lấy danh sách tất cả phim đã xóa mềm", description = "Lấy tất cả phim đã xóa mềm") // isDeleted=true
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/films")
-     public ResponseEntity<BaseResponse> getAllDeletedFilm() {
+     public ResponseEntity<BaseResponse> getAllDeletedFilm(Pageable pageable, String search) {
          try {
-             BaseResponse response = new BaseResponse("Lấy danh sách thành công", filmService.getAllDeletedFilm());
+             BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllDeletedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-            BaseResponse response = new BaseResponse(e.getMessage(), null);
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          }
      }
@@ -77,18 +79,18 @@ public class FilmController {
      @GetMapping("/search")
      public ResponseEntity<BaseResponse> searchFilmByName(@RequestParam String keywords) {
          try {
-             List<FilmResponseDTO> films = filmService.searchFilmByName(keywords);
+             List<Film> films = filmService.searchFilmByName(keywords);
              BaseResponse response;
 
              if (films.isEmpty()) {
-                 response = new BaseResponse("Không có phim!", null);
+                 response = new BaseResponse("Không có phim!", HttpStatus.NOT_FOUND.value(), null);
                  return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
              } else {
-                 response = new BaseResponse("Tìm thành công", films);
+                 response = new BaseResponse("Tìm thành công", HttpStatus.OK.value(), films);
                  return new ResponseEntity<>(response, HttpStatus.OK);
              }
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          }
      }
@@ -103,10 +105,10 @@ public class FilmController {
      public ResponseEntity<BaseResponse> createFilm(@Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO createdFilm = filmService.createFilm(filmDTO);
-             BaseResponse response = new BaseResponse("Thêm thành công", createdFilm);
+             BaseResponse response = new BaseResponse("Thêm thành công", HttpStatus.CREATED.value(), createdFilm);
              return new ResponseEntity<>(response, HttpStatus.CREATED);
          } catch (Exception e) {
-             BaseResponse response = new BaseResponse("Thêm thất bại. Có lỗi xảy ra: " + e.getMessage(), null);
+             BaseResponse response = new BaseResponse("Thêm thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
@@ -121,13 +123,13 @@ public class FilmController {
      public ResponseEntity<BaseResponse> deleteFilmById(@PathVariable String id) {
          try {
              filmService.deleteFilmById(id);
-             BaseResponse response = new BaseResponse("Xóa thành công", null);
+             BaseResponse response = new BaseResponse("Xóa thành công", HttpStatus.OK.value(), null);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          } catch (Exception e) {
-             BaseResponse response = new BaseResponse("Xóa thất bại. Có lỗi xảy ra: " + e.getMessage(), null);
+             BaseResponse response = new BaseResponse("Xóa thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
@@ -143,13 +145,13 @@ public class FilmController {
      public ResponseEntity<BaseResponse> updateFilmById(@PathVariable String id, @Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO updatedFilm = filmService.updateFilmById(id, filmDTO);
-             BaseResponse response = new BaseResponse("Cập nhật thành công", updatedFilm);
+             BaseResponse response = new BaseResponse("Cập nhật thành công", HttpStatus.OK.value(), updatedFilm);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          } catch (Exception e) {
-             BaseResponse response = new BaseResponse("Cập nhật thất bại. Có lỗi xảy ra: " + e.getMessage(), null);
+             BaseResponse response = new BaseResponse("Cập nhật thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
@@ -164,13 +166,13 @@ public class FilmController {
      public ResponseEntity<BaseResponse> changeStatusFilm(@PathVariable String id) {
          try {
              FilmResponseDTO updatedFilm = filmService.changeStatusFilm(id);
-             BaseResponse response = new BaseResponse("Cập nhật trạng thái thành công", updatedFilm);
+             BaseResponse response = new BaseResponse("Cập nhật trạng thái thành công", HttpStatus.OK.value(), updatedFilm);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          } catch (Exception e) {
-             BaseResponse response = new BaseResponse("Cập nhật trạng thái thất bại. Có lỗi xảy ra: " + e.getMessage(), null);
+             BaseResponse response = new BaseResponse("Cập nhật trạng thái thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
@@ -185,13 +187,13 @@ public class FilmController {
      public ResponseEntity<BaseResponse> restoreFilmById(@PathVariable String id) {
          try {
              FilmResponseDTO restoredFilm = filmService.restoreFilmById(id);
-             BaseResponse response = new BaseResponse("Khôi phục thành công", restoredFilm);
+             BaseResponse response = new BaseResponse("Khôi phục thành công", HttpStatus.OK.value(), restoredFilm);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
-             BaseResponse response = new BaseResponse(e.getMessage(), null);
+             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
          } catch (Exception e) {
-             BaseResponse response = new BaseResponse("Khôi phục thất bại. Có lỗi xảy ra: " + e.getMessage(), null);
+             BaseResponse response = new BaseResponse("Khôi phục thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }

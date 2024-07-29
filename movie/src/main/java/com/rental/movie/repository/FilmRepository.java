@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.List;
 
 import com.rental.movie.model.entity.Film;
 
@@ -17,11 +18,12 @@ public interface FilmRepository extends MongoRepository<Film, String> {
     @Query("{ '_id': ?0, 'isDeleted': false }")
     public Optional<Film> findById(String id);
 
+    public List<Film> findByKeywords(String keyword);
     @Query("{ 'isActive': true, 'isDeleted': false, 'filmName': { $regex: ?0, $options: 'i' } }")
-    Page<Film> findAllByActived(Pageable pageable, String search);
+    public Page<Film> findAllByActived(Pageable pageable, String search);
 
     @Query("{ 'isDeleted': false, 'filmName': { $regex: ?0, $options: 'i' } }")
-    Page<Film> findAllByNotDeleted(Pageable pageable, String search);
+    public Page<Film> findAllByNotDeleted(Pageable pageable, String search);
     @Query("{ 'isDeleted': true, 'filmName': { $regex: ?0, $options: 'i' } }")
-    Page<Film> findAllByDeleted(Pageable pageable, String search);
+    public Page<Film> findAllByDeleted(Pageable pageable, String search);
 }
