@@ -17,8 +17,8 @@ public interface FilmRepository extends MongoRepository<Film, String> {
 
     @Query("{ '_id': ?0, 'isDeleted': false }")
     public Optional<Film> findById(String id);
-
-    public List<Film> findByKeywords(String keyword);
+    @Query("{ 'fileName': { $regex: ?0, $options: 'i' } }")
+    public List<Film> findByKeywords(String keywords);
     @Query("{ 'isActive': true, 'isDeleted': false, 'filmName': { $regex: ?0, $options: 'i' } }")
     public Page<Film> findAllByActived(Pageable pageable, String search);
 

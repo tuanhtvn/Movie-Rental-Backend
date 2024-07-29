@@ -46,7 +46,7 @@ public class FilmController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim không xóa mềm", description = "Lấy tất cả phim không xóa mềm") // isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/films")
+     @GetMapping("/films/deleted")
      public ResponseEntity<BaseResponse> getAllNotDeletedFilm(Pageable pageable, String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllNotDeletedFilm(pageable, search));
@@ -60,7 +60,7 @@ public class FilmController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim đã xóa mềm", description = "Lấy tất cả phim đã xóa mềm") // isDeleted=true
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/films")
+     @GetMapping("/films/notdelete")
      public ResponseEntity<BaseResponse> getAllDeletedFilm(Pageable pageable, String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllDeletedFilm(pageable, search));
