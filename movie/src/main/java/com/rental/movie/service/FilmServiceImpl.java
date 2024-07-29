@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.FilmResponseDTO;
@@ -20,6 +21,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Autowired
     private FilmRepository filmRepository;
+    @Autowired
+    private FilmMapper filmMapper;
 
     @Override
     public Film getById(String id) {
@@ -32,56 +35,107 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmResponseDTO> getAllActivedFilm() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllActivedFilm'");
+        Page<Film> films = filmRepository.findAllByActived(pageable, search);
+        log.info("Get all actived films: {}", films.getContent().toString());
+        if (films.isEmpty()) {
+            log.error("No films found");
+            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+        }
+        return filmMapper.convertToDTO(films);
     }
 
     @Override
     public List<FilmResponseDTO> getAllNotDeletedFilm() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllNotDeletedFilm'");
+        Page<Film> films = filmRepository.findAllByNotDeleted(pageable, search);
+        log.info("Get all not deleted films: {}", films.getContent().toString());
+        if (films.isEmpty()) {
+            log.error("No films found");
+            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+        }
+        return filmMapper.convertToDTO(films);
     }
 
     @Override
     public List<FilmResponseDTO> getAllDeletedFilm() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllDeletedFilm'");
+        Page<Film> films = filmRepository.findAllByDeleted(pageable, search);
+        log.info("Get all deleted films: {}", films.getContent().toString());
+        if (films.isEmpty()) {
+            log.error("No films found");
+            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+        }
+        return filmMapper.convertToDTO(films);
     }
 
     @Override
     public Page<FilmResponseDTO> searchFilmByName(String keywords) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'searchFilmByName'");
+        List<Film> films = filmRepository.findDeletedFilmsByTitleContainingIgnoreCase(title);
+        if (films.isEmpty()) {
+            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+        }
+        return films.stream().map(filmMapper::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
     public FilmResponseDTO createFilm(FilmResponseDTO filmDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createFilm'");
+        Film film = filmMapper.convertToEntity(filmDTO);
+
+        film.setActive(false);
+        film.setDeleted(false);
+
+        log.info("Create film {}", film.toString());
+        Film savedFilm = filmRepository.save(film);
+        return filmMapper.convertToDTO(savedFilm);
     }
 
     @Override
-    public void deleteFilmById(String filmId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteFilmById'");
+    @Transactional
+    public FilmResponseDTO deleteFilmById(String filmId) {
+        Film film = filmRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        film.setDeleted(true);
+
+        log.info("Soft delete film {}", film.toString());
+        Film deletedFilm = filmRepository.save(film);
+        return filmMapper.convertToDTO(deletedFilm);
     }
 
     @Override
+    @Transactional
     public FilmResponseDTO updateFilmById(String filmId, FilmResponseDTO filmDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateFilmById'");
+        Film film = filmRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        log.info("Update film {}", film.toString());
+        Film updateFilm = filmMapper.convertToEntity(FilmDTO, film);
+        return filmMapper.convertToDTO(filmRepository.save(updateFilm));
     }
 
     @Override
-    public void changeStatusFilm(String filmId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changeStatusFilm'");
+    @Transactional
+    public FilmResponseDTO changeStatusFilm(String filmId) {
+        Film film = filmRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        film.setActive(!film.isActive());
+
+        log.info("Change status film {}", film.toString());
+        Film updatedFilm = filmRepository.save(film);
+        return filmMapper.convertToDTO(updatedFilm);
     }
 
     @Override
+    @Transactional
     public void restoreFilmById(String filmId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'restoreFilmById'");
+        Film film = filmRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Phim với ID " + id + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        film.setDeleted(false);
+
+        log.info("Restore film {}", film.toString());
+        Film restoredFilm = filmRepository.save(film);
+        return filmMapper.convertToDTO(restoredFilm);
+
     }
 
 }

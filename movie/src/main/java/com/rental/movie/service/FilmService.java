@@ -14,9 +14,9 @@ public interface FilmService {
     public List<FilmResponseDTO> getAllDeletedFilm();       //isDeleted=true
     public Page<FilmResponseDTO> searchFilmByName(String keywords);
     public FilmResponseDTO createFilm(FilmResponseDTO filmDTO);
-    public void deleteFilmById(String filmId);
+    public FilmResponseDTO  deleteFilmById(String filmId);
     public FilmResponseDTO updateFilmById(String filmId, FilmResponseDTO filmDTO);
-    public void changeStatusFilm(String filmId);
-    public void restoreFilmById(String filmId);
+    public FilmResponseDTO  changeStatusFilm(String filmId);
+    public FilmResponseDTO  restoreFilmById(String filmId);
 
 }
