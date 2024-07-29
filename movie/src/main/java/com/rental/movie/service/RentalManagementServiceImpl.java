@@ -42,7 +42,6 @@ public class RentalManagementServiceImpl implements RentalManagementService {
     //Gói Thuê
     @Override
     public ResponseEntity<BaseResponse> getRentalPackageByUserId(String userId) {
-//        System.out.println("f8: " + rentalService.addRentalPackageForUser());
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());

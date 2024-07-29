@@ -34,56 +34,8 @@ public class RentalService {
     private UserRepository userRepository;
     @Autowired
     private MailService mailService;
-
-    /* Start add data for testing */
     @Autowired
     private IAuthentication authManager;
-    @Autowired
-    private PackageInfoRepository packageInfoRepository;
-    @Autowired
-    private FilmRepository filmRepository;
-    public String addRentalPackageForUser(){
-        User user = authManager.getUserAuthentication();
-        //tao RentalPackage:
-        PackageInfo packageInfo = packageInfoRepository.findById("669777c962c1d84fd296297e").orElse(null);
-        if (packageInfo == null)
-            return "Package info null";
-        RentalPackage rentalPackage = new RentalPackage();
-        try {
-            rentalPackage.setRegistrationDate(ZonedDateTime.now());
-            rentalPackage.setExpirationDate(ZonedDateTime.now());
-            rentalPackage.setIsRenewal(true);
-            rentalPackage.setPackageInfo(packageInfo);
-        } catch (Exception e){
-            return "Lỗi trong lúc tạo RentalPackage: " + e.getMessage();
-        }
-        user.setRentalPackage(rentalPackage);
-
-        //tao rentedFilms
-        Film film1 = filmRepository.findById("66911ea4371ec16ae7a0562a").orElse(null);
-        Film film2 = filmRepository.findById("66911ea4371ec16ae7a05629").orElse(null);
-        RentedFilm rentedFilm1 = new RentedFilm();
-        rentedFilm1.setRentalDate(ZonedDateTime.now());
-        rentedFilm1.setFilm(film1);
-        rentedFilm1.setExpireAt(null);
-        rentedFilm1.setExpirationDate(ZonedDateTime.now().plusDays(30));
-        RentedFilm rentedFilm2 = new RentedFilm();
-        rentedFilm2.setRentalDate(ZonedDateTime.now());
-        rentedFilm2.setFilm(film2);
-        rentedFilm2.setExpireAt(null);
-        rentedFilm2.setExpirationDate(ZonedDateTime.now().plusDays(30));
-        List<RentedFilm> list = new ArrayList<>();
-        list.add(rentedFilm1);
-        list.add(rentedFilm2);
-        if (list.isEmpty())
-            return "Mảng RentedFilms rỗng";
-
-        user.setRentedFilms(list);
-
-        userRepository.save(user);
-        return "Thêm thành công";
-    }
-    /* End add data for testing */
 
     @Transactional
     @Async
