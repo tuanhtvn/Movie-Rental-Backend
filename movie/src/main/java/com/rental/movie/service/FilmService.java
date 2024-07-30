@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.rental.movie.model.Comment;
+import com.rental.movie.model.dto.CommentRequestDTO;
+import com.rental.movie.model.dto.CommentResponseDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;
@@ -16,9 +19,9 @@ public interface FilmService {
     public Page<FilmResponseDTO> getAllDeletedFilm(Pageable pageable, String search);       //isDeleted=true
     public List<Film> searchFilmByName(String keywords);
     public FilmResponseDTO createFilm(FilmRequestDTO filmDTO);
-    public FilmResponseDTO  deleteFilmById(String filmId);
+    public FilmResponseDTO deleteFilmById(String filmId);
     public FilmResponseDTO updateFilmById(String filmId, FilmRequestDTO filmDTO);
-    public FilmResponseDTO  changeStatusFilm(String filmId);
-    public FilmResponseDTO  restoreFilmById(String filmId);
-
+    public FilmResponseDTO activeFilm(String filmId);
+    public FilmResponseDTO deactiveFilm(String filmId);
+    public FilmResponseDTO restoreFilmById(String filmId);
 }

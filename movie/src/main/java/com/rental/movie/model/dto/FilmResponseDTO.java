@@ -12,6 +12,12 @@ public class FilmResponseDTO {
     private String id;
     @JsonProperty("FilmName")
     private String filmName;
+    @JsonProperty("FilmlUrl")
+    private String filmUrl;
     @JsonProperty("ThumbnailUrl")
     private String thumbnailUrl;
+    @JsonProperty("Description")
+    private String description;
+    @JsonProperty("Rating")
+    private Double rating;
 }
