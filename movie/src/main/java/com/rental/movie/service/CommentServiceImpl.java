@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rental.movie.model.Comment;
+import com.rental.movie.model.entity.Comment;
 import com.rental.movie.model.dto.CommentRequestDTO;
 import com.rental.movie.model.dto.CommentResponseDTO;
 import com.rental.movie.exception.CustomException;
@@ -31,15 +31,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDTO createComment(CommentDTO commentDTO) {
-        Comment comment = commentMapper.toEntity(commentDTO);
+    public CommentResponseDTO createComment(CommentRequestDTO commentDTO) {
+        Comment comment = commentMapper.convertToEntity(commentDTO);
         comment = commentRepository.save(comment);
         return commentMapper.convertToDTO(comment);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentDTO> getAllComments() {
+    public List<CommentResponseDTO> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
         if (comments.isEmpty()) {
             throw new CustomException("Không có bình luận nào", HttpStatus.NOT_FOUND.value());
@@ -49,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentDTO getCommentById(String id) {
+    public CommentResponseDTO getCommentById(String id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Không tìm thấy bình luận", HttpStatus.NOT_FOUND.value()));
         return commentMapper.convertToDTO(comment);
@@ -57,10 +57,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentDTO updateComment(String id, CommentDTO commentDTO) {
+    public CommentResponseDTO updateComment(String id, CommentRequestDTO commentDTO) {
         Comment existingComment = commentRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Không tìm thấy bình luận", HttpStatus.NOT_FOUND.value()));
-        commentMapper.updateEntity(commentDTO, existingComment);
+        commentMapper.convertToEntity(commentDTO, existingComment);
         existingComment = commentRepository.save(existingComment);
         return commentMapper.convertToDTO(existingComment);
     }
@@ -73,13 +73,13 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
-    public List<CommentDTO> getCommentsByFilmId(String filmId) {
+    public List<CommentResponseDTO> getCommentsByFilmId(String filmId) {
         List<Comment> comments = commentRepository.findByFilmId(filmId);
         if (comments.isEmpty()) {
             throw new CustomException("Không có bình luận nào cho phim này", HttpStatus.NOT_FOUND.value());
         }
         return comments.stream().map(commentMapper::convertToDTO).collect(Collectors.toList());
-    }
+    }*/
 }

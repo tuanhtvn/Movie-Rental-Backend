@@ -162,10 +162,10 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
      })
-     @PatchMapping("/active_deactive/{id}")
-     public ResponseEntity<BaseResponse> changeStatusFilm(@PathVariable String id) {
+     @PatchMapping("/active/{id}")
+     public ResponseEntity<BaseResponse> activeFilm(@PathVariable String id) {
          try {
-             FilmResponseDTO updatedFilm = filmService.changeStatusFilm(id);
+             FilmResponseDTO updatedFilm = filmService.activeFilm(id);
              BaseResponse response = new BaseResponse("Cập nhật trạng thái thành công", HttpStatus.OK.value(), updatedFilm);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (CustomException e) {
@@ -177,6 +177,26 @@ public class FilmController {
          }
      }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Active/Deactive phim theo ID", description = "Thay đổi trạng thái isActive của phim theo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
+            @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
+    })
+    @PatchMapping("/deactive/{id}")
+    public ResponseEntity<BaseResponse> deactiveFilm(@PathVariable String id) {
+        try {
+            FilmResponseDTO updatedFilm = filmService.deactiveFilm(id);
+            BaseResponse response = new BaseResponse("Cập nhật trạng thái thành công", HttpStatus.OK.value(), updatedFilm);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            BaseResponse response = new BaseResponse("Cập nhật trạng thái thất bại. Có lỗi xảy ra: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Khôi phục phim đã xóa mềm", description = "Khôi phục phim đã bị xóa mềm theo ID")
      @ApiResponses(value = {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import com.rental.movie.model.Comment;
+import com.rental.movie.model.entity.Comment;
 import com.rental.movie.model.dto.CommentRequestDTO;
 import com.rental.movie.model.dto.CommentResponseDTO;
 import com.rental.movie.common.BaseResponse;
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/")
+@RequestMapping("api/comment/")
 public class CommentController {
     @Autowired
     private CommentService commentService;
@@ -32,10 +32,10 @@ public class CommentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Thêm bình luận mới", description = "Thêm bình luận mới cho phim")
     @ApiResponse(responseCode = "200", description = "Thêm bình luận thành công")
-    @PostMapping
-    public ResponseEntity<BaseResponse> createComment(@RequestBody CommentDTO commentDTO) {
+    @PostMapping("/create")
+    public ResponseEntity<BaseResponse> createComment(@RequestBody CommentRequestDTO commentDTO) {
         try {
-            CommentDTO createdComment = commentService.createComment(commentDTO);
+            CommentResponseDTO createdComment = commentService.createComment(commentDTO);
             BaseResponse response = new BaseResponse("Thêm bình luận thành công", HttpStatus.OK.value(), createdComment);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -47,10 +47,10 @@ public class CommentController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy danh sách tất cả bình luận", description = "Lấy danh sách tất cả bình luận")
     @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<BaseResponse> getAllComments() {
         try {
-            List<CommentDTO> comments = commentService.getAllComments();
+            List<CommentResponseDTO> comments = commentService.getAllComments();
             BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), comments);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -68,7 +68,7 @@ public class CommentController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse> getCommentById(@PathVariable String id) {
         try {
-            CommentDTO comment = commentService.getCommentById(id);
+            CommentResponseDTO comment = commentService.getCommentById(id);
             BaseResponse response = new BaseResponse("Lấy bình luận thành công", HttpStatus.OK.value(), comment);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -83,10 +83,10 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Cập nhật bình luận thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> updateComment(@PathVariable String id, @RequestBody CommentDTO commentDTO) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BaseResponse> updateComment(@PathVariable String id, @RequestBody CommentRequestDTO commentDTO) {
         try {
-            CommentDTO updatedComment = commentService.updateComment(id, commentDTO);
+            CommentResponseDTO updatedComment = commentService.updateComment(id, commentDTO);
             BaseResponse response = new BaseResponse("Cập nhật bình luận thành công", HttpStatus.OK.value(), updatedComment);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
@@ -100,7 +100,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Xóa bình luận thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<BaseResponse> deleteComment(@PathVariable String id) {
         try {
             commentService.deleteComment(id);
@@ -112,7 +112,7 @@ public class CommentController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    /*@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy danh sách bình luận theo ID phim", description = "Lấy danh sách bình luận theo ID phim")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
@@ -121,13 +121,13 @@ public class CommentController {
     @GetMapping("/film/{filmId}")
     public ResponseEntity<BaseResponse> getCommentsByFilmId(@PathVariable String filmId) {
         try {
-            List<CommentDTO> comments = commentService.getCommentsByFilmId(filmId);
+            List<CommentResponseDTO> comments = commentService.getCommentsByFilmId(filmId);
             BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), comments);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
 }

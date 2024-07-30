@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.rental.movie.model.Comment;
-import com.rental.movie.model.dto.CommentRequestDTO;
-import com.rental.movie.model.dto.CommentResponseDTO;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
@@ -97,7 +94,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setisDeleted(true);
+        //film.setisDeleted(true);
 
         //log.info("Soft delete film {}", film.toString());
         Film deletedFilm = filmRepository.save(film);
@@ -121,7 +118,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setisActive(true);
+        //film.setisActive(true);
 
         //log.info("Active film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
@@ -134,7 +131,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setisActive(false);
+        //film.setisActive(false);
 
         //log.info("Deactive film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
@@ -147,7 +144,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        film.setisDeleted(false);
+        //film.setisDeleted(false);
 
         //log.info("Restore film {}", film.toString());
         Film restoredFilm = filmRepository.save(film);

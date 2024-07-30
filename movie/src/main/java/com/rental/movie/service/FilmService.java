@@ -5,9 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.rental.movie.model.Comment;
-import com.rental.movie.model.dto.CommentRequestDTO;
-import com.rental.movie.model.dto.CommentResponseDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;

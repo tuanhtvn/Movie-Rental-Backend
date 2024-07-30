@@ -5,16 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
-public class CategoryResponseDTO extends BaseResponseDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CommentResponseDTO extends BaseResponseDTO {
     @JsonProperty("id")
     private String id;
     @JsonProperty("text")
@@ -22,5 +20,5 @@ public class CategoryResponseDTO extends BaseResponseDTO {
     @JsonProperty("idUser")
     private String idUser;
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 }

@@ -18,8 +18,8 @@ public class FilmRequestDTO {
     private String filmName;
     @NotBlank(message = "Vui lòng chọn phim")
     @Schema(description = "Đường dẫn của phim", example = "https://drive.google.com/file/d/1AUhDl9Mqfab3qL89-iOmoTKa-Z7kYHXU/view?usp=sharing")
-    @JsonProperty("ThumbnailUrl")
-    private String thumbnailUrl;
+    @JsonProperty("FilmUrl")
+    private String filmlUrl;
     @NotBlank(message = "Vui lòng chọn ảnh Thumbnail")
     @Schema(description = "Đường dẫn ảnh Thumbnail", example = "https://example.com/thumbnail.jpg")
     @JsonProperty("ThumbnailUrl")
