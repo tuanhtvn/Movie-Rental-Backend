@@ -18,4 +18,5 @@ public interface AuthService {
 
     public VerifyResponseDTO forgotPassword(ForgotPasswordRequestDTO forgotPasswordRequestDTO);
 
+    public void logout(String token);
 }

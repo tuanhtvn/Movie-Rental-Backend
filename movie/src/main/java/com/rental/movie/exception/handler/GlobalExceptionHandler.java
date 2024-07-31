@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.exception.CustomException;
+import com.rental.movie.exception.TokenAuthenticationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -84,6 +85,17 @@ public class GlobalExceptionHandler {
         String message = exception.getBindingResult().getFieldError().getDefaultMessage();
         baseResponse.setMessage(message);
         baseResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        baseResponse.setData(null);
+        return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
+    }
+
+    // Token Authentication Error
+    @ExceptionHandler(TokenAuthenticationException.class)
+    public ResponseEntity<BaseResponse> handleTokenAuthenticationException(TokenAuthenticationException exception) {
+        log.error("Exception: " + exception.getMessage());
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setMessage(exception.getMessage());
+        baseResponse.setStatus(exception.getStatusCode());
         baseResponse.setData(null);
         return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }

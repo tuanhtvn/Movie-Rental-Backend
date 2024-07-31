@@ -35,6 +35,8 @@ public class DeviceServiceImpl implements DeviceService {
     @Autowired
     private IAuthentication authManager;
     @Autowired
+    private TokenService tokenService;
+    @Autowired
     private AppConfig appConfig;
     @Autowired
     private ModelMapper modelMapper;
@@ -62,7 +64,7 @@ public class DeviceServiceImpl implements DeviceService {
                     .ip(BCrypt.hashpw(ip, BCrypt.gensalt(appConfig.getLogRounds())))
                     .lastLoggedIn(lastLoggedIn.atZone(ZoneId.systemDefault()))
                     .build();
-            user.getDevices().add(existingDevice);
+            user.getDevices().add(0, existingDevice);
         } else {
             existingDevice.setToken(token);
             existingDevice.setExpireAt(expireAt.atZone(ZoneId.systemDefault()));
@@ -116,6 +118,20 @@ public class DeviceServiceImpl implements DeviceService {
         user.getDevices().remove(device);
         userService.save(user);
         log.info("Remove device {} for user id: {} successfully", id, user.getId());
+    }
+
+    @Override
+    public void deleteByToken(User user, String token) {
+        Device device = user.getDevices().stream()
+                .filter(d -> tokenService.compareTokens(d.getToken(), token))
+                .findFirst()
+                .orElseThrow(() -> {
+                    log.error("Device not found: " + token);
+                    throw new CustomException("Có lỗi xảy ra",
+                            HttpStatus.NOT_FOUND.value());
+                });
+        user.getDevices().remove(device);
+        userService.save(user);
     }
 
     private Device findExistingDevice(List<Device> devices, String info, String ip) {

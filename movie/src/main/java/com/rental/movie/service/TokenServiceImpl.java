@@ -12,8 +12,10 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.google.common.hash.Hashing;
+import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
 import com.rental.movie.config.AppConfig;
+import com.rental.movie.model.entity.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +29,11 @@ public class TokenServiceImpl implements TokenService {
     @Lazy
     @Autowired
     private JwtEncoder jwtEncoder;
+    @Lazy
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private IAuthentication authManager;
 
     @Override
     public String getToken(String userId, Role role, HttpServletRequest request) {
@@ -52,9 +57,25 @@ public class TokenServiceImpl implements TokenService {
         return token;
     }
 
+    @Override
+    public Boolean compareTokens(String tokenHash, String tokenPlain) {
+        return tokenHash.equals(hashString(tokenPlain));
+
+    }
+
     private String hashString(String str) {
         return Hashing.sha256()
                 .hashString(str, StandardCharsets.UTF_8)
                 .toString();
+    }
+
+    @Override
+    public Boolean checkToken(String token) {
+        User user = authManager.getUserAuthentication();
+        if (user == null) {
+            return false;
+        }
+        return user.getDevices().stream()
+                .anyMatch(d -> d.getToken().equals(hashString(token)));
     }
 }

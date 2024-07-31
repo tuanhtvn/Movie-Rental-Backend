@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.rental.movie.common.AuthProvider;
+import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
 import com.rental.movie.config.AppConfig;
 import com.rental.movie.exception.CustomException;
@@ -33,6 +34,10 @@ public class AuthServiceImpl implements AuthService {
     private AppConfig appConfig;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private IAuthentication authManager;
+    @Autowired
+    private DeviceService deviceService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -178,6 +183,20 @@ public class AuthServiceImpl implements AuthService {
                 .id(user.getId())
                 .expiredAt(user.getVerify().getExpiredAt())
                 .build();
+    }
+
+    @Override
+    public void logout(String token) {
+        log.debug("Token: " + token);
+        User user = authManager.getUserAuthentication();
+        if (!user.getRole().equals(Role.USER)) {
+            log.info("Logout user id: " + user.getId());
+            log.info("Logout success");
+            return;
+        }
+        log.info("Logout user id: " + user.getId());
+        deviceService.deleteByToken(user, token);
+        log.info("Logout success");
     }
 
     //
