@@ -14,6 +14,8 @@ import com.rental.movie.model.entity.Film;
 @Repository
 public interface FilmRepository extends MongoRepository<Film, String> {
     public Film findByFilmNameIgnoreCase(String filmName);
+    @Query("{ '_id': ?0}")
+    public Optional<Film> findByIdDefault(String id);
 
     @Query("{ '_id': ?0, 'isDeleted': false }")
     public Optional<Film> findById(String id);

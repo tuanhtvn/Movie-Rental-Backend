@@ -13,29 +13,37 @@ public class BannerMapper {
     @Autowired
     private FilmRepository filmRepository;
 
-    public BannerResponseDTO convertToDTO(Banner banner){
+    public BannerResponseDTO convertToDTO(Banner banner) {
         if (banner == null) {
             return null;
         }
+
         BannerResponseDTO responseBanner = new BannerResponseDTO();
-        Film film = filmRepository.findById(banner.getFilm().getId()).orElse(null);
+
+        if (banner.getFilm() != null) {
+            Film film = filmRepository.findByIdDefault(banner.getFilm().getId()).orElse(null);
+            if (film != null) {
+                responseBanner.setFilmId(film.getId());
+                responseBanner.setFilmName(film.getFilmName());
+            }
+        }
 
         responseBanner.setId(banner.getId());
         responseBanner.setImageUrl(banner.getImageUrl());
-        responseBanner.setFilmId(film.getId());
-        responseBanner.setFilmName(film.getFilmName());
         responseBanner.setIsActive(banner.getIsActive());
         responseBanner.setIsDeleted(banner.getIsDeleted());
         responseBanner.setCreatedAt(banner.getCreatedAt().toInstant());
         responseBanner.setUpdatedAt(banner.getUpdatedAt().toInstant());
+
         return responseBanner;
     }
+
 
     public Banner convertToEntity(BannerRequestDTO bannerRequestDTO){
         if (bannerRequestDTO == null) {
             return null;
         }
-        Film film = filmRepository.findById(bannerRequestDTO.getIdFilm()).orElse(null);
+        Film film = filmRepository.findByIdDefault(bannerRequestDTO.getIdFilm()).orElse(null);
 
         Banner banner = new Banner();
         banner.setImageUrl(bannerRequestDTO.getImageUrl());

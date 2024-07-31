@@ -5,9 +5,7 @@ import com.rental.movie.common.PaymentStatus;
 import com.rental.movie.common.Role;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.entity.*;
-import com.rental.movie.repository.FilmRepository;
 import com.rental.movie.repository.InvoiceRepository;
-import com.rental.movie.repository.PackageInfoRepository;
 import com.rental.movie.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

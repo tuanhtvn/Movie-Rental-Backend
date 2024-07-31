@@ -65,7 +65,7 @@ public class BannerServiceImpl implements BannerService {
     public ResponseEntity<BaseResponse> updateBanner(String id, BannerRequestDTO bannerRequestDTO) {
         Optional<Banner> bannerFound = bannerRepository.findById(id);
         if (bannerFound.isPresent()) {
-            Film filmFound = filmRepository.findById(bannerRequestDTO.getIdFilm()).orElse(null);
+            Film filmFound = filmRepository.findByIdDefault(bannerRequestDTO.getIdFilm()).orElse(null);
             if (filmFound == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new BaseResponse("Không tìm thấy phim có id này!",
