@@ -28,4 +28,7 @@ public interface FilmRepository extends MongoRepository<Film, String> {
     public Page<Film> findAllByNotDeleted(Pageable pageable, String search);
     @Query("{ 'isDeleted': true, 'filmName': { $regex: ?0, $options: 'i' } }")
     public Page<Film> findAllByDeleted(Pageable pageable, String search);
+
+    @Query("{ 'subtitles.id': ?0 }")
+    List<Film> findBySubtitlesId(String subtitleId);
 }
