@@ -15,5 +15,5 @@ public interface CommentService {
     public CommentResponseDTO getCommentById(String id);
     public CommentResponseDTO updateComment(String id, CommentRequestDTO commentDTO);
     public void deleteComment(String id);
-    //public List<CommentResponseDTO> getCommentsByFilmId(String filmId);
+    public List<CommentResponseDTO> getAllCommentsByFilmId(String filmId);
 }

@@ -72,11 +72,11 @@ public class SubtitleController {
                 }
         }
 
-        @Operation(summary = "Cập nhật phụ đề", description = "Cập nhật bình luận theo ID")
+        @Operation(summary = "Cập nhật phụ đề", description = "Cập nhật phụ đề theo ID")
         @ApiResponses(value = {
-                @ApiResponse(responseCode = "200", description = "Cập nhật bình luận thành công"),
+                @ApiResponse(responseCode = "200", description = "Cập nhật phụ đề thành công"),
                 @ApiResponse(responseCode = "400", description = "Dữ liệu đầu vào không hợp lệ"),
-                @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
+                @ApiResponse(responseCode = "404", description = "Không tìm thấy phụ đề")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @PutMapping("/update/{id}")

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rental.movie.model.entity.Film;
+import com.rental.movie.repository.FilmRepository;
 import com.rental.movie.model.entity.Comment;
 import com.rental.movie.model.dto.CommentRequestDTO;
 import com.rental.movie.model.dto.CommentResponseDTO;
@@ -25,7 +27,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
-
+    @Autowired
+    private FilmRepository filmRepository;
     @Autowired
     private CommentMapper commentMapper;
 
@@ -73,13 +76,14 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    /*@Override
-    @Transactional(readOnly = true)
-    public List<CommentResponseDTO> getCommentsByFilmId(String filmId) {
-        List<Comment> comments = commentRepository.findByFilmId(filmId);
-        if (comments.isEmpty()) {
-            throw new CustomException("Không có bình luận nào cho phim này", HttpStatus.NOT_FOUND.value());
-        }
-        return comments.stream().map(commentMapper::convertToDTO).collect(Collectors.toList());
-    }*/
+    @Override
+    public List<CommentResponseDTO> getAllCommentsByFilmId(String filmId) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
+
+        return film.getComments()
+                .stream()
+                .map(commentMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }

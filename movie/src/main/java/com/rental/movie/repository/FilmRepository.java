@@ -31,4 +31,10 @@ public interface FilmRepository extends MongoRepository<Film, String> {
 
     @Query("{ 'subtitles.id': ?0 }")
     List<Film> findBySubtitlesId(String subtitleId);
+
+    @Query("{ 'narrations.id': ?0 }")
+    List<Film> findByNarrationsId(String narrationId);
+
+    @Query("{ 'comments.id': ?0 }")
+    List<Film> findByCommentsId(String commentId);
 }
