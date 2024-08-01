@@ -34,7 +34,6 @@ public class RentalService {
     @Autowired
     private IAuthentication authManager;
 
-    @Transactional
     @Async
     public CompletableFuture<Void> checkAndAutoRenewAllUsers() {
         int pageSize = 50; // Số lượng người dùng mỗi trang
@@ -48,21 +47,7 @@ public class RentalService {
 
             log.info("Bắt đầu kiểm tra gia hạn tự động gói thuê cho người dùng. Trang: {}, Số lượng: {}", pageNumber, users.size());
             for (User user : users) {
-                // Chỉ kiểm tra nếu là USER
-                if (user.getRole() == Role.USER) {
-                    RentalPackage rentalPackage = user.getRentalPackage();
-                    if (rentalPackage != null && rentalPackage.getIsRenewal() && rentalPackage.getMinutesLeft() == 0) {
-                        try {
-                            autoRenewal(user, rentalPackage);
-                        } catch (Exception e) {
-                            log.error("Lỗi khi gia hạn gói thuê cho người dùng: " + user.getFullName(), e);
-                        }
-                    } else {
-                        log.info("Người dùng: {} không cần gia hạn gói thuê.", user.getFullName());
-                    }
-                } else {
-                    log.info("Người dùng: {} không có vai trò USER, bỏ qua.", user.getFullName());
-                }
+                processUserForRenewal(user);
             }
             pageNumber++;
         } while (usersPage.hasNext());
@@ -70,8 +55,40 @@ public class RentalService {
         return CompletableFuture.completedFuture(null); // Trả về một CompletableFuture hoàn thành ngay lập tức
     }
 
+    private void processUserForRenewal(User user) {
+        if (user.getRole() == Role.USER) {
+            RentalPackage rentalPackage = user.getRentalPackage();
+            if (rentalPackage != null && rentalPackage.getIsRenewal() && rentalPackage.getMinutesLeft() == 0) {
+                // kiểm tra coi gói đó có còn hoạt động không
+                if (!rentalPackage.getPackageInfo().getIsActive() || rentalPackage.getPackageInfo().getIsDeleted()) {
+                    handleUnavailableRentalPackage(user, rentalPackage);
+                } else {
+                    try {
+                        autoRenewal(user, rentalPackage);
+                    } catch (Exception e) {
+                        log.error("Lỗi khi gia hạn gói thuê cho người dùng: " + user.getFullName(), e);
+                    }
+                }
+            } else {
+                log.info("Người dùng: {} không cần gia hạn gói thuê.", user.getFullName());
+            }
+        } else {
+            log.info("Người dùng: {} không có vai trò USER, bỏ qua.", user.getFullName());
+        }
+    }
 
-    @Transactional
+    private void handleUnavailableRentalPackage(User user, RentalPackage rentalPackage) {
+        rentalPackage.setIsRenewal(false);
+        user.setRentalPackage(rentalPackage);
+        userRepository.save(user);
+
+        log.info("Gói thuê này đã hết hạn và không còn hỗ trợ, đã huỷ gia hạn gói thuê cho: {} vào lúc {}",
+                user.getFullName(), ZonedDateTime.now());
+        // Gửi email thông báo
+        notifyCancelAutoRenewalAsync(user.getEmail(), user.getFullName(),
+                rentalPackage.getPackageInfo().getPackageName());
+    }
+
     public void autoRenewal(User user, RentalPackage rentalPackage) {
         rentalPackage.setExpirationDate(ZonedDateTime.now().plusDays(rentalPackage.getPackageInfo().getTimeDuration()));
         Invoice invoice = new Invoice("fake id",
@@ -86,7 +103,7 @@ public class RentalService {
         user.setRentalPackage(rentalPackage);
         userRepository.save(user);
 
-        // Gửi email thông báo qua hàng đợi
+        // Gửi email thông báo
         notifyAutoRenewalAsync(user.getEmail(), user.getFullName(),
                 rentalPackage.getPackageInfo().getPackageName(),
                 rentalPackage.getExpirationDate(), rentalPackage.getMinutesLeft());
@@ -99,12 +116,17 @@ public class RentalService {
         mailService.notifyAutoRenewal(toEmail, userName, packageName, expirationDate, minutesLeft);
     }
 
+    @Async
+    public void notifyCancelAutoRenewalAsync(String toEmail, String userName, String pktName) {
+        mailService.notifyCancelAutoRenewal(toEmail, userName, pktName);
+    }
+
     //Kiểm tra xem có phải là lần click đầu tiên vào phim thuê không:
     public boolean checkFirstClickOnRentedFilm(RentedFilm rentedFilm) {
         return rentedFilm.getExpireAt() == null;
     }
 
-    public List<RentedFilm> getRentedFilmsByCurrentUser(){
+    public List<RentedFilm> getRentedFilmsByCurrentUser() {
         User user = authManager.getUserAuthentication();
         if (user == null) {
             throw new CustomException("Không tìm thấy người dùng!", HttpStatus.NOT_FOUND.value());

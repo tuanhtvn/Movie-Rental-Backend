@@ -55,7 +55,8 @@ public class RentalManagementController {
 
 
     //phim thuê
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Lấy danh sách phim thuê theo userId, sắp xếp theo thứ tự tăng dần của minutesLeft.",
             description = "Trả về danh sách phim thuê kèm theo thời gian sử dụng còn lại (minutesLeft) của từng phim thuê.")
     @ApiResponses(value = {

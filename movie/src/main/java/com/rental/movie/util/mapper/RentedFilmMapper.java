@@ -15,10 +15,12 @@ public class RentedFilmMapper {
 
     public RentedFilmResponseDTO convertToDTO(RentedFilm rentedFilm){
         RentedFilmResponseDTO responseDTO = new RentedFilmResponseDTO();
-        Film film = filmRepository.findById(rentedFilm.getFilm().getId()).orElse(null);
+        if (rentedFilm.getFilm() != null){
+            Film film = filmRepository.findByIdDefault(rentedFilm.getFilm().getId()).orElse(null);
+            responseDTO.setFilm(film);
+        }
 
         responseDTO.setId(rentedFilm.getId());
-        responseDTO.setFilm(film);
         responseDTO.setExpireAt(rentedFilm.getExpireAt());
         responseDTO.setRentalDate(rentedFilm.getRentalDate());
         responseDTO.setExpirationDate(rentedFilm.getExpirationDate());

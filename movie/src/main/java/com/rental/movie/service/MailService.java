@@ -7,4 +7,5 @@ public interface MailService {
     public void notifyAutoRenewal(String toEmail, String userName,
                                   String packageName, ZonedDateTime expirationDate,
                                   long minutesLeft);
+    public void notifyCancelAutoRenewal(String toEmail, String userName, String packageName);
 }

@@ -64,5 +64,25 @@ public class MailServiceImpl implements MailService {
         mailSender.send(preparator);
     }
 
+    @Override
+    public void notifyCancelAutoRenewal(String toEmail, String userName, String packageName) {
+        MimeMessagePreparator preparator = new MimeMessagePreparator() {
+            public void prepare(MimeMessage mimeMessage) throws Exception {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+                messageHelper.setTo(toEmail);
+                messageHelper.setSubject("Rental movie - Thông báo hủy gia hạn gói thuê tự động");
+
+                Context context = new Context();
+                context.setVariable("userName", userName);
+                context.setVariable("packageName", packageName);
+
+                String content = templateEngine.process("CancelAutoRenewalTemplate", context);
+
+                messageHelper.setText(content, true);
+            }
+        };
+        mailSender.send(preparator);
+    }
+
 
 }
