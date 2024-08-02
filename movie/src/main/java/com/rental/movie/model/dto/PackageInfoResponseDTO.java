@@ -15,5 +15,5 @@ public class PackageInfoResponseDTO extends BaseEntity {
     private String packageName; // tên gói
     private String description; // mô tả
     private Double price; // giá
-    private Integer timeDuration; // thời gian sử dụng
+    private Integer timeDuration; // thời gian sử dụng (ngày)
 }
