@@ -19,7 +19,7 @@ public class RentalManagementController {
     //gói thuê
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Operation(summary = "Lấy gói thuê dựa trên userId.",
-            description = "Return: RentalPackage, minutesLeft (số phút sử dụng còn lại).")
+            description = "Return: thông tin gói thuê, minutesLeft (số phút sử dụng còn lại).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc gói thuê."),
             @ApiResponse(responseCode = "200", description = "Thành công.")
@@ -53,10 +53,8 @@ public class RentalManagementController {
         return rentalManagementService.setAutoRenewal(enabled);
     }
 
-
     //phim thuê
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @Operation(summary = "Lấy danh sách phim thuê theo userId, sắp xếp theo thứ tự tăng dần của minutesLeft.",
             description = "Trả về danh sách phim thuê kèm theo thời gian sử dụng còn lại (minutesLeft) của từng phim thuê.")
     @ApiResponses(value = {

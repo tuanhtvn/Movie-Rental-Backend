@@ -17,17 +17,13 @@ public class BannerMapper {
         if (banner == null) {
             return null;
         }
-
         BannerResponseDTO responseBanner = new BannerResponseDTO();
-
         if (banner.getFilm() != null) {
             Film film = filmRepository.findByIdDefault(banner.getFilm().getId()).orElse(null);
             if (film != null) {
-                responseBanner.setFilmId(film.getId());
-                responseBanner.setFilmName(film.getFilmName());
+                responseBanner.setFilm(film);
             }
         }
-
         responseBanner.setId(banner.getId());
         responseBanner.setImageUrl(banner.getImageUrl());
         responseBanner.setIsActive(banner.getIsActive());

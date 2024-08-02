@@ -31,6 +31,6 @@ public class PackageInfoRequestDTO extends BaseRequestDTO{
     @NotNull(message = "Bạn chưa nhập thời gian sử dụng cho gói thuê!")
     @Min(value = 1, message = "Thời gian sử dụng gói thuê phải lớn hơn 0")
     @Schema(description = "Thời gian sử dụng gói thuê", example = "24")
-    private Integer timeDuration; // thời gian sử dụng
+    private Integer timeDuration; // thời gian sử dụng (ngày)
 }
 

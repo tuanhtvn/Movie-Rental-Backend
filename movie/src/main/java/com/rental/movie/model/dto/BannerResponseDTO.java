@@ -1,6 +1,7 @@
 package com.rental.movie.model.dto;
 
 import com.rental.movie.model.entity.BaseEntity;
+import com.rental.movie.model.entity.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class BannerResponseDTO extends BaseEntity {
     private String id;
     private String imageUrl;
-    private String filmId; // khóa chính phim
-    private String filmName; // tên phim
+    private Film film;
 }
