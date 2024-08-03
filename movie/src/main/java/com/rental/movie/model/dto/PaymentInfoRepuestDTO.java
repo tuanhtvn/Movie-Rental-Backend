@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentInfoRepuestDTO {
+public class PaymentInfoRepuestDTO extends BaseRequestDTO{
     @NotBlank(message = "Tên ngân hàng không được để trống")
     private String bankName;
 
@@ -22,8 +22,4 @@ public class PaymentInfoRepuestDTO {
 
     @NotNull(message = "Ngày phát hành không được để trống")
     private ZonedDateTime issueDate;
-
-    //created automatically
-    private Boolean isActive = true;
-    private Boolean isDeleted = false;
 }

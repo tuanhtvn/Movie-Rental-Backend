@@ -71,7 +71,7 @@ public class PaymentInfoController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Lấy danh sách thông tin thanh toán", description = "API lấy danh sách thông tin thanh toán Inactive")
+    @Operation(summary = "Lấy danh sách thông tin thanh toán inactive", description = "API lấy danh sách thông tin thanh toán Inactive")
     @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/inActivePaymentInfos")

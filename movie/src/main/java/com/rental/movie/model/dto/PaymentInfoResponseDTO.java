@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.time.ZonedDateTime;
 @Data
-public class PaymentInfoResponseDTO {
+public class PaymentInfoResponseDTO extends BaseResponseDTO{
     private String id;
     private String bankName;
     private String cardNumber;

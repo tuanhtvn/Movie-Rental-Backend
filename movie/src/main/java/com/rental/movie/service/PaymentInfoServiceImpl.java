@@ -8,6 +8,7 @@ import com.rental.movie.model.entity.PaymentInfo;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.util.mapper.PaymentInfoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -80,6 +81,7 @@ public class PaymentInfoServiceImpl implements PaymentInfoService{
         User user = authManager.getUserAuthentication();
         log.info("Add new paymentInfo for user id:{}",user.getId());
         PaymentInfo paymentInfo = paymentInfoMapper.convertToEntity(paymentInfoRepuestDTO);
+        paymentInfo.setId(new ObjectId().toString());
         user.getPaymentInfos().add(paymentInfo);
         userService.save(user);
         log.info("Add new paymentInfo for user id:{} successfully",user.getId());
