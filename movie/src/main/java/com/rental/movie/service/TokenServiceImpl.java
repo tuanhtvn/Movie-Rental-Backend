@@ -75,6 +75,9 @@ public class TokenServiceImpl implements TokenService {
         if (user == null) {
             return false;
         }
+        if (!user.getRole().equals(Role.USER)) {
+            return true;
+        }
         return user.getDevices().stream()
                 .anyMatch(d -> d.getToken().equals(hashString(token)));
     }
