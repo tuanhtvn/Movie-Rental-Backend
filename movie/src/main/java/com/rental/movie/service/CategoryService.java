@@ -15,6 +15,7 @@ public interface CategoryService {
     public CategoryResponseDTO updateCategory(String categoryId, CategoryRequestDTO categoryDTO);
     public void softDeleteCategory(String categoryId);
     public void restoreCategory(String categoryId);
-    public void activateCategory(String categoryId);
-    public void deactivateCategory(String categoryId);
+//    public void activateCategory(String categoryId);
+//    public void deactivateCategory(String categoryId);
+    public boolean toggleActiveStatus(String categoryId);
 }

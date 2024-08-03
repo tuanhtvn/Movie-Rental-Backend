@@ -15,4 +15,6 @@ public abstract class BaseResponseDTO {
     private String id;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
+    private Boolean isActive;
+    private Boolean isDeleted;
 }

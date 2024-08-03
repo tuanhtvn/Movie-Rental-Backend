@@ -16,7 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/album")
+@RequestMapping("api/")
 public class AlbumController {
         @Autowired
         private AlbumService albumService;
@@ -24,7 +24,7 @@ public class AlbumController {
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy danh sách các album có phân trang", description = "Lấy ra tất cả album không bao gồm album đã xoá mềm")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các album.")
-        @GetMapping("/getAll")
+        @GetMapping("album/getAll")
         public ResponseEntity<BaseResponse> getAllAlbumsPage(
                 @ParameterObject Pageable pageable,
                 @RequestParam(defaultValue = "") String search
@@ -35,10 +35,9 @@ public class AlbumController {
                         albumService.getAll(pageable, search)));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy danh sách các album không phân trang", description = "Lấy ra tất cả album đang được active và không bao gồm album đã xoá mềm")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các album.")
-        @GetMapping("/getAllActive")
+        @GetMapping("auth/album/getAllActive")
         public ResponseEntity<BaseResponse> getAllActiveAlbumsPage(
                 @ParameterObject Pageable pageable,
                 @RequestParam(defaultValue = "") String search
@@ -52,7 +51,7 @@ public class AlbumController {
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy danh sách các album không phân trang", description = "Lấy ra tất cả album đang không active và không bao gồm album đã xoá mềm")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách các album.")
-        @GetMapping("/getAllInActive")
+        @GetMapping("album/getAllInActive")
         public ResponseEntity<BaseResponse> getAllInActiveAlbumsPage(
                 @ParameterObject Pageable pageable,
                 @RequestParam(defaultValue = "") String search
@@ -66,7 +65,7 @@ public class AlbumController {
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy album đã xoá mềm", description = "Lấy danh sách các album đã xoá mềm")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách album.")
-        @GetMapping("/getAllSoftDelete")
+        @GetMapping("album/getAllSoftDelete")
         public ResponseEntity<BaseResponse> getAllSoftDeletedAlbums(
                 @ParameterObject Pageable pageable,
                 @RequestParam(defaultValue = "") String search
@@ -80,7 +79,7 @@ public class AlbumController {
         @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy album theo Id", description = "Lấy album theo Id album")
         @ApiResponse(responseCode = "200", description = "Tìm thấy album.")
-        @GetMapping("/getOne/{albumId}")
+        @GetMapping("album/getOne/{albumId}")
         public ResponseEntity<BaseResponse> getAlbumById(@PathVariable String albumId) {
                 return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                         "Tìm thấy album",
@@ -91,7 +90,7 @@ public class AlbumController {
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Tạo mới album", description = "Tạo mới một album")
         @ApiResponse(responseCode = "201", description = "Tạo album mới thành công.")
-        @PostMapping("/create")
+        @PostMapping("album/create")
         public ResponseEntity<BaseResponse> createAlbum(@Valid @RequestBody AlbumRequestDTO albumDTO) {
             return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse(
                     "Tạo album mới thành công.",
@@ -105,7 +104,7 @@ public class AlbumController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
                 @ApiResponse(responseCode = "200", description = "Cập nhật album thành công.")
         })
-        @PutMapping("/update/{albumId}")
+        @PutMapping("album/update/{albumId}")
         public ResponseEntity<BaseResponse> updateAlbum(
                 @PathVariable String albumId,
                 @Valid @RequestBody AlbumRequestDTO albumDTO) {
@@ -121,7 +120,7 @@ public class AlbumController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
                 @ApiResponse(responseCode = "200", description = "Xoá mềm album thành công.")
         })
-        @PatchMapping("/softDelete/{albumId}")
+        @PatchMapping("album/softDelete/{albumId}")
         public ResponseEntity<BaseResponse> softDeleteById(@PathVariable String albumId) {
             albumService.softDeleteAlbum(albumId);
             return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
@@ -136,7 +135,7 @@ public class AlbumController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
                 @ApiResponse(responseCode = "200", description = "Khôi phục album thành công.")
         })
-        @PatchMapping("/restore/{albumId}")
+        @PatchMapping("album/restore/{albumId}")
         public ResponseEntity<BaseResponse> restoreById(@PathVariable String albumId) {
             albumService.restoreAlbum(albumId);
             return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
@@ -145,32 +144,47 @@ public class AlbumController {
                     null));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Activate album", description = "Activate album theo Id album")
-        @ApiResponses(value = {
-                @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
-                @ApiResponse(responseCode = "200", description = "Activate album thành công.")
-        })
-        @PatchMapping("/activate/{albumId}")
-        public ResponseEntity<BaseResponse> activateById(@PathVariable String albumId) {
-            albumService.activateAlbum(albumId);
-            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                    "Activate album thành công",
-                    HttpStatus.OK.value(),
-                    null));
-        }
+//        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+//        @Operation(summary = "Activate album", description = "Activate album theo Id album")
+//        @ApiResponses(value = {
+//                @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
+//                @ApiResponse(responseCode = "200", description = "Activate album thành công.")
+//        })
+//        @PatchMapping("album/activate/{albumId}")
+//        public ResponseEntity<BaseResponse> activateById(@PathVariable String albumId) {
+//            albumService.activateAlbum(albumId);
+//            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+//                    "Activate album thành công",
+//                    HttpStatus.OK.value(),
+//                    null));
+//        }
+//
+//        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+//        @Operation(summary = "Deactivate album", description = "Deactivate album theo Id danh mục")
+//        @ApiResponses(value = {
+//                @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
+//                @ApiResponse(responseCode = "200", description = "Deactivate album thành công.")
+//        })
+//        @PatchMapping("album/deactivate/{albumId}")
+//        public ResponseEntity<BaseResponse> deactivateById(@PathVariable String albumId) {
+//            albumService.deactivateAlbum(albumId);
+//            return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+//                    "Khôi phục album thành công",
+//                    HttpStatus.OK.value(),
+//                    null));
+//        }
 
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @Operation(summary = "Deactivate album", description = "Deactivate album theo Id danh mục")
+        @Operation(summary = "Active/Deactivate album", description = "Active/Deactivate album theo Id danh mục")
         @ApiResponses(value = {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy album!"),
-                @ApiResponse(responseCode = "200", description = "Deactivate album thành công.")
+                @ApiResponse(responseCode = "200", description = "Active/Deactivate album thành công.")
         })
-        @PatchMapping("/deactivate/{albumId}")
+        @PatchMapping("album/toggle-active-status/{albumId}")
         public ResponseEntity<BaseResponse> deactivateById(@PathVariable String albumId) {
-            albumService.deactivateAlbum(albumId);
+            boolean result = albumService.toggleActiveStatus(albumId);
             return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
-                    "Khôi phục album thành công",
+                    result ? "Active album thành công" : "Deactive album thành công",
                     HttpStatus.OK.value(),
                     null));
         }
