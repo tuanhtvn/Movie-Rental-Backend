@@ -147,29 +147,43 @@ public class GenreServiceImpl implements GenreService {
         log.info("Restore genre {}", genre.toString());
     }
 
-    @Override
-    @Transactional
-    public void activateGenre(String GenreId) {
-        Genre genre = genreRepository.findById(GenreId)
-                .orElseThrow(() -> {
-                    log.error("Genre not found");
-                    return new CustomException("ID thể loại không tồn tại", HttpStatus.NOT_FOUND.value());
-                });
-        genre.setIsActive(true);
-        genreRepository.save(genre);
-        log.info("Activate genre {}", genre.toString());
-    }
+//    @Override
+//    @Transactional
+//    public void activateGenre(String GenreId) {
+//        Genre genre = genreRepository.findById(GenreId)
+//                .orElseThrow(() -> {
+//                    log.error("Genre not found");
+//                    return new CustomException("ID thể loại không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        genre.setIsActive(true);
+//        genreRepository.save(genre);
+//        log.info("Activate genre {}", genre.toString());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void deactivateGenre(String GenreId) {
+//        Genre genre = genreRepository.findById(GenreId)
+//                .orElseThrow(() -> {
+//                    log.error("Genre not found");
+//                    return new CustomException("ID thể loại không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        genre.setIsActive(false);
+//        genreRepository.save(genre);
+//        log.info("Deactivate genre {}", genre.toString());
+//    }
 
     @Override
     @Transactional
-    public void deactivateGenre(String GenreId) {
+    public boolean toggleActiveStatus(String GenreId) {
         Genre genre = genreRepository.findById(GenreId)
                 .orElseThrow(() -> {
                     log.error("Genre not found");
                     return new CustomException("ID thể loại không tồn tại", HttpStatus.NOT_FOUND.value());
                 });
-        genre.setIsActive(false);
+        genre.setIsActive(!genre.getIsActive());
         genreRepository.save(genre);
         log.info("Deactivate genre {}", genre.toString());
+        return genre.getIsActive();
     }
 }

@@ -147,29 +147,43 @@ public class AlbumServiceImpl implements AlbumService {
         log.info("Restore album {}", album.toString());
     }
 
-    @Override
-    @Transactional
-    public void activateAlbum(String AlbumId) {
-        Album album = albumRepository.findById(AlbumId)
-                .orElseThrow(() -> {
-                    log.error("Album not found");
-                    return new CustomException("ID Album không tồn tại", HttpStatus.NOT_FOUND.value());
-                });
-        album.setIsActive(true);
-        albumRepository.save(album);
-        log.info("Activate album {}", album.toString());
-    }
+//    @Override
+//    @Transactional
+//    public void activateAlbum(String AlbumId) {
+//        Album album = albumRepository.findById(AlbumId)
+//                .orElseThrow(() -> {
+//                    log.error("Album not found");
+//                    return new CustomException("ID Album không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        album.setIsActive(true);
+//        albumRepository.save(album);
+//        log.info("Activate album {}", album.toString());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void deactivateAlbum(String AlbumId) {
+//        Album album = albumRepository.findById(AlbumId)
+//                .orElseThrow(() -> {
+//                    log.error("Album not found");
+//                    return new CustomException("ID Album không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        album.setIsActive(false);
+//        albumRepository.save(album);
+//        log.info("Deactivate album {}", album.toString());
+//    }
 
     @Override
     @Transactional
-    public void deactivateAlbum(String AlbumId) {
+    public boolean toggleActiveStatus(String AlbumId) {
         Album album = albumRepository.findById(AlbumId)
                 .orElseThrow(() -> {
                     log.error("Album not found");
                     return new CustomException("ID Album không tồn tại", HttpStatus.NOT_FOUND.value());
                 });
-        album.setIsActive(false);
+        album.setIsActive(!album.getIsActive());
         albumRepository.save(album);
         log.info("Deactivate album {}", album.toString());
+        return album.getIsActive();
     }
 }

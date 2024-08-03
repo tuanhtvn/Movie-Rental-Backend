@@ -15,6 +15,7 @@ public interface GenreService {
     public GenreResponseDTO updateGenre(String genreId, GenreRequestDTO genreDTO);
     public void softDeleteGenre(String genreId);
     public void restoreGenre(String genreId);
-    public void activateGenre(String genreId);
-    public void deactivateGenre(String genreId);
+//    public void activateGenre(String genreId);
+//    public void deactivateGenre(String genreId);
+    public boolean toggleActiveStatus(String genreId);
 }

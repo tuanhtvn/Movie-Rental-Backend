@@ -15,6 +15,7 @@ public interface AlbumService {
     public AlbumResponseDTO updateAlbum(String albumId, AlbumRequestDTO albumDTO);
     public void softDeleteAlbum(String albumId);
     public void restoreAlbum(String albumId);
-    public void activateAlbum(String albumId);
-    public void deactivateAlbum(String albumId);
+//    public void activateAlbum(String albumId);
+//    public void deactivateAlbum(String albumId);
+    public boolean toggleActiveStatus(String albumId);
 }

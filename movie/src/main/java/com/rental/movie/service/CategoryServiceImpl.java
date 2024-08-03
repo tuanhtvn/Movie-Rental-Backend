@@ -158,29 +158,43 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Restore category {}", category.toString());
     }
 
-    @Override
-    @Transactional
-    public void activateCategory(String categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> {
-                    log.error("Category not found");
-                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
-                });
-        category.setIsActive(true);
-        categoryRepository.save(category);
-        log.info("Activate category {}", category.toString());
-    }
+//    @Override
+//    @Transactional
+//    public void activateCategory(String categoryId) {
+//        Category category = categoryRepository.findById(categoryId)
+//                .orElseThrow(() -> {
+//                    log.error("Category not found");
+//                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        category.setIsActive(true);
+//        categoryRepository.save(category);
+//        log.info("Activate category {}", category.toString());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void deactivateCategory(String categoryId) {
+//        Category category = categoryRepository.findById(categoryId)
+//                .orElseThrow(() -> {
+//                    log.error("Category not found");
+//                    return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
+//                });
+//        category.setIsActive(false);
+//        categoryRepository.save(category);
+//        log.info("Deactivate category {}", category.toString());
+//    }
 
     @Override
     @Transactional
-    public void deactivateCategory(String categoryId) {
+    public boolean toggleActiveStatus(String categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> {
                     log.error("Category not found");
                     return new CustomException("ID danh mục không tồn tại", HttpStatus.NOT_FOUND.value());
                 });
-        category.setIsActive(false);
+        category.setIsActive(!category.getIsActive());
         categoryRepository.save(category);
         log.info("Deactivate category {}", category.toString());
+        return category.getIsActive();
     }
 }
