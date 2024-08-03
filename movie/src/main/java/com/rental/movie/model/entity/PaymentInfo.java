@@ -15,24 +15,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentInfo {
+public class PaymentInfo extends BaseEntity{
     @Id
     private String id; // khóa 
     private String bankName; // tên ngân hàng
     private String cardNumber; // số thẻ
     private String cardHolderName; // tên chủ thẻ
     private ZonedDateTime issueDate; // ngày phát hành
-
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
-
-    public ZonedDateTime getCreatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
-    }
-
-    public ZonedDateTime getUpdatedAt() {
-        return updatedAt.atZone(ZoneId.systemDefault());
-    }
 }
