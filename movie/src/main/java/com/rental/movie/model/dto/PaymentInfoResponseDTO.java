@@ -10,4 +10,5 @@ public class PaymentInfoResponseDTO extends BaseResponseDTO{
     private String cardNumber;
     private String cardHolderName;
     private ZonedDateTime issueDate;
+    private ZonedDateTime createdAt;
 }
