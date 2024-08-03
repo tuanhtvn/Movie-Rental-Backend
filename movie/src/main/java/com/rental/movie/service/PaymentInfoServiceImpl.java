@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -82,6 +83,8 @@ public class PaymentInfoServiceImpl implements PaymentInfoService{
         log.info("Add new paymentInfo for user id:{}",user.getId());
         PaymentInfo paymentInfo = paymentInfoMapper.convertToEntity(paymentInfoRepuestDTO);
         paymentInfo.setId(new ObjectId().toString());
+        paymentInfo.setCreatedAt(Instant.now());
+        paymentInfo.setUpdatedAt(Instant.now());
         user.getPaymentInfos().add(paymentInfo);
         userService.save(user);
         log.info("Add new paymentInfo for user id:{} successfully",user.getId());
@@ -138,7 +141,7 @@ public class PaymentInfoServiceImpl implements PaymentInfoService{
 
     private PaymentInfo getById(String paymentInfoId,User user){
         return user.getPaymentInfos().stream()
-                .filter(paymentInfo -> paymentInfo.getId().equals(paymentInfoId))
+                .filter(paymentInfo -> Objects.equals(paymentInfo.getId(), paymentInfoId))
                 .findFirst()
                 .orElseThrow(()->{
                     log.error("PaymentInfoId: {} not found",paymentInfoId);

@@ -32,7 +32,7 @@ public class PaymentInfoController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Lấy thông tin thanh toán bằng id", description = "API lấy thông tin thanh toán theo id")
+    @Operation(summary = "Lấy thông tin thanh toán bằng id thông tin thanh toán", description = "API lấy thông tin thanh toán theo id")
     @ApiResponse(responseCode = "200", description = "Lấy thành công thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/paymentInfos/{paymentInfoId}")
@@ -97,7 +97,7 @@ public class PaymentInfoController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(response);
     }
 
-    @Operation(summary = "Cập nhật hồ thông tin thanh toán", description = "API cập nhật thông tin thanh toán")
+    @Operation(summary = "Cập nhật thông tin thanh toán", description = "API cập nhật thông tin thanh toán")
     @ApiResponse(responseCode = "200", description = "Cập nhật thông tin thanh toán thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/paymentInfo/{paymentInfoId}")
