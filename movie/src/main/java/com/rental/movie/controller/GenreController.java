@@ -76,10 +76,9 @@ public class GenreController {
                 genreService.getAllSoftDeletedGenres(pageable, search)));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy thể loại theo Id", description = "Lấy thể loại theo Id genre")
     @ApiResponse(responseCode = "200", description = "Tìm thấy thể loại.")
-    @GetMapping("genre/getOne/{genreId}")
+    @GetMapping("auth/genre/getOne/{genreId}")
     public ResponseEntity<BaseResponse> getGenreById(@PathVariable String genreId) {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                 "Tìm thấy thể loại",

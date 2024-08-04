@@ -1,6 +1,5 @@
 package com.rental.movie.service;
 
-import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.GenreRequestDTO;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +28,7 @@ public class GenreServiceImpl implements GenreService {
     @Autowired
     private GenreMapper genreMapper;
     @Autowired
-    private IAuthentication authManager;
+    private UserService userService;
 
     @Override
     public Page<GenreResponseDTO> getAll(Pageable pageable, String search) {
@@ -76,15 +76,18 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public GenreResponseDTO getGenreById(String GenreId) {
-        User user = authManager.getUserAuthentication();
         Genre genre = genreRepository.findById(GenreId)
                 .orElseThrow(() -> {
                     log.error("Genre not found");
                     return new CustomException("Không tìm thấy thể loại", HttpStatus.NOT_FOUND.value());
                 });
-        if(user.getRole().equals(Role.USER) && genre.getIsActive().equals(false)) {
-            log.error("User get inactive genre");
-            throw new CustomException("Bạn không có quyền truy cập thể loại", HttpStatus.METHOD_NOT_ALLOWED.value());
+        if(genre.getIsActive().equals(false)) {
+            String id = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.getById(id).orElse(null);
+            if(user == null || user.getRole().equals(Role.USER)) {
+                log.error("User get inactive genre");
+                throw new CustomException("Bạn không có quyền truy cập thể loại", HttpStatus.METHOD_NOT_ALLOWED.value());
+            }
         }
         log.info("Get genre by id {}", genre.toString());
         return genreMapper.convertToDTO(genre);

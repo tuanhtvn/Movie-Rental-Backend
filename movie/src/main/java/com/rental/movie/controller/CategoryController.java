@@ -76,10 +76,9 @@ public class CategoryController {
                         categoryService.getAllSoftDeletedCategories(pageable, search)));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy danh mục theo Id", description = "Lấy danh mục theo Id danh mục")
         @ApiResponse(responseCode = "200", description = "Tìm thấy danh mục.")
-        @GetMapping("category/getOne/{categoryId}")
+        @GetMapping("auth/category/getOne/{categoryId}")
         public ResponseEntity<BaseResponse> getCategoryById(@PathVariable String categoryId) {
                 return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                                 "Tìm thấy danh mục",

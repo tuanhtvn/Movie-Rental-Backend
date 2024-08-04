@@ -76,10 +76,9 @@ public class AlbumController {
                         albumService.getAllSoftDeletedAlbums(pageable, search)));
         }
 
-        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @Operation(summary = "Lấy album theo Id", description = "Lấy album theo Id album")
         @ApiResponse(responseCode = "200", description = "Tìm thấy album.")
-        @GetMapping("album/getOne/{albumId}")
+        @GetMapping("auth/album/getOne/{albumId}")
         public ResponseEntity<BaseResponse> getAlbumById(@PathVariable String albumId) {
                 return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
                         "Tìm thấy album",

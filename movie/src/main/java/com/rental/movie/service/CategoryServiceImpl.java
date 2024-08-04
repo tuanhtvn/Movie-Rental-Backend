@@ -1,6 +1,5 @@
 package com.rental.movie.service;
 
-import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.CategoryRequestDTO;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
-    private IAuthentication authManager;
+    private UserService userService;
 
     @Override
     public Page<CategoryResponseDTO> getAll(Pageable pageable, String search) {
@@ -80,15 +80,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDTO getCategoryById(String categoryId) {
-        User user = authManager.getUserAuthentication();
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> {
                     log.error("Category not found");
                     return new CustomException("Không tìm thấy danh mục", HttpStatus.NOT_FOUND.value());
                 });
-        if(user.getRole().equals(Role.USER) && category.getIsActive().equals(false)) {
-            log.error("User get inactive category");
-            throw new CustomException("Bạn không có quyền truy cập danh mục", HttpStatus.METHOD_NOT_ALLOWED.value());
+        if(category.getIsActive().equals(false)) {
+            String id = SecurityContextHolder.getContext().getAuthentication().getName();
+            User user = userService.getById(id).orElse(null);
+            if(user == null || user.getRole().equals(Role.USER)) {
+                log.error("User get inactive category");
+                throw new CustomException("Bạn không có quyền truy cập danh mục", HttpStatus.METHOD_NOT_ALLOWED.value());
+            }
         }
         log.info("Get category by id {}", category.toString());
         return categoryMapper.convertToDTO(category);
