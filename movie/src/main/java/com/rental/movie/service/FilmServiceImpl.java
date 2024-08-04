@@ -72,8 +72,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> searchFilmByName(String keywords) {
-        String keywords = ".*" + keywords + ".*";
-        List<Film> films = filmRepository.findByKeywords(keywords);
+        String keyword = ".*" + keywords + ".*";
+        List<Film> films = filmRepository.findByKeywords(keyword);
         if (films.isEmpty()) {
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
         }
