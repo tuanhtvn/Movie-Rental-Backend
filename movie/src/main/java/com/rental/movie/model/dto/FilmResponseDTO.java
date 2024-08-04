@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmResponseDTO {
+public class FilmResponseDTO extends BaseRequestDTO{
     @JsonProperty("Id")
     private String id;
     @JsonProperty("FilmName")
