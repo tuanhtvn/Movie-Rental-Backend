@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.rental.movie.common.RentalType;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +32,11 @@ public class FilmRequestDTO {
     @Schema(description = "Mô tả phim", example = "BỐ GIÀ là một bộ phim Web drama tình cảm gia đình, một dự án phim hài Tết 2020 của Trấn Thành.")
     @JsonProperty("Description")
     private String description;
+
+    @NotBlank(message = "Vui lòng chọn đường dẫn của phim")
+    @Schema(description = "Đường dẫn phim", example = "https://example.com/film.mp4")
+    @JsonProperty("FilmUrl")
+    private String filmUrl;
 
     @NotBlank(message = "Vui lòng chọn ảnh Thumbnail")
     @Schema(description = "Đường dẫn ảnh Thumbnail", example = "https://example.com/thumbnail.jpg")
@@ -60,13 +67,6 @@ public class FilmRequestDTO {
     @JsonProperty("Language")
     private String language;
 
-    @Schema(description = "Số lượt xem", example = "100000")
-    @JsonProperty("NumberOfViews")
-    private Integer numberOfViews;
-
-    @Schema(description = "Đánh giá", example = "4.5")
-    @JsonProperty("Rating")
-    private Double rating;
 
     @Schema(description = "Độ tuổi", example = "13")
     @JsonProperty("Age")
@@ -76,11 +76,17 @@ public class FilmRequestDTO {
     @JsonProperty("Price")
     private Double price;
 
-    @Schema(description = "Thời hạn giới hạn", example = "1000")
+    @Schema(description = "Thời hạn giới hạn", example = "100")
     @JsonProperty("LimitTime")
     private Integer limitTime;
 
-    private List<String> subtitleId = new ArrayList<>();
-    private List<String> narrationId = new ArrayList<>();
-    private List<String> commentId = new ArrayList<>();
+    @Schema(description = "Loại thuê phim", example = "RENTAL")
+    @JsonProperty("RentalType")
+    private RentalType rentalType;
+
+    private List<String> subtitles = new ArrayList<>();
+    private List<String> narrations = new ArrayList<>();
+    private List<String> comments = new ArrayList<>();
+    private List<String> genres = new ArrayList<>();
+
 }

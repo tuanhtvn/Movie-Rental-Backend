@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.rental.movie.common.RentalType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +25,8 @@ public class FilmResponseDTO {
     private String id;
     @JsonProperty("FilmName")
     private String filmName;
+    @JsonProperty("FilmUrl")
+    private String filmUrl;
     @JsonProperty("Description")
     private String description;
     @JsonProperty("ThumbnailUrl")
@@ -49,10 +53,18 @@ public class FilmResponseDTO {
     private Double price;
     @JsonProperty("LimitTime")
     private Integer limitTime;
-    @JsonProperty("Subtitles")
-    private List<SubtitleResponseDTO> subtitleId = new ArrayList<>();
+    @JsonProperty("RentalType")
+    private RentalType rentalType;
+    @JsonProperty("isActive")
+    private Boolean isActive;
+    @JsonProperty("isDeleted")
+    private Boolean isDeleted;
+    @JsonProperty("Subtitle")
+    private List<SubtitleResponseDTO> subtitles = new ArrayList<>();
     @JsonProperty("Narration")
-    private List<NarrationResponseDTO> narrationId = new ArrayList<>();
+    private List<NarrationResponseDTO> narrations = new ArrayList<>();
     @JsonProperty("Comment")
-    private List<CommentResponseDTO> commentId = new ArrayList<>();
+    private List<CommentResponseDTO> comments = new ArrayList<>();
+    @JsonProperty("Genre")
+    private List<GenreResponseDTO> genres = new ArrayList<>();
 }

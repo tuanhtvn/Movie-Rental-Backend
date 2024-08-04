@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springdoc.core.annotations.ParameterObject;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class FilmController {
      @Operation(summary = "Lấy danh sách tất cả phim đang hoạt động", description = "Lấy tất cả phim đã active và không xóa mềm") //isActive=true && isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/auth/films")
-     public ResponseEntity<BaseResponse> getAllActivedFilm(Pageable pageable,@RequestParam(defaultValue = "") String search) {
+     public ResponseEntity<BaseResponse> getAllActivedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try{
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllActivedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
@@ -46,7 +47,7 @@ public class FilmController {
      @Operation(summary = "Lấy danh sách tất cả phim không xóa mềm", description = "Lấy tất cả phim không xóa mềm") // isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/films/deleted")
-     public ResponseEntity<BaseResponse> getAllNotDeletedFilm(Pageable pageable,@RequestParam(defaultValue = "") String search) {
+     public ResponseEntity<BaseResponse> getAllNotDeletedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllNotDeletedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
@@ -60,7 +61,7 @@ public class FilmController {
      @Operation(summary = "Lấy danh sách tất cả phim đã xóa mềm", description = "Lấy tất cả phim đã xóa mềm") // isDeleted=true
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
      @GetMapping("/films/getNotdelete")
-     public ResponseEntity<BaseResponse> getAllDeletedFilm(Pageable pageable,@RequestParam(defaultValue = "") String search) {
+     public ResponseEntity<BaseResponse> getAllDeletedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllDeletedFilm(pageable, search));
              return new ResponseEntity<>(response, HttpStatus.OK);
