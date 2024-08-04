@@ -19,14 +19,15 @@ public interface FilmRepository extends MongoRepository<Film, String> {
 
     @Query("{ '_id': ?0, 'isDeleted': false }")
     public Optional<Film> findById(String id);
-    @Query("{ 'fileName': { $regex: ?0, $options: 'i' } }")
+    @Query("{ 'filmName': { $regex: ?0, $options: 'i' }, 'isDeleted': false, 'isActive': true }")
     public List<Film> findByKeywords(String keywords);
-    @Query("{ 'isActive': true, 'isDeleted': false, 'filmName': { $regex: ?0, $options: 'i' } }")
+    @Query("{ 'isActive': true, 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }," +
+            " { 'filmName': { $regex: ?0, $options: 'i' } } ] }")
     public Page<Film> findAllByActived(Pageable pageable, String search);
 
-    @Query("{ 'isDeleted': false, 'filmName': { $regex: ?0, $options: 'i' } }")
+    @Query("{ 'isDeleted': false, $or: [ { '_id': { $regex: ?0, $options: 'i' } }, { 'filmName': { $regex: ?0, $options: 'i' } } ] }")
     public Page<Film> findAllByNotDeleted(Pageable pageable, String search);
-    @Query("{ 'isDeleted': true, 'filmName': { $regex: ?0, $options: 'i' } }")
+    @Query("{ 'isDeleted': true, $or: [ { '_id': { $regex: ?0, $options: 'i' } }, { 'filmName': { $regex: ?0, $options: 'i' } } ] }")
     public Page<Film> findAllByDeleted(Pageable pageable, String search);
 
     @Query("{ 'subtitles.id': ?0 }")

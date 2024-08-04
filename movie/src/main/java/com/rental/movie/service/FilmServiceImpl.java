@@ -72,6 +72,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> searchFilmByName(String keywords) {
+        String keywords = ".*" + keywords + ".*";
         List<Film> films = filmRepository.findByKeywords(keywords);
         if (films.isEmpty()) {
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
@@ -141,7 +142,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     @Transactional
     public FilmResponseDTO restoreFilmById(String filmId) {
-        Film film = filmRepository.findById(filmId)
+        Film film = filmRepository.findByIdDefault(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
         film.setIsDeleted(false);
