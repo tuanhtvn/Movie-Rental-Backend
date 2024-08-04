@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/comment/")
+@RequestMapping("api")
 public class CommentController {
     @Autowired
     private CommentService commentService;
@@ -32,7 +32,7 @@ public class CommentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Thêm bình luận mới", description = "Thêm bình luận mới cho phim")
     @ApiResponse(responseCode = "200", description = "Thêm bình luận thành công")
-    @PostMapping("/create")
+    @PostMapping("/comment/create")
     public ResponseEntity<BaseResponse> createComment(@RequestBody CommentRequestDTO commentDTO) {
         try {
             CommentResponseDTO createdComment = commentService.createComment(commentDTO);
@@ -47,7 +47,7 @@ public class CommentController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy danh sách tất cả bình luận", description = "Lấy danh sách tất cả bình luận")
     @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-    @GetMapping("/get")
+    @GetMapping("/comment/get")
     public ResponseEntity<BaseResponse> getAllComments() {
         try {
             List<CommentResponseDTO> comments = commentService.getAllComments();
@@ -59,13 +59,12 @@ public class CommentController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy bình luận theo ID", description = "Lấy bình luận theo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lấy bình luận thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @GetMapping("/{id}")
+    @GetMapping("/auth/comment/{id}")
     public ResponseEntity<BaseResponse> getCommentById(@PathVariable String id) {
         try {
             CommentResponseDTO comment = commentService.getCommentById(id);
@@ -83,7 +82,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Cập nhật bình luận thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/comment/update/{id}")
     public ResponseEntity<BaseResponse> updateComment(@PathVariable String id, @RequestBody CommentRequestDTO commentDTO) {
         try {
             CommentResponseDTO updatedComment = commentService.updateComment(id, commentDTO);
@@ -100,7 +99,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Xóa bình luận thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/comment/delete/{id}")
     public ResponseEntity<BaseResponse> deleteComment(@PathVariable String id) {
         try {
             commentService.deleteComment(id);
@@ -112,13 +111,12 @@ public class CommentController {
         }
     }
 
-    /*@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy danh sách bình luận theo ID phim", description = "Lấy danh sách bình luận theo ID phim")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @GetMapping("/film/{filmId}")
+    @GetMapping("/auth/comment/{filmId}")
     public ResponseEntity<BaseResponse> getCommentsByFilmId(@PathVariable String filmId) {
         try {
             List<CommentResponseDTO> comments = commentService.getCommentsByFilmId(filmId);
@@ -128,6 +126,6 @@ public class CommentController {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
-    }*/
+    }
 
 }

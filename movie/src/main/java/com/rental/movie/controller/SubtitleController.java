@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/subtitle/")
+@RequestMapping("api")
 public class SubtitleController {
 
         @Autowired
@@ -37,7 +37,7 @@ public class SubtitleController {
         @Operation(summary = "Lấy danh sách phụ đề", description = "Lấy danh sách tất cả phụ đề")
         @ApiResponse(responseCode = "200", description = "Lấy danh sách phụ đề thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @GetMapping
+        @GetMapping("/subtitle/getAll")
         public ResponseEntity<BaseResponse> getAllSubtitles() {
                 List<SubtitleResponseDTO> subtitles = subtitleService.getAllSubtitles();
                 BaseResponse response = new BaseResponse("Lấy danh sách tất cả phụ đề thành công", HttpStatus.OK.value(), subtitles);
@@ -47,7 +47,7 @@ public class SubtitleController {
         @Operation(summary = "Lấy danh sách phụ đề của phim", description = "Lấy danh sách tất cả phụ đề của 1 bộ phim")
         @ApiResponse(responseCode = "200", description = "Lấy danh sách phụ đề của phim thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @GetMapping("/film/{filmId}")
+        @GetMapping("/auth/subtitle{filmId}")
         public ResponseEntity<BaseResponse> getAllSubtitlesByFilmId(@PathVariable String filmId) {
                 List<SubtitleResponseDTO> subtitles = subtitleService.getAllSubtitlesByFilmId(filmId);
                 BaseResponse response = new BaseResponse("Lấy danh sách tất cả phụ đề của phim thành công", HttpStatus.OK.value(), subtitles);
@@ -60,7 +60,7 @@ public class SubtitleController {
                 @ApiResponse(responseCode = "201", description = "Tạo thành công")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/create")
+        @PostMapping("/subtitle/create")
         public ResponseEntity<BaseResponse> createSubtitle(@Valid @RequestBody SubtitleRequestDTO subtitleDTO) {
                 try {
                         SubtitleResponseDTO createdSubtitle = subtitleService.createSubtitle(subtitleDTO);
@@ -79,7 +79,7 @@ public class SubtitleController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy phụ đề")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PutMapping("/update/{id}")
+        @PutMapping("/subtitle/update/{id}")
         public ResponseEntity<BaseResponse> updateSubtitle(@PathVariable String id, @RequestBody SubtitleRequestDTO subtitleDTO) {
                 try {
                         SubtitleResponseDTO updatedSubtitle = subtitleService.updateSubtitle(id, subtitleDTO);
@@ -100,7 +100,7 @@ public class SubtitleController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy phụ đề")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @DeleteMapping("/delete/{id}")
+        @DeleteMapping("/subtitle/delete/{id}")
         public ResponseEntity<BaseResponse> deleteSubtitle(@PathVariable String id) {
                 try {
                         subtitleService.deleteSubtitle(id);
@@ -115,7 +115,7 @@ public class SubtitleController {
         @Operation(summary = "Thêm phụ đề", description = "Thêm phụ đề cho phim")
         @ApiResponse(responseCode = "200", description = "Thêm phụ đề thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/film/{filmId}/add")
+        @PostMapping("/subtitle/{filmId}/add")
         public ResponseEntity<BaseResponse> addSubtitle(@RequestBody SubtitleRequestDTO subtitleDTO, @PathVariable String filmId) {
                 try {
                         FilmResponseDTO updatedFilm = subtitleService.addSubtitle(subtitleDTO, filmId);
@@ -132,7 +132,7 @@ public class SubtitleController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy phụ đề")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @DeleteMapping("/film/{filmId}/remove/{subtitleId}")
+        @DeleteMapping("/subtitle/{filmId}/remove/{subtitleId}")
         public ResponseEntity<BaseResponse> removeSubtitle(@PathVariable String subtitleId, @PathVariable String filmId) {
                 try {
                         FilmResponseDTO updatedFilm = subtitleService.removeSubtitle(filmId, subtitleId);

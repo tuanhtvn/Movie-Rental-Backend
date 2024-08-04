@@ -77,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentResponseDTO> getAllCommentsByFilmId(String filmId) {
+    public List<CommentResponseDTO> getCommentsByFilmId(String filmId) {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 

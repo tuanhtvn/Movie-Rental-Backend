@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/")
+@RequestMapping("api")
 public class FilmController {
      @Autowired
      private FilmService filmService;
@@ -60,7 +60,7 @@ public class FilmController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim đã xóa mềm", description = "Lấy tất cả phim đã xóa mềm") // isDeleted=true
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/films/notdelete")
+     @GetMapping("/films/getNotdelete")
      public ResponseEntity<BaseResponse> getAllDeletedFilm(Pageable pageable, String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllDeletedFilm(pageable, search));
@@ -71,12 +71,25 @@ public class FilmController {
          }
      }
 
+    @Operation(summary = "Lấy thông tin phim theo ID", description = "Lấy thông tin tổng quan của phim theo ID")
+    @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công")
+    @GetMapping("/auth/films/{id}")
+    public ResponseEntity<BaseResponse> getFilmById(@PathVariable String id) {
+        try {
+            BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getById(id));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
      @Operation(summary = "Tìm phim theo từ khóa", description = "Tìm tất cả các phim chứa từ khóa tìm kiếm")
      @ApiResponses(value = {
              @ApiResponse(responseCode = "404", description = "Không có phim"),
              @ApiResponse(responseCode = "200", description = "Tìm thành công")
      })
-     @GetMapping("/search")
+     @GetMapping("auth/films/search")
      public ResponseEntity<BaseResponse> searchFilmByName(@RequestParam String keywords) {
          try {
              List<Film> films = filmService.searchFilmByName(keywords);
@@ -101,7 +114,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Thêm thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "201", description = "Thêm thành công")
      })
-     @PostMapping("/create")
+     @PostMapping("/films/create")
      public ResponseEntity<BaseResponse> createFilm(@Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO createdFilm = filmService.createFilm(filmDTO);
@@ -119,7 +132,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Xóa thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Xóa thành công")
      })
-     @DeleteMapping("/delete/{id}")
+     @DeleteMapping("/films/delete/{id}")
      public ResponseEntity<BaseResponse> deleteFilmById(@PathVariable String id) {
          try {
              filmService.deleteFilmById(id);
@@ -141,7 +154,7 @@ public class FilmController {
              @ApiResponse(responseCode = "200", description = "Cập nhật thành công"),
              @ApiResponse(responseCode = "400", description = "Dữ liệu đầu vào không hợp lệ")
      })
-     @PutMapping("/update/{id}")
+     @PutMapping("/films/update/{id}")
      public ResponseEntity<BaseResponse> updateFilmById(@PathVariable String id, @Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO updatedFilm = filmService.updateFilmById(id, filmDTO);
@@ -157,12 +170,12 @@ public class FilmController {
      }
 
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-     @Operation(summary = "Active/Deactive phim theo ID", description = "Thay đổi trạng thái isActive của phim theo ID")
+     @Operation(summary = "Active phim theo ID", description = "Active trạng thái phim theo ID")
      @ApiResponses(value = {
              @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
      })
-     @PatchMapping("/active/{id}")
+     @PatchMapping("/films/active/{id}")
      public ResponseEntity<BaseResponse> activeFilm(@PathVariable String id) {
          try {
              FilmResponseDTO updatedFilm = filmService.activeFilm(id);
@@ -178,12 +191,12 @@ public class FilmController {
      }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Active/Deactive phim theo ID", description = "Thay đổi trạng thái isActive của phim theo ID")
+    @Operation(summary = "Deactive phim theo ID", description = "Deactive trạng thái của phim theo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
             @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
     })
-    @PatchMapping("/deactive/{id}")
+    @PatchMapping("/films/deactive/{id}")
     public ResponseEntity<BaseResponse> deactiveFilm(@PathVariable String id) {
         try {
             FilmResponseDTO updatedFilm = filmService.deactiveFilm(id);
@@ -203,7 +216,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Khôi phục thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Khôi phục thành công")
      })
-     @PatchMapping("/restore/{id}")
+     @PatchMapping("/films/restore/{id}")
      public ResponseEntity<BaseResponse> restoreFilmById(@PathVariable String id) {
          try {
              FilmResponseDTO restoredFilm = filmService.restoreFilmById(id);

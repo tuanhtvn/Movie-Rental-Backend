@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/narration/")
+@RequestMapping("api")
 public class NarrationController {
 
         @Autowired
@@ -37,7 +37,7 @@ public class NarrationController {
         @Operation(summary = "Lấy danh sách thuyết minh", description = "Lấy danh sách tất cả thuyết minh")
         @ApiResponse(responseCode = "200", description = "Lấy danh sách thuyết minh thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @GetMapping
+        @GetMapping("/narration/getAll")
         public ResponseEntity<BaseResponse> getAllNarrations() {
                 List<NarrationResponseDTO> narrations = narrationService.getAllNarrations();
                 BaseResponse response = new BaseResponse("Lấy danh sách tất cả thuyết minh thành công", HttpStatus.OK.value(), narrations);
@@ -46,8 +46,7 @@ public class NarrationController {
 
         @Operation(summary = "Lấy danh sách thuyết minh của phim", description = "Lấy danh sách tất cả thuyết minh của 1 bộ phim")
         @ApiResponse(responseCode = "200", description = "Lấy danh sách thuyết minh của phim thành công")
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @GetMapping("/film/{filmId}")
+        @GetMapping("/auth/narration/{filmId}")
         public ResponseEntity<BaseResponse> getAllNarrationsByFilmId(@PathVariable String filmId) {
                 List<NarrationResponseDTO> narrations = narrationService.getAllNarrationsByFilmId(filmId);
                 BaseResponse response = new BaseResponse("Lấy danh sách tất cả thuyết minh của phim thành công", HttpStatus.OK.value(), narrations);
@@ -60,7 +59,7 @@ public class NarrationController {
                 @ApiResponse(responseCode = "201", description = "Tạo thành công")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/create")
+        @PostMapping("/narration/create")
         public ResponseEntity<BaseResponse> createNarration(@Valid @RequestBody NarrationRequestDTO narrationDTO) {
                 try {
                         NarrationResponseDTO createdNarration = narrationService.createNarration(narrationDTO);
@@ -79,7 +78,7 @@ public class NarrationController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy thuyết minh")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PutMapping("/update/{id}")
+        @PutMapping("/narration/update/{id}")
         public ResponseEntity<BaseResponse> updateNarration(@PathVariable String id, @RequestBody NarrationRequestDTO narrationDTO) {
                 try {
                         NarrationResponseDTO updatedNarration = narrationService.updateNarration(id, narrationDTO);
@@ -100,7 +99,7 @@ public class NarrationController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy thuyết minh")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @DeleteMapping("/delete/{id}")
+        @DeleteMapping("/narration/delete/{id}")
         public ResponseEntity<BaseResponse> deleteNarration(@PathVariable String id) {
                 try {
                         narrationService.deleteNarration(id);
@@ -115,7 +114,7 @@ public class NarrationController {
         @Operation(summary = "Thêm thuyết minh", description = "Thêm thuyết minh cho phim")
         @ApiResponse(responseCode = "200", description = "Thêm thuyết minh thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/film/{filmId}/add")
+        @PostMapping("/narration/{filmId}/add")
         public ResponseEntity<BaseResponse> addNarration(@RequestBody NarrationRequestDTO narrationDTO, @PathVariable String filmId) {
                 try {
                         FilmResponseDTO updatedFilm = narrationService.addNarration(narrationDTO, filmId);
@@ -132,7 +131,7 @@ public class NarrationController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy thuyết minh")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @DeleteMapping("/film/{filmId}/remove/{narrationId}")
+        @DeleteMapping("/narration/{filmId}/remove/{narrationId}")
         public ResponseEntity<BaseResponse> removeNarration(@PathVariable String narrationId, @PathVariable String filmId) {
                 try {
                         FilmResponseDTO updatedFilm = narrationService.removeNarration(filmId, narrationId);

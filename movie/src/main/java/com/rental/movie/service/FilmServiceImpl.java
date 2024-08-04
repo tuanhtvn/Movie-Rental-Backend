@@ -94,7 +94,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        //film.setisDeleted(true);
+        film.setIsDeleted(true);
 
         //log.info("Soft delete film {}", film.toString());
         Film deletedFilm = filmRepository.save(film);
@@ -118,7 +118,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        //film.setisActive(true);
+        film.setIsActive(true);
 
         //log.info("Active film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
@@ -131,7 +131,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        //film.setisActive(false);
+        film.setIsActive(false);
 
         //log.info("Deactive film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
@@ -144,7 +144,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        //film.setisDeleted(false);
+        film.setIsDeleted(false);
 
         //log.info("Restore film {}", film.toString());
         Film restoredFilm = filmRepository.save(film);
