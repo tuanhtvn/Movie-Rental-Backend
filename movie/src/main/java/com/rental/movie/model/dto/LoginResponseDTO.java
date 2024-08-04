@@ -10,6 +10,8 @@ import lombok.Data;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginResponseDTO {
+    @JsonProperty("IdUser")
+    private String idUser;
     @JsonProperty("Role")
     private String role;
     @JsonProperty("FullName")

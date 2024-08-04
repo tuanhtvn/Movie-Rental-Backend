@@ -66,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
                     if (BCrypt.checkpw(loginRequestDTO.getPassword(), user.getPassword())) {
                         log.info("Login success: " + loginRequestDTO.getEmail());
                         return LoginResponseDTO.builder()
+                                .idUser(user.getId())
                                 .token(tokenService.getToken(user.getId(), user.getRole(), request))
                                 .fullName(user.getFullName())
                                 .role(user.getRole().name())
