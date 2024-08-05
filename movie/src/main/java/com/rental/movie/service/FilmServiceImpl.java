@@ -72,12 +72,18 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> searchFilmByName(String keywords) {
-        String keyword = removeAccents(".*" + keywords + ".*");
-        List<Film> films = filmRepository.findByKeywords(keyword);
-        if (films.isEmpty()) {
-            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
-        }
-        return films;
+//        String keyword = removeAccents(".*" + keywords + ".*");
+//        List<Film> films = filmRepository.findByKeywords(keyword);
+//        if (films.isEmpty()) {
+//            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+//        }
+//        return films;
+        String keyword = removeAccents(keywords);
+        List<Film> films = filmRepository.findByFilmName();
+
+        return films.stream()
+                .filter(film -> removeAccents(film.getFilmName()).contains(keyword))
+                .collect(Collectors.toList());
     }
 
     public static String removeAccents(String text) {
