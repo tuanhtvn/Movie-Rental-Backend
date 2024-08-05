@@ -21,8 +21,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilmResponseDTO extends BaseResponseDTO{
-    @JsonProperty("Id")
-    private String id;
     @JsonProperty("FilmName")
     private String filmName;
     @JsonProperty("FilmUrl")
@@ -55,10 +53,6 @@ public class FilmResponseDTO extends BaseResponseDTO{
     private Integer limitTime;
     @JsonProperty("RentalType")
     private RentalType rentalType;
-    @JsonProperty("isActive")
-    private Boolean isActive;
-    @JsonProperty("isDeleted")
-    private Boolean isDeleted;
     @JsonProperty("Subtitle")
     private List<SubtitleResponseDTO> subtitles = new ArrayList<>();
     @JsonProperty("Narration")
