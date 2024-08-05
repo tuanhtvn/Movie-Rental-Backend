@@ -72,12 +72,21 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> searchFilmByName(String keywords) {
-        String keyword = ".*" + keywords + ".*";
+        String keyword = removeAccents(".*" + keywords + ".*");
         List<Film> films = filmRepository.findByKeywords(keyword);
         if (films.isEmpty()) {
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
         }
         return films;
+    }
+
+    public static String removeAccents(String text) {
+        if (text == null) {
+            return null;
+        }
+        return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replaceAll("[đĐ]", "d");
     }
 
     @Override
