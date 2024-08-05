@@ -17,9 +17,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-@AllArgsConstructor
 public class FilmResponseDTO extends BaseResponseDTO{
     @JsonProperty("FilmName")
     private String filmName;
