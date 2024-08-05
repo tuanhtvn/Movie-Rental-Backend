@@ -78,15 +78,13 @@ public class FilmServiceImpl implements FilmService {
 //            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
 //        }
 //        return films;
-        String keyword = removeAccents(keywords);
-        List<Film> films = filmRepository.findByKeywords(keyword);
+        String keyword = removeAccents(keywords).toLowerCase();
 
-        if (films.isEmpty()) {
-           throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
-        }
-
-        return films.stream()
-                .filter(film -> removeAccents(film.getFilmName()).contains(keyword))
+        return filmRepository.findByActived().stream()
+                .filter(film -> {
+                    String films = removeAccents(film.getFilmName()).toLowerCase();
+                    return films.contains(keyword);
+                })
                 .collect(Collectors.toList());
     }
 
