@@ -52,12 +52,8 @@ public class FilmResponseDTO extends BaseResponseDTO{
     private Integer limitTime;
     @JsonProperty("RentalType")
     private RentalType rentalType;
-    @JsonProperty("Subtitle")
     private List<SubtitleResponseDTO> subtitles = new ArrayList<>();
-    @JsonProperty("Narration")
     private List<NarrationResponseDTO> narrations = new ArrayList<>();
-    @JsonProperty("Comment")
     private List<CommentResponseDTO> comments = new ArrayList<>();
-    @JsonProperty("Genre")
     private List<GenreResponseDTO> genres = new ArrayList<>();
 }
