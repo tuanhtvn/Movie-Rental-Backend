@@ -21,9 +21,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmRequestDTO extends BaseRequestDTO{
+public class FilmRequestDTO {
     @NotBlank(message = "Vui lòng nhập tên phim")
     @Size(max = 255, message = "Tên phim không được vượt quá 255 ký tự")
     @Schema(description = "Tên phim", example = "Bố Già")
