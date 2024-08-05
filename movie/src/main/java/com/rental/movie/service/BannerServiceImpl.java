@@ -211,5 +211,19 @@ public class BannerServiceImpl implements BannerService {
         }
     }
 
+    @Override
+    public ResponseEntity<BaseResponse> getById(String id) {
+        Banner banner = bannerRepository.findById(id).orElse(null);
+        if (banner == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new BaseResponse("Không tìm thấy banner.", HttpStatus.NOT_FOUND.value(), null)
+            );
+        }
+        BannerResponseDTO responseDTO = bannerMapper.convertToDTO(banner);
+        return ResponseEntity.ok(
+                new BaseResponse("Tìm thấy banner.", HttpStatus.OK.value(), responseDTO)
+        );
+    }
+
 
 }

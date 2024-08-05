@@ -21,15 +21,15 @@ public class PackageInfoController {
     private PackageInfoService packageInfoService;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Tạo mới gói thuê.")
-    @ApiResponse(responseCode = "200", description = "Tạo mới gói thuê thành công.")
+    @Operation(summary = "Tạo mới gói.")
+    @ApiResponse(responseCode = "200", description = "Tạo mới gói thành công.")
     @PostMapping("/package/create")
     public ResponseEntity<BaseResponse> createPackage(@RequestBody @Valid PackageInfoRequestDTO packageInfoRequestDTO) {
         return packageInfoService.createPackage(packageInfoRequestDTO);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách gói thuê, có phân trang.")
+    @Operation(summary = "Lấy danh sách gói, có phân trang.")
     @ApiResponse(responseCode = "200", description = "Thành công.")
     @GetMapping("/package/getAll")
     public ResponseEntity<BaseResponse> getAllPage(@ParameterObject Pageable pageable) {
@@ -37,10 +37,10 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Cập nhật gói thuê dựa trên id.")
+    @Operation(summary = "Cập nhật gói dựa trên id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê."),
-            @ApiResponse(responseCode = "200", description = "Cập nhật gói thuê thành công.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói."),
+            @ApiResponse(responseCode = "200", description = "Cập nhật gói thành công.")
     })
     @PutMapping("/package/update/{id}")
     public ResponseEntity<BaseResponse> updateById(@PathVariable String id,
@@ -49,10 +49,10 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Xoá mềm gói thuê dựa trên id.")
+    @Operation(summary = "Xoá mềm gói dựa trên id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê."),
-            @ApiResponse(responseCode = "200", description = "Xoá mềm gói thuê thành công.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói."),
+            @ApiResponse(responseCode = "200", description = "Xoá mềm gói thành công.")
     })
     @PatchMapping("/package/softDelete/{id}")
     public ResponseEntity<BaseResponse> softDeleteById(@PathVariable String id) {
@@ -60,10 +60,10 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Thay đổi trạng thái Active/Inactive cho gói thuê theo id.")
+    @Operation(summary = "Thay đổi trạng thái Active/Inactive cho gói theo id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê."),
-            @ApiResponse(responseCode = "200", description = "Cập nhật trạng thái Active/Inactive cho gói thuê thành công.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói."),
+            @ApiResponse(responseCode = "200", description = "Cập nhật trạng thái Active/Inactive cho gói thành công.")
     })
     @PutMapping("/package/toggle-active-status/{id}")
     public ResponseEntity<BaseResponse> toggleActiveStatusById(@PathVariable String id) {
@@ -71,7 +71,7 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách gói thuê đã xoá, có phân trang.")
+    @Operation(summary = "Lấy danh sách gói đã xoá, có phân trang.")
     @ApiResponse(responseCode = "200", description = "Thành công.")
     @GetMapping("/package/getSoftDeleted")
     public ResponseEntity<BaseResponse> getSoftDeletedHasPage(@ParameterObject Pageable pageable) {
@@ -79,17 +79,17 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Khôi phục gói thuê dựa trên id.")
+    @Operation(summary = "Khôi phục gói dựa trên id.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê."),
-            @ApiResponse(responseCode = "200", description = "Khôi phục gói thuê thành công.")
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói."),
+            @ApiResponse(responseCode = "200", description = "Khôi phục gói thành công.")
     })
     @PatchMapping("/package/restore/{id}")
     public ResponseEntity<BaseResponse> restoreById(@PathVariable String id) {
         return packageInfoService.restoreById(id);
     }
 
-    @Operation(summary = "Lấy danh sách gói thuê đang active, có phân trang.", description = "Roles: tất cả")
+    @Operation(summary = "Lấy danh sách gói đang active, có phân trang.", description = "Roles: tất cả")
     @ApiResponse(responseCode = "200", description = "Thành công.")
     @GetMapping("/auth/package/getAllActive")
     public ResponseEntity<BaseResponse> getAllActive(@ParameterObject Pageable pageable) {
@@ -98,7 +98,7 @@ public class PackageInfoController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách gói thuê đang inactive, có phân trang.", description = "Roles: trừ user")
+    @Operation(summary = "Lấy danh sách gói đang inactive, có phân trang.", description = "Roles: trừ user")
     @ApiResponse(responseCode = "200", description = "Thành công.")
     @GetMapping("/package/getAllInactive")
     public ResponseEntity<BaseResponse> getAllInactive(@ParameterObject Pageable pageable) {
@@ -106,7 +106,7 @@ public class PackageInfoController {
         return packageInfoService.getAllActiveOrInactive(pageable, isActive);
     }
 
-    @Operation(summary = "Tìm kiếm gói thuê theo tên, có phân trang.",
+    @Operation(summary = "Tìm kiếm gói theo tên, có phân trang.",
             description = "Điều kiện tìm: packageName:containingIgnoreCase + isActive=true + isDeleted=false.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy gói thuê nào."),
@@ -116,6 +116,16 @@ public class PackageInfoController {
     public ResponseEntity<BaseResponse> searchByNameContaining(@ParameterObject Pageable pageable,
                                                                @RequestParam String input) {
         return packageInfoService.findByNameContaining(pageable, input);
+    }
+
+    @Operation(summary = "Lấy gói (còn hoạt động) dựa trên id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy gói."),
+            @ApiResponse(responseCode = "200", description = "Tìm thấy gói."),
+    })
+    @GetMapping("/auth/package/getById/{id}")
+    public ResponseEntity<BaseResponse> getActiveAndNotDeletedById(@PathVariable String id){
+        return packageInfoService.getActiveAndNotDeletedById(id);
     }
 
 }

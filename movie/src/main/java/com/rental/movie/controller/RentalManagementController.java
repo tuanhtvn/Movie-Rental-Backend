@@ -80,7 +80,7 @@ public class RentalManagementController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Tìm phim thuê của người dùng hiện tại (dựa trên rentedFilmId).")
+    @Operation(summary = "Lấy phim thuê của người dùng hiện tại (dựa trên rentedFilmId).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng hoặc phim thuê."),
             @ApiResponse(responseCode = "200", description = "Tìm phim thuê thành công."),

@@ -27,7 +27,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
         PackageInfo packageInfo = packageInfoMapper.convertToEntity(packageInfoRequestDTO);
         packageInfoRepository.save(packageInfo);
         return ResponseEntity.ok().body(
-                new BaseResponse("Tạo mới gói thuê thành công.",
+                new BaseResponse("Tạo mới gói thành công.",
                         HttpStatus.OK.value(),
                         packageInfoMapper.convertToDTO(packageInfo))
         );
@@ -39,13 +39,13 @@ public class PackageInfoServiceImpl implements PackageInfoService {
                 .map(packageInfoMapper::convertToDTO);
         if (packageInfoResponseDTOPage.isEmpty()) {
             return ResponseEntity.ok().body(
-                    new BaseResponse("Không tìm thấy gói thuê nào.",
+                    new BaseResponse("Không tìm thấy gói nào.",
                             HttpStatus.NOT_FOUND.value(),
                             null)
             );
         }
         return ResponseEntity.ok().body(
-                new BaseResponse("Tìm thấy danh sách gói thuê.",
+                new BaseResponse("Tìm thấy danh sách gói.",
                         HttpStatus.OK.value(),
                         packageInfoResponseDTOPage.getContent())
         );
@@ -56,7 +56,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
         PackageInfo pkt = packageInfoRepository.findById(id).orElse(null);
         if (pkt == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Không tìm thấy gói thuê.", HttpStatus.NOT_FOUND.value(), null)
+                    new BaseResponse("Không tìm thấy gói.", HttpStatus.NOT_FOUND.value(), null)
             );
         }
         pkt.setPackageName(packageInfoRequestDTO.getPackageName());
@@ -67,7 +67,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
         packageInfoRepository.save(pkt);
 
         return ResponseEntity.ok().body(
-                new BaseResponse("Cập nhật gói thuê thành công.",
+                new BaseResponse("Cập nhật gói thành công.",
                         HttpStatus.OK.value(),
                         packageInfoMapper.convertToDTO(pkt))
         );
@@ -78,14 +78,14 @@ public class PackageInfoServiceImpl implements PackageInfoService {
         PackageInfo pkt = packageInfoRepository.findById(id).orElse(null);
         if (pkt == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Không tìm thấy gói thuê.", HttpStatus.NOT_FOUND.value(), null)
+                    new BaseResponse("Không tìm thấy gói.", HttpStatus.NOT_FOUND.value(), null)
             );
         }
         pkt.setIsDeleted(true);
         packageInfoRepository.save(pkt);
 
         return ResponseEntity.ok().body(
-                new BaseResponse("Xoá mềm gói thuê thành công.",
+                new BaseResponse("Xoá mềm gói thành công.",
                         HttpStatus.OK.value(),
                         packageInfoMapper.convertToDTO(pkt))
         );
@@ -108,7 +108,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Không tìm thấy gói thuê.", HttpStatus.NOT_FOUND.value(), null)
+                    new BaseResponse("Không tìm thấy gói.", HttpStatus.NOT_FOUND.value(), null)
             );
         }
     }
@@ -119,11 +119,11 @@ public class PackageInfoServiceImpl implements PackageInfoService {
                 .map(packageInfoMapper::convertToDTO);
         if (pktDTO.isEmpty()) {
             return ResponseEntity.ok(
-                    new BaseResponse("Không tìm thấy gói thuê nào.", HttpStatus.OK.value(), null)
+                    new BaseResponse("Không tìm thấy gói nào.", HttpStatus.OK.value(), null)
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói thuê.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
         );
     }
 
@@ -138,13 +138,13 @@ public class PackageInfoServiceImpl implements PackageInfoService {
                     packageInfoRepository.save(newPkt));
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new BaseResponse("Khôi phục gói thuê thành công.",
+                    new BaseResponse("Khôi phục gói thành công.",
                             HttpStatus.OK.value(),
                             responsePkt)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new BaseResponse("Không tìm thấy gói thuê.", HttpStatus.NOT_FOUND.value(), null)
+                    new BaseResponse("Không tìm thấy gói.", HttpStatus.NOT_FOUND.value(), null)
             );
         }
     }
@@ -155,11 +155,11 @@ public class PackageInfoServiceImpl implements PackageInfoService {
                 .map(packageInfoMapper::convertToDTO);
         if (pktDTO.isEmpty()) {
             return ResponseEntity.ok(
-                    new BaseResponse("Không tìm thấy gói thuê nào.", HttpStatus.OK.value(), null)
+                    new BaseResponse("Không tìm thấy gói nào.", HttpStatus.OK.value(), null)
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói thuê.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
         );
     }
 
@@ -171,11 +171,25 @@ public class PackageInfoServiceImpl implements PackageInfoService {
                 .map(packageInfoMapper::convertToDTO);
         if (pktDTO.isEmpty()){
             return ResponseEntity.ok(
-                    new BaseResponse("Không tìm thấy gói thuê nào.", HttpStatus.NOT_FOUND.value(), null)
+                    new BaseResponse("Không tìm thấy gói nào.", HttpStatus.NOT_FOUND.value(), null)
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói thuê.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
+        );
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse> getActiveAndNotDeletedById(String id) {
+        PackageInfo packageInfo = packageInfoRepository.findByIdAndIsActiveTrueAndIsDeletedFalse(id);
+        if (packageInfo == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new BaseResponse("Không tìm thấy gói.", HttpStatus.NOT_FOUND.value(), null)
+            );
+        }
+        PackageInfoResponseDTO responseDTO = packageInfoMapper.convertToDTO(packageInfo);
+        return ResponseEntity.ok(
+                new BaseResponse("Tìm thấy gói.", HttpStatus.OK.value(), responseDTO)
         );
     }
 }

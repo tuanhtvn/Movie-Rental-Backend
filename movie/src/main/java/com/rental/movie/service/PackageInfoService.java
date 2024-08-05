@@ -15,4 +15,5 @@ public interface PackageInfoService {
     public ResponseEntity<BaseResponse> restoreById(String id);
     public ResponseEntity<BaseResponse> getAllActiveOrInactive(Pageable pageable, Boolean flag);
     public ResponseEntity<BaseResponse> findByNameContaining(Pageable pageable, String pktName);
+    public ResponseEntity<BaseResponse> getActiveAndNotDeletedById(String id);
 }

@@ -15,4 +15,5 @@ public interface PackageInfoRepository extends MongoRepository<PackageInfo, Stri
     public Page<PackageInfo> findByIsActiveAndIsDeletedFalse(Pageable pageable, Boolean flag);
     @Query("{'isActive':  true, 'isDeleted':  false, 'packageName': {$regex: ?0, $options: 'i'}}")
     public Page<PackageInfo> findByPackageNameContainingIgnoreCase(Pageable pageable, String input);
+    public PackageInfo findByIdAndIsActiveTrueAndIsDeletedFalse(String id);
 }

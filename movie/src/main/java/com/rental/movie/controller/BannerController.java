@@ -125,4 +125,15 @@ public class BannerController {
         return bannerService.toggleActiveStatus(id);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy banner dựa trên id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy banner."),
+            @ApiResponse(responseCode = "200", description = "Tìm thấy banner.")
+    })
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<BaseResponse> getById(@PathVariable String id){
+        return bannerService.getById(id);
+    }
+
 }

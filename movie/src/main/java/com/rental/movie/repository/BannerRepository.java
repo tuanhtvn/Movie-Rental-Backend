@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BannerRepository extends MongoRepository<Banner, String> {
@@ -14,4 +14,5 @@ public interface BannerRepository extends MongoRepository<Banner, String> {
     public Page<Banner> findByFilmId_AndIsDeletedFalse(Pageable pageable, String idFilm);
     public Page<Banner> findByIsDeletedTrue(Pageable pageable);
     public Page<Banner> findByIsActiveAndIsDeletedFalse(Pageable pageable, Boolean flag);
+    public Optional<Banner> findById(String id);
 }

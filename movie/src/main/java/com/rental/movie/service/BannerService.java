@@ -21,4 +21,5 @@ public interface BannerService {
     public ResponseEntity<BaseResponse> restoreBannerById(String id);
     public ResponseEntity<BaseResponse> getAllActiveOrInactive(Pageable pageable, Boolean flag);
     public ResponseEntity<BaseResponse> toggleActiveStatus(String id);
+    public ResponseEntity<BaseResponse> getById(String id);
 }
