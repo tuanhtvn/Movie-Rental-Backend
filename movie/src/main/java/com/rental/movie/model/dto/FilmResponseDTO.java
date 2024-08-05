@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FilmResponseDTO extends BaseResponseDTO{
+    @JsonProperty("Id")
+    private String id;
     @JsonProperty("FilmName")
     private String filmName;
     @JsonProperty("FilmUrl")
