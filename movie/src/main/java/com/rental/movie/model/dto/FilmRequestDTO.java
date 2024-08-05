@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.rental.movie.common.RentalType;
+import com.rental.movie.model.entity.BaseEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
