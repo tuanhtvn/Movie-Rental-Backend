@@ -79,7 +79,11 @@ public class FilmServiceImpl implements FilmService {
 //        }
 //        return films;
         String keyword = removeAccents(keywords);
-        List<Film> films = filmRepository.findByFilmName();
+        List<Film> films = filmRepository.findByKeywords(keyword);
+
+        if (films.isEmpty()) {
+           throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
+        }
 
         return films.stream()
                 .filter(film -> removeAccents(film.getFilmName()).contains(keyword))
