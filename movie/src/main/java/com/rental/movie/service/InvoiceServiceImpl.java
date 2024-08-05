@@ -1,9 +1,9 @@
 package com.rental.movie.service;
 
+import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.PaymentStatus;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.InvoiceResponseDTO;
-import com.rental.movie.model.dto.PaymentInfoResponseDTO;
 import com.rental.movie.model.entity.*;
 import com.rental.movie.repository.InvoiceRepository;
 import com.rental.movie.util.mapper.InvoiceMapper;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +24,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     private InvoiceRepository invoiceRepository;
     @Autowired
     private InvoiceMapper invoiceMapper;
+    @Autowired
+    private IAuthentication authManager;
 
     @Override
     public List<InvoiceResponseDTO> getAll() {
@@ -41,10 +44,49 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public void createInvoice(ZonedDateTime issueDate, PaymentStatus paymentStatus, Double totalPrice, List<Film> films, PackageInfo packageInfo, User user) {
+    public Invoice createInvoice(PackageInfo packageInfo, Film film) {
         log.info("Create invoice");
-        Invoice invoice = new Invoice(new ObjectId().toString(), issueDate, paymentStatus, totalPrice, films, packageInfo, user);
+        User user =authManager.getUserAuthentication();
+        Invoice invoice = new Invoice();
+        invoice.setId(new ObjectId().toString());
+        invoice.setIssueDate(ZonedDateTime.now());
+        invoice.setPaymentStatus(PaymentStatus.PENDING);
+        invoice.setUser(user);
+
+        if(film == null && packageInfo == null)
+        {
+            invoice.setFilms(getListFilm(user));
+            invoice.setTotalPrice(getToTalPrice(user));
+        }
+        else if (film != null && packageInfo == null){
+            invoice.getFilms().add(film);
+            invoice.setTotalPrice(film.getPrice());
+        }
+        else if (film == null && packageInfo != null){
+            invoice.setPackageInfo(packageInfo);
+            invoice.setTotalPrice(packageInfo.getPrice());
+        }
+
         invoiceRepository.save(invoice);
         log.info("Create invoice successfully");
+
+        return invoice;
+    }
+    //Hàm lấy danh dách phim (RentalType = RENTAL) từ User
+    private List<Film> getListFilm(User user) {
+        List<Film> filmList = new ArrayList<>();
+        for (Item item : user.getCart()) {
+            Film film = item.getFilm();
+            filmList.add(film);
+        }
+        return filmList;
+    }
+    //Hàm lấy tổng số tiền
+    private Double getToTalPrice(User user){
+        Double totalPrice = 0.0;
+        for (Item item : user.getCart()) {
+            totalPrice += item.getFilm().getPrice();
+        }
+        return totalPrice;
     }
 }
