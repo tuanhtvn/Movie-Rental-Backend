@@ -21,6 +21,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FilmRequestDTO extends BaseRequestDTO{
     @NotBlank(message = "Vui lòng nhập tên phim")
     @Size(max = 255, message = "Tên phim không được vượt quá 255 ký tự")
