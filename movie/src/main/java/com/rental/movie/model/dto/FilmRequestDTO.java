@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilmRequestDTO {
+public class FilmRequestDTO extends BaseEntity{
     @NotBlank(message = "Vui lòng nhập tên phim")
     @Size(max = 255, message = "Tên phim không được vượt quá 255 ký tự")
     @Schema(description = "Tên phim", example = "Bố Già")
