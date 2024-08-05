@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-public class FilmRequestDTO extends BaseResponseDTO{
+public class FilmRequestDTO extends BaseRequestDTO{
     @NotBlank(message = "Vui lòng nhập tên phim")
     @Size(max = 255, message = "Tên phim không được vượt quá 255 ký tự")
     @Schema(description = "Tên phim", example = "Bố Già")
