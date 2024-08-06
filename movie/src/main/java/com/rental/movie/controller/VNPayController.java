@@ -1,28 +1,22 @@
 package com.rental.movie.controller;
 
 import com.rental.movie.common.BaseResponse;
-import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.PaymentStatus;
 import com.rental.movie.model.entity.Invoice;
-import com.rental.movie.model.entity.PackageInfo;
-import com.rental.movie.model.entity.User;
 import com.rental.movie.repository.InvoiceRepository;
 import com.rental.movie.repository.PackageInfoRepository;
 import com.rental.movie.service.FilmService;
 import com.rental.movie.service.InvoiceService;
-import com.rental.movie.service.PackageInfoService;
 import com.rental.movie.service.VNPayService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZonedDateTime;
 import java.util.Map;
 
 @RestController
@@ -103,7 +97,7 @@ public class VNPayController {
             @ApiResponse(responseCode = "400", description = "Yêu cầu không hợp lệ")
     })
     @GetMapping("/api/auth/payment/callback")
-    public String handlePaymentCallback(@RequestParam Map<String, String> params) {
+    public ResponseEntity<BaseResponse> handlePaymentCallback(@RequestParam Map<String, String> params) {
         boolean isValid = vnPayService.validatePayment(params);
 
         String invoiceId = params.get("vnp_TxnRef");
@@ -116,7 +110,12 @@ public class VNPayController {
             invoice.setPaymentStatus(PaymentStatus.FAILED);
         }
 
-        invoiceRepository.save(invoice);
-        return "Payment status updated";
+        BaseResponse response = BaseResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Thanh toán thành công")
+                .data(params)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }
