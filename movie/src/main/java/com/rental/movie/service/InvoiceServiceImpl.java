@@ -62,7 +62,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             invoice.getFilms().add(film);
             invoice.setTotalPrice(film.getPrice());
         }
-        else if (film == null && packageInfo != null){
+        else if (film == null){
             invoice.setPackageInfo(packageInfo);
             invoice.setTotalPrice(packageInfo.getPrice());
         }

@@ -20,5 +20,5 @@ public class InvoiceResponseDTO {
     private PackageInfo packageInfo;
     private Double totalPrice;
     private PaymentStatus paymentStatus;
-    private User user;
+    private String userId;
 }
