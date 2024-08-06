@@ -3,6 +3,10 @@ package com.rental.movie.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+
 @Configuration
 public class VNPayConfig {
     @Value("${vnp.TmnCode}")
@@ -14,6 +18,9 @@ public class VNPayConfig {
     @Value("${vnp.Url}")
     private String vnpUrl;
 
+    @Value("${vnp.ReturnUrl}")
+    private String vnpReturnUrl;
+
     public String getTmnCode() {
         return tmnCode;
     }
@@ -24,5 +31,9 @@ public class VNPayConfig {
 
     public String getVnpUrl() {
         return vnpUrl;
+    }
+
+    public String getVnpReturnUrl() {
+        return vnpReturnUrl;
     }
 }

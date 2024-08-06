@@ -102,7 +102,7 @@ public class VNPayController {
             @ApiResponse(responseCode = "200", description = "Xử lý callback thành công"),
             @ApiResponse(responseCode = "400", description = "Yêu cầu không hợp lệ")
     })
-    @GetMapping("/payment/callback")
+    @GetMapping("/api/auth/payment/callback")
     public String handlePaymentCallback(@RequestParam Map<String, String> params) {
         boolean isValid = vnPayService.validatePayment(params);
 
