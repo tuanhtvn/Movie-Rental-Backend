@@ -1,9 +1,13 @@
 package com.rental.movie.service;
 
+import com.rental.movie.common.AuthProvider;
+import com.rental.movie.model.dto.UserCreationDTO;
 import com.rental.movie.model.dto.UserInfoResponseDTO;
 import com.rental.movie.model.entity.User;
+import com.rental.movie.util.mapper.UserCMapper;
 import com.rental.movie.util.mapper.UserManagerMapper;
 import com.rental.movie.repository.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +23,17 @@ public class UserManagerServiceImpl implements UserManagerService {
     @Autowired
     private UserManagerMapper userMapper;
 
+    @Autowired
+    private UserCMapper userCMapper;
+
     @Override
-    public UserInfoResponseDTO createUser(UserInfoResponseDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        user = userRepository.save(user);
-        return userMapper.toDTO(user);
+    public UserCreationDTO createUser(UserCreationDTO userDTO) {
+        String hashedPassword = BCrypt.hashpw(userDTO.getPassword(), BCrypt.gensalt());
+        userDTO.setPassword(hashedPassword);
+        User user = userCMapper.toEntity(userDTO);
+        user.setPassword(hashedPassword);
+        user.setAuthProvider(AuthProvider.LOCAL);
+        return userCMapper.toDTO(userRepository.save(user));
     }
 
     @Override
@@ -48,9 +58,7 @@ public class UserManagerServiceImpl implements UserManagerService {
 
     @Override
     public void deleteUser(String id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        user.setIsDeleted(true);
-        userRepository.save(user);
+        userRepository.deleteById(id);
     }
 
     @Override
