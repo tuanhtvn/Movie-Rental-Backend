@@ -41,7 +41,7 @@ public class UserManagerController {
             @ApiResponse(responseCode = "404", description = "Update người dùng thất bại")
     })
     @PutMapping("/{id}/update")
-    public ResponseEntity<UserInfoResponseDTO> updateUser(@PathVariable String id, @RequestBody UserInfoResponseDTO userDTO) {
+    public ResponseEntity<UserCreationDTO> updateUser(@PathVariable String id, @RequestBody UserCreationDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
@@ -52,7 +52,7 @@ public class UserManagerController {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng")
     })
     @GetMapping("/getAll")
-    public ResponseEntity<List<UserInfoResponseDTO>> getAllUsers() {
+    public ResponseEntity<List<UserCreationDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
