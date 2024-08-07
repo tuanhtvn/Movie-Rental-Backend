@@ -53,7 +53,13 @@ public class CategoryServiceImpl implements CategoryService {
             log.error("No active categories found");
             throw new CustomException("Không có danh mục nào", HttpStatus.NOT_FOUND.value());
         }
-        return categoryMapper.convertToDTO(categories);
+        Page<CategoryResponseDTO> categoryResponseDTOPage = categoryMapper.convertToDTO(categories);
+        categoryResponseDTOPage.map(categoryResponseDTO -> {
+            categoryResponseDTO.setAlbums(null);
+            categoryResponseDTO.setBanners(null);
+            return categoryResponseDTO;
+        });
+        return categoryResponseDTOPage;
     }
 
     @Override

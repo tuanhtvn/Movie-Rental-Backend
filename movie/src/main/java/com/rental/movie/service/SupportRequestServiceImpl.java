@@ -30,10 +30,8 @@ public class SupportRequestServiceImpl implements SupportRequestService {
     @Override
     public SupportRequestDTO createSupportRequest(SupportRequestDTO supportRequestDTO) {
         SupportRequest supportRequest = supportRequestMapper.toEntity(supportRequestDTO);
-        supportRequest.setRequestTime(ZonedDateTime.now());
-        supportRequest.setIsResolved(false);
-        SupportRequest savedRequest = supportRequestRepository.save(supportRequest);
-        SupportRequestDTO savedDTO = supportRequestMapper.toDTO(savedRequest);
+        supportRequest.setIsResolved(!supportRequest.getIsResolved());
+        SupportRequestDTO savedDTO = supportRequestMapper.toDTO(supportRequestRepository.save(supportRequest));
         // send to socket
         messagingTemplate.convertAndSend("/topic/support-requests", savedDTO);
 

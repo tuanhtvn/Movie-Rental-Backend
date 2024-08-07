@@ -28,12 +28,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationDTO createNotification(NotificationDTO notificationDTO) {
         Notification notification = notificationMapper.toEntity(notificationDTO);
-        notification.setIsRead(false);
-        notification.setSentTime(ZonedDateTime.now());
-        System.out.println(notification.getIsRead());
-        notification = notificationRepository.save(notification);
-        System.out.println(notification.getIsRead());
-        return notificationMapper.toDTO(notification);
+        notification.setIsRead(!notificationDTO.getIsRead());
+        return notificationMapper.toDTO(notificationRepository.save(notification));
     }
 
     @Override
@@ -74,8 +70,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         existingNotification.setTitle(notificationDTO.getTitle());
         existingNotification.setContent(notificationDTO.getContent());
-        existingNotification = notificationRepository.save(existingNotification);
-        return notificationMapper.toDTO(existingNotification);
+        return notificationMapper.toDTO(notificationRepository.save(existingNotification));
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.rental.movie.model.entity.*;
 import com.rental.movie.repository.InvoiceRepository;
 import com.rental.movie.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -139,4 +140,33 @@ public class RentalService {
         return rentedFilms;
     }
 
+    // Thêm danh sách phim vào danh sách phim thuê của User
+
+    public void addRentedFilm(List<Film> filmList, User user){
+        // Lặp qua danh sách các bộ phim
+        for (Film film : filmList) {
+            // Tạo một đối tượng RentedFilm mới cho mỗi bộ phim
+            RentedFilm rentedFilm = new RentedFilm();
+            rentedFilm.setId(new ObjectId().toString());
+            rentedFilm.setFilm(film); // Gán bộ phim vào RentedFilm
+            rentedFilm.setRentalDate(ZonedDateTime.now()); // Gán ngày thuê là thời điểm hiện tại
+            rentedFilm.setExpirationDate(ZonedDateTime.now().plusDays(30)); // Gán ngày hết hạn là 30 ngày sau
+            // Thêm RentedFilm vào danh sách phim thuê của người dùng
+            user.getRentedFilms().add(rentedFilm);
+        }
+    }
+
+    // Thêm gói thuê vào User
+    public void addRentalPackage(PackageInfo packageInfo, User user) {
+        // Tạo một đối tượng RentalPackage mới
+        RentalPackage rentalPackage = new RentalPackage();
+        // Gán thông tin gói thuê
+        rentalPackage.setPackageInfo(packageInfo);
+        rentalPackage.setRegistrationDate(ZonedDateTime.now());
+        rentalPackage.setExpirationDate(ZonedDateTime.now().plusDays(packageInfo.getTimeDuration()));
+        rentalPackage.setIsRenewal(true);
+
+        // Thêm gói thuê vào danh sách gói thuê của người dùng
+        user.setRentalPackage(rentalPackage);
+    }
 }

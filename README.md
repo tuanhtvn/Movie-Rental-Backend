@@ -35,3 +35,10 @@
 - admin: rentalmovie68@gmail.com
 - employee: employee@gmail.com
 - user: user@gmail.com
+5. Thông tin thẻ thanh toán:
+- Ngân hàng: NCB
+- Số thẻ: 9704198526191432198
+- Tên chủ thẻ: NGUYEN VAN A
+- Ngày phát hành: 07/15
+- Mật khẩu OTP: 123456
+- Chú ý: Số tiền thanh toán tối thiểu 20.000 VND

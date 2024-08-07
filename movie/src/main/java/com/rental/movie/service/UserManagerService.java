@@ -1,11 +1,12 @@
 package com.rental.movie.service;
 
+import com.rental.movie.model.dto.UserCreationDTO;
 import com.rental.movie.model.dto.UserInfoResponseDTO;
 
 import java.util.List;
 
 public interface UserManagerService {
-    UserInfoResponseDTO createUser(UserInfoResponseDTO userDTO);
+    UserCreationDTO createUser(UserCreationDTO userDTO);
     UserInfoResponseDTO updateUser(String id, UserInfoResponseDTO userDTO);
     UserInfoResponseDTO getUserById(String id);
     List<UserInfoResponseDTO> getAllUsers();
