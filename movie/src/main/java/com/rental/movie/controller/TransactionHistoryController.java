@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,19 +27,6 @@ public class TransactionHistoryController {
                 .status(HttpStatus.OK.value())
                 .message("Tải danh sách thành công")
                 .data(transactionHistoryService.getAll())
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(summary = "Lấy thông tin lịch sử giao dịch bằng id", description = "API lấy thông tin lịch sử giao dịch bằng id")
-    @ApiResponse(responseCode = "200", description = "Lấy thành công ")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/{transactionId}")
-    public ResponseEntity<BaseResponse> getTransaction(@PathVariable String transactionId) {
-        BaseResponse response = BaseResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("Lấy thông tin thành công")
-                .data(transactionHistoryService.get(transactionId))
                 .build();
         return ResponseEntity.ok(response);
     }

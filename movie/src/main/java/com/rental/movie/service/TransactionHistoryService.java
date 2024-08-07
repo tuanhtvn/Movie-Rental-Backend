@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface TransactionHistoryService {
     public List<TransactionHistoryResponseDTO> getAll();
-    public TransactionHistoryResponseDTO get(String transactionId);
 }

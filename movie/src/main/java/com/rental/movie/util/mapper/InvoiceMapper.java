@@ -26,6 +26,6 @@ public class InvoiceMapper {
         invoiceResponse.setPaymentStatus(invoice.getPaymentStatus());
         invoiceResponse.setUserId(invoice.getUser().getId());
 
-        return modelMapper.map(invoice,InvoiceResponseDTO.class);
+        return invoiceResponse;
     }
 }

@@ -8,6 +8,7 @@ import com.rental.movie.model.entity.TransactionHistory;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.repository.InvoiceRepository;
 import com.rental.movie.repository.PackageInfoRepository;
+import com.rental.movie.repository.TransactionHistoryRepository;
 import com.rental.movie.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,6 +46,9 @@ public class VNPayController {
 
     @Autowired
     private RentalService rentalService;
+
+    @Autowired
+    private TransactionHistoryRepository transactionHistoryRepository;
 
     @Operation(summary = "Tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL)  trong giỏ hàng", description = "API tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL) trong giỏ hàng")
     @ApiResponse(responseCode = "200", description = "Tạo yêu cầu thanh toán thành công")
@@ -112,20 +116,29 @@ public class VNPayController {
         String invoiceId = params.get("vnp_TxnRef");
         Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new RuntimeException("Invoice not found"));
         User user = invoice.getUser();
-
-        if (isValid)
+        BaseResponse baseResponse;
+        if (params.get("vnp_ResponseCode").equals("00") && isValid){
             updateData(user,invoice,PaymentStatus.SUCCESS,TransactionStatus.SUCCESS);
-        else
+            baseResponse = BaseResponse.builder()
+                    .message("Thanh tooán thành công")
+                    .status(HttpStatus.OK.value())
+                    .data(params)
+                    .build();
+        }
+
+        else{
             updateData(user,invoice,PaymentStatus.FAILED,TransactionStatus.FAILED);
+            baseResponse = BaseResponse.builder()
+                    .message("Thanh toán không thành công")
+                    .status(HttpStatus.OK.value())
+                    .data(params)
+                    .build();
+        }
 
         userService.save(user);
+        invoiceRepository.save(invoice);
 
-        BaseResponse response = BaseResponse.builder()
-                .status(HttpStatus.OK.value())
-                .message("Thanh toán thành công")
-                .data(params)
-                .build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(baseResponse);
     }
 
     private void updateData(User user, Invoice invoice, PaymentStatus paymentStatus, TransactionStatus transactionStatus){
@@ -137,7 +150,9 @@ public class VNPayController {
                 invoice.getTotalPrice(),
                 transactionStatus);
         user.getTransactionHistories().add(transactionHistory);
-        rentalService.addRentedFilm(invoice.getFilms(),user);
-        rentalService.addRentalPackage(invoice.getPackageInfo(),user);
+        if(invoice.getPackageInfo() == null)
+            rentalService.addRentedFilm(invoice.getFilms(),user);
+        else
+            rentalService.addRentalPackage(invoice.getPackageInfo(),user);
     }
 }
