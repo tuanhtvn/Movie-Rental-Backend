@@ -17,6 +17,7 @@ import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.service.FilmService;
+import com.rental.movie.model.dto.RatingRequestDTO;
 import com.rental.movie.exception.CustomException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -230,5 +231,13 @@ public class FilmController {
              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
          }
      }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Đánh giá phim", description = "Đánh giá phim dựa trên số sao đã chọn")
+    @ApiResponse(responseCode = "200", description = "Đánh giá thành công")
+    @PostMapping("/rate/{filmId}")
+    public double rateFilm(@RequestBody RatingRequestDTO ratingRequestDTO) {
+        return filmService.updateRating(ratingRequestDTO);
+    }
 
 }

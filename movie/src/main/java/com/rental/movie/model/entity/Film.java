@@ -27,13 +27,13 @@ public class Film extends BaseEntity {
     private String description; // mô tả
     private String thumbnailUrl; // đường dẫn ảnh thumbnail
     private String trailerUrl; // đường dẫn trailer
-    private ZonedDateTime releaseDate; // ngày phát hành
+    private String releaseDate; // ngày phát hành
     private String duration; // thời lượng
     private String actors; // danh sách diễn viên
     private String director; // đạo diễn
     private String language; // ngôn ngữ
     private Integer numberOfViews; // số lượt xem
-    private Double rating; // đánh giá
+    private List<Integer> ratings; // đánh giá
     private Integer age; // độ tuổi
     private RentalType rentalType; // loại thuê phim
     private Double price; // giá

@@ -2,6 +2,7 @@ package com.rental.movie.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ public class FilmRequestDTO {
     @JsonProperty("FilmName")
     private String filmName;
 
-    @NotBlank(message = "Vui lòng nhập mô tả phim")
     @Schema(description = "Mô tả phim", example = "BỐ GIÀ là một bộ phim Web drama tình cảm gia đình, một dự án phim hài Tết 2020 của Trấn Thành.")
     @JsonProperty("Description")
     private String description;
@@ -49,9 +49,10 @@ public class FilmRequestDTO {
     @JsonProperty("TrailerUrl")
     private String trailerUrl;
 
-    @Schema(description = "Ngày phát hành", example = "2023-01-01")
+    @Schema(description = "Ngày phát hành", example = "01/01/2022")
     @JsonProperty("ReleaseDate")
-    private ZonedDateTime releaseDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private String releaseDate;
 
     @Schema(description = "Thời lượng phim", example = "120")
     @JsonProperty("Duration")
@@ -68,7 +69,6 @@ public class FilmRequestDTO {
     @Schema(description = "Ngôn ngữ", example = "Vietnamese")
     @JsonProperty("Language")
     private String language;
-
 
     @Schema(description = "Độ tuổi", example = "13")
     @JsonProperty("Age")

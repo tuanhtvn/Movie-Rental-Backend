@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;
+import com.rental.movie.model.dto.RatingRequestDTO;
 
 public interface FilmService {
     public Film getById(String id);
@@ -21,4 +22,5 @@ public interface FilmService {
     public FilmResponseDTO activeFilm(String filmId);
     public FilmResponseDTO deactiveFilm(String filmId);
     public FilmResponseDTO restoreFilmById(String filmId);
+    public double updateRating(RatingRequestDTO ratingRequestDTO);
 }
