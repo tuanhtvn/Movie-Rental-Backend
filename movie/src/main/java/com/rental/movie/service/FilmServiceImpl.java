@@ -10,12 +10,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.OptionalDouble;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.repository.FilmRepository;
 import com.rental.movie.util.mapper.FilmMapper;
+import com.rental.movie.model.dto.RatingRequestDTO;
+import com.rental.movie.repository.GenreRepository;
+import com.rental.movie.repository.SubtitleRepository;
+import com.rental.movie.repository.NarrationRepository;
+import com.rental.movie.repository.CommentRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +35,14 @@ public class FilmServiceImpl implements FilmService {
 
     @Autowired
     private FilmRepository filmRepository;
+    @Autowired
+    private GenreRepository genreRepository;
+    @Autowired
+    private SubtitleRepository subtitleRepository;
+    @Autowired
+    private NarrationRepository narrationRepository;
+    @Autowired
+    private CommentRepository commentRepository;
     @Autowired
     private FilmMapper filmMapper;
 
@@ -72,12 +90,6 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> searchFilmByName(String keywords) {
-//        String keyword = removeAccents(".*" + keywords + ".*");
-//        List<Film> films = filmRepository.findByKeywords(keyword);
-//        if (films.isEmpty()) {
-//            throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
-//        }
-//        return films;
         String keyword = removeAccents(keywords).toLowerCase();
 
         return filmRepository.findByActived().stream()
@@ -125,7 +137,6 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        //log.info("Update film {}", film.toString());
         Film updateFilm = filmMapper.convertToEntity(filmDTO, film);
         return filmMapper.convertToDTO(filmRepository.save(updateFilm));
     }
@@ -168,6 +179,35 @@ public class FilmServiceImpl implements FilmService {
         Film restoredFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(restoredFilm);
 
+    }
+
+    public double updateRating(RatingRequestDTO ratingRequestDTO) {
+        Film film = filmRepository.findById(ratingRequestDTO.getFilmId())
+                .orElseThrow(() -> new CustomException("Phim không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        List<Integer> ratings = film.getRatings();
+        ratings.add(ratingRequestDTO.getRating());
+
+        OptionalDouble average = ratings.stream()
+                .mapToInt(Integer::intValue)
+                .average();
+
+        double updatedRating = average.isPresent() ? average.getAsDouble() : 0.0;
+
+        film.setRatings(ratings);
+        filmRepository.save(film);
+
+        return updatedRating;
+    }
+
+    public InputStream getFilmStream(String filmId, String range) throws Exception{
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+        URL url = new URL(film.getFilmUrl());
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if (range != null) {
+            connection.setRequestProperty("Range", range);
+        }
+        return connection.getInputStream();
     }
 
 }

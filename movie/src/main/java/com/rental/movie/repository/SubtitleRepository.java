@@ -14,4 +14,5 @@ import com.rental.movie.model.entity.Subtitle;
 @Repository
 public interface SubtitleRepository extends MongoRepository<Subtitle, String> {
 
+    List<Subtitle> findByFilmId(String filmId);
 }

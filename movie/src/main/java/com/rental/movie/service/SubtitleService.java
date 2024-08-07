@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import java.io.InputStream;
 
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
@@ -22,4 +23,6 @@ public interface SubtitleService {
     public FilmResponseDTO removeSubtitle(String subtitleId, String filmId);
     public List<SubtitleResponseDTO> getAllSubtitles();
     public List<SubtitleResponseDTO> getAllSubtitlesByFilmId(String filmId);
+    public InputStream getSubtitleStream(String subtitleId) throws Exception;
+    public List<Subtitle> findByFilmId(String filmId);
 }

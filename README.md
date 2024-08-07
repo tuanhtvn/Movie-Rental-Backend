@@ -31,7 +31,7 @@
 
 - Luồng và data trong response: repository(Entity) -> service -> (DTO)controller -> client nhận response
 
-4. Thông tin tài khoản - pass: 123456
+4. Thông tin tài khoản - passDev: 123456 - passProd: User@123
 - admin: rentalmovie68@gmail.com
 - employee: employee@gmail.com
 - user: user@gmail.com

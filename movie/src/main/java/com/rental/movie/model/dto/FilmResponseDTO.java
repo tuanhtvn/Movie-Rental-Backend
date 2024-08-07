@@ -2,6 +2,7 @@ package com.rental.movie.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ public class FilmResponseDTO extends BaseResponseDTO{
     @JsonProperty("TrailerUrl")
     private String trailerUrl;
     @JsonProperty("ReleaseDate")
-    private ZonedDateTime releaseDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private String releaseDate;
     @JsonProperty("Duration")
     private String duration;
     @JsonProperty("Actors")

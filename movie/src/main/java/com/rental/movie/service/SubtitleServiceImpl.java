@@ -4,6 +4,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Iterator;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
@@ -147,4 +150,16 @@ public class SubtitleServiceImpl implements SubtitleService {
                 .map(subtitleMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    public InputStream getSubtitleStream(String subtitleId) throws Exception {
+        Subtitle subtitle = subtitleRepository.findById(subtitleId).orElseThrow(() -> new CustomException("Không tìm thấy Subtitle", HttpStatus.NOT_FOUND.value()));
+        URL url = new URL(subtitle.getSubtitleUrl());
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        return connection.getInputStream();
+    }
+
+    public List<Subtitle> findByFilmId(String filmId) {
+        return subtitleRepository.findByFilmId(filmId);
+    }
+
 }

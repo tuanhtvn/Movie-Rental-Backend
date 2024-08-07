@@ -27,20 +27,22 @@ public class Film extends BaseEntity {
     private String description; // mô tả
     private String thumbnailUrl; // đường dẫn ảnh thumbnail
     private String trailerUrl; // đường dẫn trailer
-    private ZonedDateTime releaseDate; // ngày phát hành
+    private String releaseDate; // ngày phát hành
     private String duration; // thời lượng
     private String actors; // danh sách diễn viên
     private String director; // đạo diễn
     private String language; // ngôn ngữ
     private Integer numberOfViews; // số lượt xem
-    private Double rating; // đánh giá
+    private List<Integer> ratings; // đánh giá
     private Integer age; // độ tuổi
     private RentalType rentalType; // loại thuê phim
     private Double price; // giá
     private Integer limitTime; // thời hạn xem
-
+    @DBRef(lazy = true)
     private List<Subtitle> subtitles = new ArrayList<>(); // danh sách phụ đề
+    @DBRef(lazy = true)
     private List<Narration> narrations = new ArrayList<>(); // danh sách thuyết minh
+    @DBRef(lazy = true)
     private List<Comment> comments = new ArrayList<>(); // danh sách bình luận
     @DBRef(lazy = true)
     private List<Genre> genres = new ArrayList<>(); // danh sách thể loại

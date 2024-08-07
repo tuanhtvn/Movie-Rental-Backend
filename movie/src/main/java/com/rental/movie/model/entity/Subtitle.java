@@ -14,4 +14,5 @@ public class Subtitle {
     private String id; // khóa chính
     private String subtitleName; // tên phụ đề
     private String subtitleUrl; // đường dẫn phụ đề
+    private String filmId; // id của phim chứa phụ đề
 }

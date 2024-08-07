@@ -27,7 +27,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         String contentType = file.getContentType();
         if (!this.isSupportedContentType(contentType)) {
             log.error("Unsupported content type: " + contentType);
-            throw new CustomException("Chỉ hỗ trợ ảnh định dạng PNG hoặc JPG", HttpStatus.BAD_REQUEST.value());
+            throw new CustomException("Chỉ hỗ trợ ảnh định dạng PNG, JPG, WEBP", HttpStatus.BAD_REQUEST.value());
         }
         Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), null);
         secureUrl = (String) result.get("secure_url");
@@ -49,6 +49,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private boolean isSupportedContentType(String contentType) {
         return contentType.equals("image/png")
                 || contentType.equals("image/jpg")
-                || contentType.equals("image/jpeg");
+                || contentType.equals("image/jpeg")
+                || contentType.equals("image/webp");
     }
 }
