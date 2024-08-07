@@ -38,6 +38,9 @@ public class GenreServiceImpl implements GenreService {
             log.error("No genres found");
             throw new CustomException("Không có thể loại nào", HttpStatus.NOT_FOUND.value());
         }
+        genres.getContent().stream().forEach(item ->
+                item.getFilm().stream().forEach(film -> System.out.println(film.getFilmName()))
+        );
         return genreMapper.convertToDTO(genres);
     }
 
