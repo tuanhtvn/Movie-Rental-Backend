@@ -14,4 +14,9 @@ public class UserInfoRequestDTO {
     @Schema(description = "Họ tên", example = "Huỳnh Thanh Tuấn")
     @JsonProperty("FullName")
     private String fullName;
+
+    @NotBlank(message = "Vui lòng chọn ảnh đại diện")
+    @Schema(description = "Ảnh đại diện", example = "https://res.cloudinary.com/dgpfsipnc/image/upload/v1723042655/rcs1oldxokpbhqbseqxx.jpg")
+    @JsonProperty("Avatar")
+    private String avatar;
 }

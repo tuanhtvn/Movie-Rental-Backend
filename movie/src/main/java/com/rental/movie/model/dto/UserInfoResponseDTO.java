@@ -10,6 +10,8 @@ import lombok.Data;
 public class UserInfoResponseDTO {
     @JsonProperty("FullName")
     private String fullName;
+    @JsonProperty("Avatar")
+    private String avatar;
     @JsonProperty("Email")
     private String email;
 }

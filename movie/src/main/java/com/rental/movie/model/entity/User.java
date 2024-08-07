@@ -23,6 +23,7 @@ public class User extends BaseEntity {
     @Id
     private String id; // khóa chính
     private String fullName; // họ tên
+    private String avatar = "https://res.cloudinary.com/dgpfsipnc/image/upload/v1723042655/rcs1oldxokpbhqbseqxx.jpg"; // ảnh đại diện
     private String email; // email
     private String password; // mật khẩu
     private String passwordUpdate; // mật khẩu cập nhật

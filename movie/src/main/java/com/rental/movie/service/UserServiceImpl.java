@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponseDTO updateUserInfo(UserInfoRequestDTO userInfoRequestDTO) {
         User user = authManager.getUserAuthentication();
         user.setFullName(userInfoRequestDTO.getFullName());
+        user.setAvatar(userInfoRequestDTO.getAvatar());
         userRepository.save(user);
         return modelMapper.map(user, UserInfoResponseDTO.class);
     }
