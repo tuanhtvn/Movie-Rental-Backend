@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.common.Role;
-import com.rental.movie.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserCreationDTO extends BaseResponseDTO {
+public class UserCreationDTO {
     @NotEmpty(message = "Vui lòng nhập họ tên")
     @Schema(description = "Họ tên", example = "Huỳnh Thanh Tuấn")
     @JsonProperty("FullName")

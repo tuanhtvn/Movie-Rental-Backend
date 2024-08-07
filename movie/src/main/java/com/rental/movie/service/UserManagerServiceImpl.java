@@ -2,18 +2,17 @@ package com.rental.movie.service;
 
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.model.dto.UserCreationDTO;
-import com.rental.movie.model.dto.UserInfoResponseDTO;
+import com.rental.movie.model.dto.UserResponseDTO;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.repository.UserManagerRepository;
 import com.rental.movie.util.mapper.UserCMapper;
-import com.rental.movie.util.mapper.UserManagerMapper;
 import com.rental.movie.repository.UserRepository;
+import com.rental.movie.util.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserManagerServiceImpl implements UserManagerService {
@@ -22,7 +21,7 @@ public class UserManagerServiceImpl implements UserManagerService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserManagerMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     private UserCMapper userCMapper;
@@ -55,8 +54,9 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
 
     @Override
-    public List<UserCreationDTO> getAllUsers() {
-        return userManagerRepository.findAll().stream().map(userCMapper::toDTO).collect(Collectors.toList());
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toResponseDTOList(users);
     }
 
     @Override
