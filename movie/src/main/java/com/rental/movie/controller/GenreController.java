@@ -86,6 +86,19 @@ public class GenreController {
                 genreService.getGenreById(genreId)));
     }
 
+    @Operation(summary = "Lấy tất cả film theo Id thể loại", description = "Lấy tất cả film theo Id thể loại")
+    @ApiResponse(responseCode = "200", description = "Tìm thấy film.")
+    @GetMapping("auth/genre/{genreId}/films")
+    public ResponseEntity<BaseResponse> getGenreById(
+            @ParameterObject Pageable pageable,
+            @PathVariable String genreId
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(
+                "Tìm thấy film",
+                HttpStatus.OK.value(),
+                genreService.getAllFilmByGenre(genreId, pageable)));
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @Operation(summary = "Tạo mới thể loại", description = "Tạo mới một thể loại")
     @ApiResponse(responseCode = "201", description = "Tạo thể loại mới thành công.")

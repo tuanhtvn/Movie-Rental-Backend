@@ -1,5 +1,6 @@
 package com.rental.movie.service;
 
+import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.GenreRequestDTO;
 import com.rental.movie.model.dto.GenreResponseDTO;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,5 @@ public interface GenreService {
 //    public void activateGenre(String genreId);
 //    public void deactivateGenre(String genreId);
     public boolean toggleActiveStatus(String genreId);
+    public Page<FilmResponseDTO> getAllFilmByGenre(String genreId, Pageable pageable);
 }

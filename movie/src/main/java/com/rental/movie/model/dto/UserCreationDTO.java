@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserCreationDTO {
+public class UserCreationDTO extends BaseResponseDTO {
     @NotEmpty(message = "Vui lòng nhập họ tên")
     @Schema(description = "Họ tên", example = "Huỳnh Thanh Tuấn")
     @JsonProperty("FullName")
