@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RatingRequestDTO {
 
+    @Schema(description = "Nhập id của phim", example = "66b23d8789c70b58fd667ec4")
     private String filmId;
     @Schema(description = "Chọn số sao đánh giá", example = "4")
     @NotBlank(message = "Bạn chưa chọn số sao tương ứng")
-    private int rating;
+    private Integer rating;
 }

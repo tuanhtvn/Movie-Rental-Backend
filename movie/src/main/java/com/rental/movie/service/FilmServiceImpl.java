@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.OptionalDouble;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.FilmResponseDTO;
@@ -134,30 +137,6 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        boolean anyGenreNotFound = filmDTO.getGenresId().stream().anyMatch(
-                (genreId) -> !genreRepository.existsById(genreId)
-        );
-        if(anyGenreNotFound) {
-            throw new CustomException("Genre không tồn tại", HttpStatus.NOT_FOUND.value());
-        }
-        boolean anySubtitleNotFound = filmDTO.getSubtitlesId().stream().anyMatch(
-                (subtitleId) -> !subtitleRepository.existsById(subtitleId)
-        );
-        if(anySubtitleNotFound) {
-            throw new CustomException("Subtitle không tồn tại", HttpStatus.NOT_FOUND.value());
-        }
-        boolean anyNarrationNotFound = filmDTO.getNarrationsId().stream().anyMatch(
-                (narrationId) -> !narrationRepository.existsById(narrationId)
-        );
-        if(anyNarrationNotFound) {
-            throw new CustomException("Narration không tồn tại", HttpStatus.NOT_FOUND.value());
-        }
-        boolean anyCommentNotFound = filmDTO.getCommentsId().stream().anyMatch(
-                (commentId) -> !commentRepository.existsById(commentId)
-        );
-        if(anyCommentNotFound) {
-            throw new CustomException("Comment không tồn tại", HttpStatus.NOT_FOUND.value());
-        }
         Film updateFilm = filmMapper.convertToEntity(filmDTO, film);
         return filmMapper.convertToDTO(filmRepository.save(updateFilm));
     }
@@ -219,6 +198,16 @@ public class FilmServiceImpl implements FilmService {
         filmRepository.save(film);
 
         return updatedRating;
+    }
+
+    public InputStream getFilmStream(String filmId, String range) throws Exception{
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+        URL url = new URL(film.getFilmUrl());
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if (range != null) {
+            connection.setRequestProperty("Range", range);
+        }
+        return connection.getInputStream();
     }
 
 }

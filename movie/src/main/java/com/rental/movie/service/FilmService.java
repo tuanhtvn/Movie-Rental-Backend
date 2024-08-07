@@ -5,6 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.entity.Film;
@@ -23,4 +27,5 @@ public interface FilmService {
     public FilmResponseDTO deactiveFilm(String filmId);
     public FilmResponseDTO restoreFilmById(String filmId);
     public double updateRating(RatingRequestDTO ratingRequestDTO);
+    public InputStream getFilmStream(String filmId, String range) throws Exception;
 }

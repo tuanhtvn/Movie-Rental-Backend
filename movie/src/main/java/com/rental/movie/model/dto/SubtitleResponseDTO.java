@@ -14,4 +14,6 @@ public class SubtitleResponseDTO {
     private String subtitleName;
     @JsonProperty("SubtitleUrl")
     private String subtitleUrl;
+    @JsonProperty("FilmId")
+    private String filmId;
 }

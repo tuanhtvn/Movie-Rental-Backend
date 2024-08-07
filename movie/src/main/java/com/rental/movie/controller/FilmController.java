@@ -11,12 +11,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springdoc.core.annotations.ParameterObject;
 
 import java.util.List;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import java.net.URL;
 
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.entity.Film;
+import com.rental.movie.model.entity.Subtitle;
 import com.rental.movie.service.FilmService;
+import com.rental.movie.service.SubtitleService;
 import com.rental.movie.model.dto.RatingRequestDTO;
 import com.rental.movie.exception.CustomException;
 
@@ -30,6 +37,8 @@ import jakarta.validation.Valid;
 public class FilmController {
      @Autowired
      private FilmService filmService;
+    @Autowired
+    private SubtitleService subtitleService;
 
      @Operation(summary = "Lấy danh sách tất cả phim đang hoạt động", description = "Lấy tất cả phim đã active và không xóa mềm") //isActive=true && isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
@@ -235,9 +244,65 @@ public class FilmController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Đánh giá phim", description = "Đánh giá phim dựa trên số sao đã chọn")
     @ApiResponse(responseCode = "200", description = "Đánh giá thành công")
-    @PostMapping("/rate/{filmId}")
+    @PostMapping("/film/rate/{filmId}")
     public double rateFilm(@RequestBody RatingRequestDTO ratingRequestDTO) {
         return filmService.updateRating(ratingRequestDTO);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Xem phim", description = "Xem phim người dùng đã thuê")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy phim!"),
+            @ApiResponse(responseCode = "200", description = "Xem phim thành công")
+    })
+    @GetMapping("/film/view/{filmId}")
+    public ResponseEntity<InputStreamResource> viewFilm(@PathVariable String filmId,
+                                                        @RequestHeader(value = "Range", required = false) String range) {
+        try {
+            InputStream inputStream = filmService.getFilmStream(filmId, range);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + filmId);
+            headers.add(HttpHeaders.CONTENT_TYPE, "video/mp4");
+
+            return new ResponseEntity<>(new InputStreamResource(inputStream), headers, range != null ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy danh sách phụ đề", description = "Lấy danh sách tất cả phụ đề của phim")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy Subtitle!"),
+            @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
+    })
+    @GetMapping("/film/subtitles/{filmId}")
+    public ResponseEntity<List<Subtitle>> listSubtitles(@PathVariable String filmId) {
+        List<Subtitle> subtitles = subtitleService.findByFilmId(filmId);
+        if (subtitles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(subtitles);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy phụ đề", description = "Lấy phụ đề theo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy Subtitle!"),
+            @ApiResponse(responseCode = "200", description = "Lấy phụ đề thành công")
+    })
+    @GetMapping("/film/getSubtitle/{id}")
+    public ResponseEntity<InputStreamResource> getSubtitle(@PathVariable String id) {
+        try {
+            InputStream inputStream = subtitleService.getSubtitleStream(id);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + id);
+            headers.add(HttpHeaders.CONTENT_TYPE, "text/vtt"); // Điều chỉnh theo định dạng của phụ đề
+
+            return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

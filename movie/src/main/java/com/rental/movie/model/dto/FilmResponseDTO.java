@@ -37,7 +37,7 @@ public class FilmResponseDTO extends BaseResponseDTO{
     @JsonProperty("Duration")
     private String duration;
     @JsonProperty("Actors")
-    private List<String> actors;
+    private String actors;
     @JsonProperty("Director")
     private String director;
     @JsonProperty("Language")

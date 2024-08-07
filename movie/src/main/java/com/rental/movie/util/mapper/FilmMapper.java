@@ -16,6 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.http.HttpStatus;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -41,54 +45,36 @@ public class FilmMapper {
         return films.map(this::convertToDTO);
     }
 
-    public Film convertToEntity(FilmRequestDTO filmDTO) {
-        Film film = modelMapper.map(filmDTO, Film.class);
-        // Map Genres
-        film.setGenres(filmDTO.getGenresId().stream().map(id -> {
-            return genreRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Genre", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Subtitles
-        film.setSubtitles(filmDTO.getSubtitlesId().stream().map(id -> {
-            return subtitleRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Subtitle", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Narrations
-        film.setNarrations(filmDTO.getNarrationsId().stream().map(id -> {
-            return narrationRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Narration", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Comments
-        film.setComments(filmDTO.getCommentsId().stream().map(id -> {
-            return commentRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Comment", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
+    public Film convertToEntity(FilmRequestDTO dto) {
+        Film film = modelMapper.map(dto, Film.class);
+
+        film.setGenres(mapIdsToEntities(dto.getGenresId(), genreRepository::findById, "Không tìm thấy Genre"));
+        film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
+        film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
+        film.setComments(mapIdsToEntities(dto.getCommentsId(), commentRepository::findById, "Không tìm thấy Comment"));
+
         return film;
     }
 
     // Overloading for update Film
     public Film convertToEntity(FilmRequestDTO dto, Film film) {
         modelMapper.map(dto, film);
-        // Map Genres
-        film.setGenres(dto.getGenresId().stream().map(id -> {
-            return genreRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Genre", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Subtitles
-        film.setSubtitles(dto.getSubtitlesId().stream().map(id -> {
-            return subtitleRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Subtitle", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Narrations
-        film.setNarrations(dto.getNarrationsId().stream().map(id -> {
-            return narrationRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Narration", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
-        // Map Comments
-        film.setComments(dto.getCommentsId().stream().map(id -> {
-            return commentRepository.findById(id).orElseThrow(
-                    () -> new CustomException("Không tìm thấy Comment", HttpStatus.NOT_FOUND.value()));
-        }).collect(Collectors.toList()));
+
+        film.setGenres(mapIdsToEntities(dto.getGenresId(), genreRepository::findById, "Không tìm thấy Genre"));
+        film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
+        film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
+        film.setComments(mapIdsToEntities(dto.getCommentsId(), commentRepository::findById, "Không tìm thấy Comment"));
+
         return film;
+    }
+
+    private <T> List<T> mapIdsToEntities(List<String> ids, Function<String, Optional<T>> repositoryMethod, String errorMessage) {
+        if (ids == null) {
+            return Collections.emptyList();
+        }
+        return ids.stream()
+                .map(id -> repositoryMethod.apply(id)
+                        .orElseThrow(() -> new CustomException(errorMessage, HttpStatus.NOT_FOUND.value())))
+                .collect(Collectors.toList());
     }
 }

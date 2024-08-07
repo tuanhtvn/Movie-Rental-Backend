@@ -38,9 +38,11 @@ public class Film extends BaseEntity {
     private RentalType rentalType; // loại thuê phim
     private Double price; // giá
     private Integer limitTime; // thời hạn xem
-
+    @DBRef(lazy = true)
     private List<Subtitle> subtitles = new ArrayList<>(); // danh sách phụ đề
+    @DBRef(lazy = true)
     private List<Narration> narrations = new ArrayList<>(); // danh sách thuyết minh
+    @DBRef(lazy = true)
     private List<Comment> comments = new ArrayList<>(); // danh sách bình luận
     @DBRef(lazy = true)
     private List<Genre> genres = new ArrayList<>(); // danh sách thể loại
