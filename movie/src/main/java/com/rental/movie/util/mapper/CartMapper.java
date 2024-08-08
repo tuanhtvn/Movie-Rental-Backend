@@ -11,45 +11,27 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class CartMapper {
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private FilmRepository filmRepository;
 
-    // Convert Item entity to CartResponseDTO.FilmDTO
-    public CartResponseDTO.FilmDTO convertToDTO(Item item) {
-        CartResponseDTO.FilmDTO filmDTO = new CartResponseDTO.FilmDTO();
-        modelMapper.map(item.getFilm(), filmDTO);
-        return filmDTO;
-    }
+    @Autowired
+    private FilmMapper filmMapper;
 
-    // Convert list of Item entities to CartResponseDTO
     public CartResponseDTO convertToDTO(User user) {
-        List<CartResponseDTO.FilmDTO> filmDTOs = user.getCart().stream()
-                .filter(item -> item.getFilm().getIsDeleted().equals(false))
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        CartResponseDTO cartResponseDTO = new CartResponseDTO();
-        cartResponseDTO.setFilms(filmDTOs);
-        return cartResponseDTO;
+        CartResponseDTO cartDTO = new CartResponseDTO();
+        cartDTO.setFilms(new ArrayList<>()); // Khởi tạo danh sách films
+
+        for (Item item : user.getCart()) {
+            if (item.getFilm().getIsDeleted())
+                user.getCart().remove(item);
+            else
+                cartDTO.getFilms().add(filmMapper.convertToDTO(item.getFilm()));
+        }
+        return cartDTO;
     }
 
-    // Convert CartRequestDTO to Item entity
-    public Item convertToEntity(CartRequestDTO dto) {
-        Film film = filmRepository.findById(dto.getFilmId()).orElseThrow(
-                () -> new NotFoundException("Không tìm thấy phim"));
-        Item item = new Item();
-        item.setFilm(film);
-        return item;
-    }
-
-    // Convert list of CartRequestDTO to list of Item entities
-    public List<Item> convertToEntity(List<CartRequestDTO> dtos) {
-        return dtos.stream().map(this::convertToEntity).collect(Collectors.toList());
-    }
 }
