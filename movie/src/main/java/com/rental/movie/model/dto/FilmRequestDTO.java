@@ -86,9 +86,9 @@ public class FilmRequestDTO {
     @JsonProperty("RentalType")
     private RentalType rentalType;
 
-    private List<String> subtitlesId = new ArrayList<>();
-    private List<String> narrationsId = new ArrayList<>();
-    private List<String> commentsId = new ArrayList<>();
-    private List<String> genresId = new ArrayList<>();
+    private List<String> subtitlesId;
+    private List<String> narrationsId;
+    private List<String> commentsId;
+    private List<String> genresId;
 
 }

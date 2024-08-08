@@ -58,4 +58,5 @@ public class FilmResponseDTO extends BaseResponseDTO{
     private List<NarrationResponseDTO> narrations = new ArrayList<>();
     private List<CommentResponseDTO> comments = new ArrayList<>();
     private List<GenreResponseDTO> genres = new ArrayList<>();
+
 }

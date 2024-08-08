@@ -4,6 +4,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -33,7 +35,7 @@ public class Film extends BaseEntity {
     private String director; // đạo diễn
     private String language; // ngôn ngữ
     private Integer numberOfViews; // số lượt xem
-    private List<Integer> ratings; // đánh giá
+    private Map<String, Integer> ratings = new HashMap<>(); // lưu trữ đánh giá của người dùng
     private Integer age; // độ tuổi
     private RentalType rentalType; // loại thuê phim
     private Double price; // giá

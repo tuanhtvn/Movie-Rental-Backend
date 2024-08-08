@@ -8,12 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
 import com.rental.movie.model.entity.Comment;
 import com.rental.movie.model.dto.CommentRequestDTO;
 import com.rental.movie.model.dto.CommentResponseDTO;
+import com.rental.movie.model.dto.CommentDTO;
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.service.CommentService;
 import com.rental.movie.exception.CustomException;
@@ -111,16 +115,19 @@ public class CommentController {
         }
     }
 
-    @Operation(summary = "Lấy danh sách bình luận theo ID phim", description = "Lấy danh sách bình luận theo ID phim")
+    @Operation(summary = "Lấy danh sách bình luận theo ID phim với phân trang", description = "Lấy danh sách bình luận theo ID phim với phân trang")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
+            @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
     @GetMapping("/auth/comment/{filmId}")
-    public ResponseEntity<BaseResponse> getCommentsByFilmId(@PathVariable String filmId) {
+    public ResponseEntity<BaseResponse> getCommentsByFilmId(
+            @PathVariable String filmId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         try {
-            List<CommentResponseDTO> comments = commentService.getCommentsByFilmId(filmId);
-            BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), comments);
+            Page<CommentResponseDTO> commentsPage = commentService.getCommentsByFilmId(filmId, page, size);
+            BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), commentsPage);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
@@ -128,4 +135,24 @@ public class CommentController {
         }
     }
 
+    @Operation(summary = "Lấy danh sách bình luận theo ID phim có định dạng", description = "Lấy danh sách bình luận theo ID phim với phân trang và thông tin bổ sung")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
+    })
+    @GetMapping("/auth/comment/user/{filmId}")
+    public ResponseEntity<BaseResponse> getCommentFilm(
+            @PathVariable String filmId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            String currentUserId = SecurityContextHolder.getContext().getAuthentication().getName();
+            Page<CommentDTO> commentsPage = commentService.getCommentFilm(filmId, page, size, currentUserId);
+            BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), commentsPage);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
 }
