@@ -20,7 +20,7 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private FilmRepository filmRepository;
+    private FilmService filmService;
     @Autowired
     private CartMapper cartMapper;
     @Lazy
@@ -28,9 +28,10 @@ public class CartServiceImpl implements CartService {
     private IAuthentication authManager;
 
     @Override
-    public void addToCart(CartRequestDTO cartRequestDTO) {
+    public void addToCart(String filmId) {
         User user = authManager.getUserAuthentication();
-        Item item = cartMapper.convertToEntity(cartRequestDTO);
+        Item item = new Item();
+        item.setFilm(filmService.getById(filmId));
         user.getCart().add(item);
         userRepository.save(user);
     }
@@ -51,10 +52,5 @@ public class CartServiceImpl implements CartService {
 
         user.getCart().remove(itemToRemove);
         userRepository.save(user);
-    }
-
-    private User getAuthenticatedUser() {
-        // Implement method to get authenticated user, e.g., from SecurityContext
-        return null; // Replace with actual implementation
     }
 }

@@ -4,7 +4,7 @@ import com.rental.movie.model.dto.CartRequestDTO;
 import com.rental.movie.model.dto.CartResponseDTO;
 
 public interface CartService {
-    void addToCart(CartRequestDTO cartRequestDTO);
+    void addToCart(String filmId);
     CartResponseDTO viewCart();
     void removeFromCart(String filmId);
 }
