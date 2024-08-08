@@ -86,9 +86,20 @@ public class FilmRequestDTO {
     @JsonProperty("RentalType")
     private RentalType rentalType;
 
+    @Schema(description = "Danh sách các phụ đề")
+    @JsonProperty("SubtitlesId")
     private List<String> subtitlesId;
+
+    @Schema(description = "Danh sách các thuyết minh")
+    @JsonProperty("NarrationsId")
     private List<String> narrationsId;
+
+    @Schema(description = "Danh sách các bình luận")
+    @JsonProperty("CommentsId")
     private List<String> commentsId;
+
+    @Schema(description = "Danh sách các thể loại")
+    @JsonProperty("GenresId")
     private List<String> genresId;
 
 }

@@ -8,6 +8,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.rental.movie.common.RentalType;
 
@@ -45,7 +47,7 @@ public class FilmResponseDTO extends BaseResponseDTO{
     @JsonProperty("NumberOfViews")
     private Integer numberOfViews;
     @JsonProperty("Rating")
-    private Double rating;
+    private Map<String, Integer> ratings;
     @JsonProperty("Age")
     private Integer age;
     @JsonProperty("Price")
