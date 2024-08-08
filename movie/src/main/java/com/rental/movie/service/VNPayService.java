@@ -27,14 +27,15 @@ public class VNPayService {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
     private VNPayUtils vnPayUtils;
 
-    public boolean validatePayment(Map<String, String> params) {
-        String vnpSecureHash = params.remove("vnp_SecureHash");
-        String generatedSignature = vnPayUtils.hmacSHA512(vnPayConfig.getHashSecret(),params.toString());
-
-        return vnpSecureHash.equalsIgnoreCase(generatedSignature);
-    }
+//    public boolean validatePayment(Map<String, String> params) {
+//        String vnpSecureHash = params.remove("vnp_SecureHash");
+//        String generatedSignature = vnPayUtils.hmacSHA512(vnPayConfig.getHashSecret(),params.toString());
+//
+//        return vnpSecureHash.equalsIgnoreCase(generatedSignature);
+//    }
     public static String getIpAddress(HttpServletRequest request) {
         String ipAdress;
         try {
@@ -99,7 +100,7 @@ public class VNPayService {
         Iterator itr = fieldNames.iterator();
         while (itr.hasNext()) {
             String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
                 hashData.append(fieldName);
