@@ -1,13 +1,14 @@
 package com.rental.movie.service;
 
 import com.rental.movie.model.dto.NotificationDTO;
+import com.rental.movie.model.dto.NotificationResponseDTO;
+
 import java.util.List;
 
 public interface NotificationService {
     NotificationDTO createNotification(NotificationDTO notificationDTO);
-    NotificationDTO getNotificationById(String id);
-    List<NotificationDTO> getAllNotifications();
-    List<NotificationDTO> getNotificationsByUserId(String userId);
+    List<NotificationResponseDTO> getAllNotifications();
+    List<NotificationResponseDTO> getNotificationsByUserId(String userId);
     List<NotificationDTO> getUnreadNotificationsByUserId(String userId);
     NotificationDTO updateNotification(String id, NotificationDTO notificationDTO);
     void deleteNotification(String id);

@@ -1,6 +1,7 @@
 package com.rental.movie.service;
 
 import com.rental.movie.model.dto.NotificationDTO;
+import com.rental.movie.model.dto.NotificationResponseDTO;
 import com.rental.movie.util.mapper.NotificationMapper;
 import com.rental.movie.model.entity.Notification;
 import com.rental.movie.repository.NotificationRepository;
@@ -33,26 +34,15 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDTO getNotificationById(String id) {
-        Notification notification = notificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông báo"));
-        return notificationMapper.toDTO(notification);
-    }
-
-    @Override
-    public List<NotificationDTO> getAllNotifications() {
+    public List<NotificationResponseDTO> getAllNotifications() {
         List<Notification> notifications = notificationRepository.findAll();
-        return notifications.stream()
-                .map(notificationMapper::toDTO)
-                .collect(Collectors.toList());
+        return notificationMapper.notificationResponseDTOSList(notifications);
     }
 
     @Override
-    public List<NotificationDTO> getNotificationsByUserId(String userId) {
+    public List<NotificationResponseDTO> getNotificationsByUserId(String userId) {
         List<Notification> notifications = notificationRepository.findByUserId(userId);
-        return notifications.stream()
-                .map(notificationMapper::toDTO)
-                .collect(Collectors.toList());
+        return notificationMapper.notificationResponseDTOSList(notifications);
     }
 
     @Override

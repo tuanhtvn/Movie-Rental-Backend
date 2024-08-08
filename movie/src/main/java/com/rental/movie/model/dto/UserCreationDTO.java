@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.common.Role;
-import com.rental.movie.model.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

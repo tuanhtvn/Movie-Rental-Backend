@@ -1,6 +1,7 @@
 package com.rental.movie.controller;
 
 import com.rental.movie.model.dto.NotificationDTO;
+import com.rental.movie.model.dto.NotificationResponseDTO;
 import com.rental.movie.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,26 +38,14 @@ public class NotificationController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
-    @Operation(summary = "Tìm thông báo theo id",description = "Tìm thông báo theo id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tìm thông báo theo id thành công"),
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
-    })
-    @GetMapping("/notifications/{id}")
-    public ResponseEntity<NotificationDTO> getNotificationById(@PathVariable String id) {
-        NotificationDTO notification = notificationService.getNotificationById(id);
-        return ResponseEntity.ok(notification);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPLOYEE')")
     @Operation(summary = "Lấy danh sách tất cả thông báo",description = "Lấy tất cả thông báo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lấy tất cả thông báo thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
-    @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationDTO>> getAllNotifications() {
-        List<NotificationDTO> notifications = notificationService.getAllNotifications();
+    @GetMapping("/getAll")
+    public ResponseEntity<List<NotificationResponseDTO>> getAllNotifications() {
+        List<NotificationResponseDTO> notifications = notificationService.getAllNotifications();
         return ResponseEntity.ok(notifications);
     }
 
@@ -67,8 +56,8 @@ public class NotificationController {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
     @GetMapping("/notifications/user/{userId}")
-    public ResponseEntity<List<NotificationDTO>> getNotificationsByUserId(@PathVariable String userId) {
-        List<NotificationDTO> notifications = notificationService.getNotificationsByUserId(userId);
+    public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserId(@PathVariable String userId) {
+        List<NotificationResponseDTO> notifications = notificationService.getNotificationsByUserId(userId);
         return ResponseEntity.ok(notifications);
     }
 
@@ -78,7 +67,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Lấy thông báo chưa đọc theo id người dùng thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
-    @GetMapping("/user/{userId}/unread")
+    @GetMapping("/{userId}/unread")
     public ResponseEntity<List<NotificationDTO>> getUnreadNotificationsByUserId(@PathVariable String userId) {
         List<NotificationDTO> notifications = notificationService.getUnreadNotificationsByUserId(userId);
         return ResponseEntity.ok(notifications);
@@ -90,7 +79,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Cập nhật thông báo thành công"),
             @ApiResponse(responseCode = "404", description = "Cập nhật thông báo thất bại")
     })
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<NotificationDTO> updateNotification(@PathVariable String id, @RequestBody NotificationDTO notificationDTO) {
         NotificationDTO updatedNotification = notificationService.updateNotification(id, notificationDTO);
         return ResponseEntity.ok(updatedNotification);
@@ -102,7 +91,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Xóa thông báo thành công"),
             @ApiResponse(responseCode = "404", description = "Xóa thông báo thất bại")
     })
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteNotification(@PathVariable String id) {
         notificationService.deleteNotification(id);
         return ResponseEntity.noContent().build();
@@ -114,7 +103,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Đánh dấu thông báo đã đọc thành công"),
             @ApiResponse(responseCode = "404", description = "Đánh dấu thông báo đã đọc thất bại")
     })
-    @PatchMapping("/mark-read/{id}")
+    @PatchMapping("/{id}/mark-read")
     public ResponseEntity<Void> markNotificationAsRead(@PathVariable String id) {
         notificationService.markNotificationAsRead(id);
         return ResponseEntity.noContent().build();

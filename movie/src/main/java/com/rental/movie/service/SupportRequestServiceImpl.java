@@ -2,6 +2,7 @@ package com.rental.movie.service;
 
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.model.dto.SupportRequestDTO;
+import com.rental.movie.model.dto.SupportRequestResponseDTO;
 import com.rental.movie.util.mapper.SupportRequestMapper;
 import com.rental.movie.model.entity.SupportRequest;
 import com.rental.movie.repository.SupportRequestRepository;
@@ -39,34 +40,21 @@ public class SupportRequestServiceImpl implements SupportRequestService {
     }
 
     @Override
-    public SupportRequestDTO getSupportRequestById(String id) {
-        SupportRequest supportRequest = supportRequestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy yêu cầu hỗ trợ"));
-        return supportRequestMapper.toDTO(supportRequest);
-    }
-
-    @Override
-    public List<SupportRequestDTO> getAllSupportRequests() {
+    public List<SupportRequestResponseDTO> getAllSupportRequests() {
         List<SupportRequest> supportRequests = supportRequestRepository.findAll();
-        return supportRequests.stream()
-                .map(supportRequestMapper::toDTO)
-                .collect(Collectors.toList());
+        return supportRequestMapper.supportRequestResponseDTOSList(supportRequests);
     }
 
     @Override
-    public List<SupportRequestDTO> getSupportRequestsByUserId(String userId) {
+    public List<SupportRequestResponseDTO> getSupportRequestsByUserId(String userId) {
         List<SupportRequest> supportRequests = supportRequestRepository.findByUserId(userId);
-        return supportRequests.stream()
-                .map(supportRequestMapper::toDTO)
-                .collect(Collectors.toList());
+        return supportRequestMapper.supportRequestResponseDTOSList(supportRequests);
     }
 
     @Override
-    public List<SupportRequestDTO> getUnresolvedSupportRequests() {
+    public List<SupportRequestResponseDTO> getUnresolvedSupportRequests() {
         List<SupportRequest> supportRequests = supportRequestRepository.findByIsResolved(false);
-        return supportRequests.stream()
-                .map(supportRequestMapper::toDTO)
-                .collect(Collectors.toList());
+        return supportRequestMapper.supportRequestResponseDTOSList(supportRequests);
     }
 
     @Override

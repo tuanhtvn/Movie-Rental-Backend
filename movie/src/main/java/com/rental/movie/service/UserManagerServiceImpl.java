@@ -2,17 +2,17 @@ package com.rental.movie.service;
 
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.model.dto.UserCreationDTO;
-import com.rental.movie.model.dto.UserInfoResponseDTO;
+import com.rental.movie.model.dto.UserResponseDTO;
 import com.rental.movie.model.entity.User;
+import com.rental.movie.repository.UserManagerRepository;
 import com.rental.movie.util.mapper.UserCMapper;
-import com.rental.movie.util.mapper.UserManagerMapper;
 import com.rental.movie.repository.UserRepository;
+import com.rental.movie.util.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserManagerServiceImpl implements UserManagerService {
@@ -21,10 +21,13 @@ public class UserManagerServiceImpl implements UserManagerService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserManagerMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     private UserCMapper userCMapper;
+
+    @Autowired
+    private UserManagerRepository userManagerRepository;
 
     @Override
     public UserCreationDTO createUser(UserCreationDTO userDTO) {
@@ -37,23 +40,23 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
 
     @Override
-    public UserInfoResponseDTO updateUser(String id, UserInfoResponseDTO userDTO) {
+    public UserCreationDTO updateUser(String id, UserCreationDTO userDTO) {
+        String hashedPassword = BCrypt.hashpw(userDTO.getPassword(), BCrypt.gensalt());
+        userDTO.setPassword(hashedPassword);
         User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
         existingUser.setEmail(userDTO.getEmail());
         existingUser.setFullName(userDTO.getFullName());
+        existingUser.setPassword(hashedPassword);
+        existingUser.setAuthProvider(userDTO.getAuthProvider());
+        existingUser.setRole(userDTO.getRole());
         existingUser = userRepository.save(existingUser);
-        return userMapper.toDTO(existingUser);
+        return userCMapper.toDTO(existingUser);
     }
 
     @Override
-    public UserInfoResponseDTO getUserById(String id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
-        return userMapper.toDTO(user);
-    }
-
-    @Override
-    public List<UserInfoResponseDTO> getAllUsers() {
-        return userRepository.findAll().stream().map(userMapper::toDTO).collect(Collectors.toList());
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.toResponseDTOList(users);
     }
 
     @Override

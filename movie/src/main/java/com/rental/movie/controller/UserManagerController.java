@@ -1,14 +1,12 @@
 package com.rental.movie.controller;
 
-import com.rental.movie.common.BaseResponse;
 import com.rental.movie.model.dto.UserCreationDTO;
-import com.rental.movie.model.dto.UserInfoResponseDTO;
+import com.rental.movie.model.dto.UserResponseDTO;
 import com.rental.movie.service.UserManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +39,7 @@ public class UserManagerController {
             @ApiResponse(responseCode = "404", description = "Update người dùng thất bại")
     })
     @PutMapping("/{id}/update")
-    public ResponseEntity<UserInfoResponseDTO> updateUser(@PathVariable String id, @RequestBody UserInfoResponseDTO userDTO) {
+    public ResponseEntity<UserCreationDTO> updateUser(@PathVariable String id, @RequestBody UserCreationDTO userDTO) {
         return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
@@ -52,7 +50,7 @@ public class UserManagerController {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng")
     })
     @GetMapping("/getAll")
-    public ResponseEntity<List<UserInfoResponseDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 

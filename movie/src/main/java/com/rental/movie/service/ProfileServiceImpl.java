@@ -149,6 +149,10 @@ public class ProfileServiceImpl implements ProfileService {
         User user = authManager.getUserAuthentication();
         Profile profile = getById(profileId, user);
         log.info("Get all films for profile id: {} for user id: {}", profileId, user.getId());
+        List<Film> filmsDeletedOrDeactivated = profile.getSelectedMovies().stream()
+                .filter(film -> (film.getIsDeleted() || !film.getIsActive())).toList();
+        profile.getSelectedMovies().removeAll(filmsDeletedOrDeactivated);
+        userService.save(user);
         List<Film> films = profile.getSelectedMovies();
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), films.size());
