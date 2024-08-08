@@ -31,6 +31,7 @@ public class CartMapper {
     // Convert list of Item entities to CartResponseDTO
     public CartResponseDTO convertToDTO(User user) {
         List<CartResponseDTO.FilmDTO> filmDTOs = user.getCart().stream()
+                .filter(item -> item.getFilm().getIsDeleted().equals(false))
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
