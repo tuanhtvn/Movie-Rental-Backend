@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.common.Role;
+import com.rental.movie.common.TokenResponse;
 import com.rental.movie.config.AppConfig;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.service.TokenService;
@@ -75,11 +76,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         });
         this.message = this.encoder.encode(this.message);
         if (this.user != null) {
+            TokenResponse tokenResponse = this.tokenService.getToken(this.user.getId(), this.user.getRole(), request);
             targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("status", this.status)
                     .queryParam("message", this.message)
                     .queryParam("iduser", this.user.getId())
-                    .queryParam("token", this.tokenService.getToken(this.user.getId(), this.user.getRole(), request))
+                    .queryParam("token", tokenResponse.getToken())
+                    .queryParam("expiredat", tokenResponse.getExpiredAt())
                     .queryParam("fullname", this.encoder.encode(this.user.getFullName()))
                     .queryParam("role", this.user.getRole())
                     .build().toUriString();

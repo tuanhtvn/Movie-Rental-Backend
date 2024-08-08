@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.rental.movie.common.AuthProvider;
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
+import com.rental.movie.common.TokenResponse;
 import com.rental.movie.config.AppConfig;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.ForgotPasswordRequestDTO;
@@ -65,12 +66,15 @@ public class AuthServiceImpl implements AuthService {
                     // check password
                     if (BCrypt.checkpw(loginRequestDTO.getPassword(), user.getPassword())) {
                         log.info("Login success: " + loginRequestDTO.getEmail());
-                        return LoginResponseDTO.builder()
+                        LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
                                 .idUser(user.getId())
-                                .token(tokenService.getToken(user.getId(), user.getRole(), request))
                                 .fullName(user.getFullName())
                                 .role(user.getRole().name())
                                 .build();
+                        TokenResponse tokenResponse = tokenService.getToken(user.getId(), user.getRole(), request);
+                        loginResponseDTO.setToken(tokenResponse.getToken());
+                        loginResponseDTO.setExpiredAt(tokenResponse.getExpiredAt());
+                        return loginResponseDTO;
                     } else {
                         log.error("Password is incorrect: " + loginRequestDTO.getEmail());
                         throw new CustomException("Tài khoản hoặc mật khẩu không chính xác",

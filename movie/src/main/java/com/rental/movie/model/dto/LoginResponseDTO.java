@@ -18,4 +18,6 @@ public class LoginResponseDTO {
     private String fullName;
     @JsonProperty("Token")
     private String token;
+    @JsonProperty("ExpiredAt")
+    private String expiredAt;
 }

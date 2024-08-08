@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.google.common.hash.Hashing;
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
+import com.rental.movie.common.TokenResponse;
 import com.rental.movie.config.AppConfig;
 import com.rental.movie.model.entity.User;
 
@@ -36,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
     private IAuthentication authManager;
 
     @Override
-    public String getToken(String userId, Role role, HttpServletRequest request) {
+    public TokenResponse getToken(String userId, Role role, HttpServletRequest request) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(appConfig.getExpiresTime(), ChronoUnit.DAYS);
 
@@ -54,7 +55,10 @@ public class TokenServiceImpl implements TokenService {
         if (role.equals(Role.USER)) {
             deviceService.add(userId, hashString(token), request, expiresAt, now);
         }
-        return token;
+        return TokenResponse.builder()
+                .token(token)
+                .expiredAt(expiresAt)
+                .build();
     }
 
     @Override
