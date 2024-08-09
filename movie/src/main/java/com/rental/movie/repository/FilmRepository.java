@@ -2,6 +2,7 @@ package com.rental.movie.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ public interface FilmRepository extends MongoRepository<Film, String> {
     @Query("{ '_id': ?0}")
     public Optional<Film> findByIdDefault(String id);
 
-    @Query("{ '_id': ?0, 'isDeleted': false }")
+    @Query("{ '_id': ?0, 'isDeleted': false, 'isActive': true }")
     public Optional<Film> findById(String id);
 
     @Query("{ 'filmName': { $regex: ?0, $options: 'i' }, 'isDeleted': false, 'isActive': true }")
@@ -42,4 +43,6 @@ public interface FilmRepository extends MongoRepository<Film, String> {
 
     @Query("{ 'comments.id': ?0 }")
     List<Film> findByCommentsId(String commentId);
+    @Query(value = "{}", sort = "{ 'numberOfViews': -1 }")
+    List<Film> findTop5Film(PageRequest pageRequest);
 }

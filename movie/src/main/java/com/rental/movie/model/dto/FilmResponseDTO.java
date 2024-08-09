@@ -39,14 +39,14 @@ public class FilmResponseDTO extends BaseResponseDTO{
     @JsonProperty("Duration")
     private String duration;
     @JsonProperty("Actors")
-    private String actors;
+    private List<String> actors;
     @JsonProperty("Director")
     private String director;
     @JsonProperty("Language")
     private String language;
     @JsonProperty("NumberOfViews")
     private Integer numberOfViews;
-    @JsonProperty("Rating")
+    @JsonProperty("Ratings")
     private Map<String, Integer> ratings;
     @JsonProperty("Age")
     private Integer age;
@@ -58,7 +58,7 @@ public class FilmResponseDTO extends BaseResponseDTO{
     private RentalType rentalType;
     private List<SubtitleResponseDTO> subtitles = new ArrayList<>();
     private List<NarrationResponseDTO> narrations = new ArrayList<>();
-    private List<CommentResponseDTO> comments = new ArrayList<>();
-    private List<GenreResponseDTO> genres = new ArrayList<>();
+    private List<String> comments = new ArrayList<>();
+    private List<String> genres = new ArrayList<>();
 
 }

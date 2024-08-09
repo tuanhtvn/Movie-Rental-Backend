@@ -47,24 +47,32 @@ public class FilmMapper {
 
     public Film convertToEntity(FilmRequestDTO dto) {
         Film film = modelMapper.map(dto, Film.class);
-
-        film.setGenres(mapIdsToEntities(dto.getGenresId(), genreRepository::findById, "Không tìm thấy Genre"));
+        film.setGenresId(
+                dto.getGenresId() == null ? null : dto.getGenresId().stream().map(genreId -> {
+                    genreRepository.findById(genreId).orElseThrow(
+                            () -> new CustomException("Không tìm thấy thể loại", HttpStatus.NOT_FOUND.value()));
+                    return genreId;
+                }).collect(Collectors.toList())
+        );
         film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
         film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
-        film.setComments(mapIdsToEntities(dto.getCommentsId(), commentRepository::findById, "Không tìm thấy Comment"));
-
+        film.setActors(dto.getActors());
         return film;
     }
 
     // Overloading for update Film
     public Film convertToEntity(FilmRequestDTO dto, Film film) {
         modelMapper.map(dto, film);
-
-        film.setGenres(mapIdsToEntities(dto.getGenresId(), genreRepository::findById, "Không tìm thấy Genre"));
+        film.setGenresId(
+                dto.getGenresId() == null ? null : dto.getGenresId().stream().map(genreId -> {
+                    genreRepository.findById(genreId).orElseThrow(
+                            () -> new CustomException("Không tìm thấy thể loại", HttpStatus.NOT_FOUND.value()));
+                    return genreId;
+                }).collect(Collectors.toList())
+        );
         film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
         film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
-        film.setComments(mapIdsToEntities(dto.getCommentsId(), commentRepository::findById, "Không tìm thấy Comment"));
-
+        film.setActors(dto.getActors());
         return film;
     }
 

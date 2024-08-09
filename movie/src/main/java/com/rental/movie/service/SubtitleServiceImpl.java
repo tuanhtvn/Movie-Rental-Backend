@@ -151,15 +151,8 @@ public class SubtitleServiceImpl implements SubtitleService {
                 .collect(Collectors.toList());
     }
 
-    public InputStream getSubtitleStream(String subtitleId) throws Exception {
-        Subtitle subtitle = subtitleRepository.findById(subtitleId).orElseThrow(() -> new CustomException("Không tìm thấy Subtitle", HttpStatus.NOT_FOUND.value()));
-        URL url = new URL(subtitle.getSubtitleUrl());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        return connection.getInputStream();
-    }
-
-    public List<Subtitle> findByFilmId(String filmId) {
-        return subtitleRepository.findByFilmId(filmId);
-    }
+//    public List<Subtitle> findByFilmId(String filmId) {
+//        return subtitleRepository.findByFilmId(filmId);
+//    }
 
 }

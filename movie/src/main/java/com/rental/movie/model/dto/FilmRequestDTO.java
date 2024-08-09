@@ -58,9 +58,9 @@ public class FilmRequestDTO {
     @JsonProperty("Duration")
     private String duration;
 
-    @Schema(description = "Diễn viên", example = "Trấn Thành, Lê Giang")
+    @Schema(description = "Diễn viên", example = "Trấn Thành")
     @JsonProperty("Actors")
-    private String actors;
+    private List<String> actors;
 
     @Schema(description = "Đạo diễn", example = "Trấn Thành")
     @JsonProperty("Director")
@@ -93,10 +93,6 @@ public class FilmRequestDTO {
     @Schema(description = "Danh sách các thuyết minh")
     @JsonProperty("NarrationsId")
     private List<String> narrationsId;
-
-    @Schema(description = "Danh sách các bình luận")
-    @JsonProperty("CommentsId")
-    private List<String> commentsId;
 
     @Schema(description = "Danh sách các thể loại")
     @JsonProperty("GenresId")

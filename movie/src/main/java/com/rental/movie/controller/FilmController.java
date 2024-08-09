@@ -20,6 +20,7 @@ import java.net.URL;
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
+import com.rental.movie.model.dto.FilmDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.model.entity.Subtitle;
 import com.rental.movie.service.FilmService;
@@ -99,7 +100,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Không có phim"),
              @ApiResponse(responseCode = "200", description = "Tìm thành công")
      })
-     @GetMapping("auth/films/search")
+     @GetMapping("/auth/films/search")
      public ResponseEntity<BaseResponse> searchFilmByName(@RequestParam String keywords) {
          try {
              List<Film> films = filmService.searchFilmByName(keywords);
@@ -264,6 +265,67 @@ public class FilmController {
         try {
             Double avgRating = filmService.getRating(filmId);
             BaseResponse response = new BaseResponse("Lấy đánh giá thành công", HttpStatus.OK.value(), avgRating);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Lấy 5 phim hot nhất", description = "Lấy 5 phim có số lượt xem cao nhất")
+    @ApiResponse(responseCode = "200", description = "Lấy phim thành công")
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy phim")
+    @GetMapping("/auth/film/top5")
+    public ResponseEntity<BaseResponse> getTop5HotFilm() {
+        try {
+            List<FilmDTO> top5Films = filmService.getTop5HotFilm();
+            BaseResponse response = new BaseResponse("Lấy phim thành công", HttpStatus.OK.value(), top5Films);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Lấy tên thể loại của phim", description = "Lấy danh sách các thể loại của phim hiện tại")
+    @ApiResponse(responseCode = "200", description = "Lấy danh sách thể loại thành công")
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy thể loại hoặc phim")
+    @GetMapping("/auth/film/getGenres/{filmId}")
+    public ResponseEntity<BaseResponse> getGenresOfFilm(@PathVariable String filmId) {
+        try {
+            List<String> genres = filmService.getGenresOfFilm(filmId);
+            BaseResponse response = new BaseResponse("Lấy danh sách thể loại thành công", HttpStatus.OK.value(), genres);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            BaseResponse response = new BaseResponse("Không tìm thấy thể loại hoặc phim", HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Lấy danh sách diễn viên của phim", description = "Lấy danh sách các diễn viên của phim hiện tại")
+    @ApiResponse(responseCode = "200", description = "Lấy danh sách diễn viên thành công")
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy phim")
+    @GetMapping("/auth/film/getActors/{filmId}")
+    public ResponseEntity<BaseResponse> getActorsOfFilm(@PathVariable String filmId) {
+        try {
+            List<String> actors = filmService.getActorsOfFilm(filmId);
+            BaseResponse response = new BaseResponse("Lấy danh sách diễn viên thành công", HttpStatus.OK.value(), actors);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Tăng số lượt xem của phim", description = "Tăng số lượt xem của phim khi người dùng xem phim")
+    @ApiResponse(responseCode = "200", description = "Cập nhật số lượt xem thành công")
+    @ApiResponse(responseCode = "404", description = "Không tìm thấy phim")
+    @PostMapping("/film/view/{filmId}")
+    public ResponseEntity<BaseResponse> incrementFilmViews(@PathVariable String filmId) {
+        try {
+            filmService.incrementViews(filmId);
+            BaseResponse response = new BaseResponse("Cập nhật số lượt xem thành công", HttpStatus.OK.value(), null);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);

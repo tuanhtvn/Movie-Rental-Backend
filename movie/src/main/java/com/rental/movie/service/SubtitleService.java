@@ -23,6 +23,5 @@ public interface SubtitleService {
     public FilmResponseDTO removeSubtitle(String subtitleId, String filmId);
     public List<SubtitleResponseDTO> getAllSubtitles();
     public List<SubtitleResponseDTO> getAllSubtitlesByFilmId(String filmId);
-    public InputStream getSubtitleStream(String subtitleId) throws Exception;
-    public List<Subtitle> findByFilmId(String filmId);
+    //public List<Subtitle> findByFilmId(String filmId);
 }

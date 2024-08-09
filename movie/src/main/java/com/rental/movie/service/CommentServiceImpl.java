@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentMapper.convertToEntity(commentDTO);
         Comment savedComment = commentRepository.save(comment);
-        film.getComments().add(savedComment);
+        film.getCommentsId().add(savedComment.getId());
         filmRepository.save(film);
         return commentMapper.convertToDTO(savedComment);
     }
