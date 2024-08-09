@@ -25,11 +25,6 @@ public class UserCreationDTO {
     @JsonProperty("FullName")
     private String fullName;
 
-    @NotEmpty(message = "Vui lòng đường dẫn avatar")
-    @Schema(description = "Ảnh đại diện", example = "https://image.jpg")
-    @JsonProperty("Avatar")
-    private String avatar;
-
     @NotEmpty(message = "Vui lòng nhập email")
     @Email(message = "Vui lòng nhập đúng định dạng email")
     @Schema(description = "Email", example = "huynhthanhtuan2206@gmail.com")

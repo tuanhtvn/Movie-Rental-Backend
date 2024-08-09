@@ -17,11 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class UserResponseDTO {
     @JsonProperty("Id")
-    private String id; // khóa chính
+    private String id;
     @JsonProperty("FullName")
     private String fullName;
-    @JsonProperty("Avatar")
-    private String avatar;
     @JsonProperty("Email")
     private String email;
     @JsonProperty("Password")
