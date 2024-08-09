@@ -22,9 +22,9 @@ public class CartController {
 
     @Operation(summary = "Thêm phim vào giỏ hàng", description = "API thêm phim vào giỏ hàng")
     @ApiResponse(responseCode = "200", description = "Thêm phim vào giỏ hàng thành công")
-    @PostMapping("/add")
-    public ResponseEntity<BaseResponse> addToCart(@RequestBody @Valid CartRequestDTO cartRequestDTO) {
-        cartService.addToCart(cartRequestDTO);
+    @PostMapping("/add/{filmId}")
+    public ResponseEntity<BaseResponse> addToCart(@PathVariable("filmId") String filmId) {
+        cartService.addToCart(filmId);
         BaseResponse response = BaseResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("Thêm phim vào giỏ hàng thành công")

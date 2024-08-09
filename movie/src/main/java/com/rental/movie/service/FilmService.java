@@ -26,6 +26,7 @@ public interface FilmService {
     public FilmResponseDTO activeFilm(String filmId);
     public FilmResponseDTO deactiveFilm(String filmId);
     public FilmResponseDTO restoreFilmById(String filmId);
-    public double updateRating(RatingRequestDTO ratingRequestDTO);
-    public InputStream getFilmStream(String filmId, String range) throws Exception;
+    public Double rateFilm(String filmId, RatingRequestDTO ratingRequestDTO);
+    public Double getRating(String filmId);
+    //public InputStream getFilmStream(String filmId, String range) throws Exception;
 }

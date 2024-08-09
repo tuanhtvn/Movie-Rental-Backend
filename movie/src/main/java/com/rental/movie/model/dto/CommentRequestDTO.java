@@ -11,14 +11,17 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommentRequestDTO extends BaseRequestDTO {
+public class CommentRequestDTO {
     @Schema(description = "Nội dung bình luận", example = "Phim rất hay!")
     @JsonProperty("text")
     @NotBlank(message = "Nội dung bình luận không được để trống")
     private String text;
-
     @Schema(description = "Người dùng bình luận", example = "669cc7e87d5a4d563f8b60e7")
-    @JsonProperty("idUser")
-    @NotBlank(message = "ID người dùng không được để trống")
+    @JsonProperty("IdUser")
+    @NotBlank(message = "ID hồ sơ không được để trống")
     private String idUser;
+    @Schema(description = "Bình luận của phim", example = "66b10fe0c01aaf371f3cf96e")
+    @JsonProperty("FilmId")
+    @NotBlank(message = "ID của phim không được để trống")
+    private String filmId;
 }

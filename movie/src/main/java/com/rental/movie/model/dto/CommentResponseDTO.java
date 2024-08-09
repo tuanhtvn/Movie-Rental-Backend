@@ -13,12 +13,14 @@ import java.util.List;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentResponseDTO extends BaseResponseDTO {
-    @JsonProperty("id")
+    @JsonProperty("Id")
     private String id;
-    @JsonProperty("text")
+    @JsonProperty("Text")
     private String text;
-    @JsonProperty("idUser")
-    private String idUser;
-    @JsonProperty("createdAt")
+    @JsonProperty("CreatedAt")
     private ZonedDateTime createdAt;
+    @JsonProperty("IdUser")
+    private String idUser;
+    @JsonProperty("FilmId")
+    private String filmId;
 }

@@ -46,8 +46,8 @@ public class SubtitleController {
 
         @Operation(summary = "Lấy danh sách phụ đề của phim", description = "Lấy danh sách tất cả phụ đề của 1 bộ phim")
         @ApiResponse(responseCode = "200", description = "Lấy danh sách phụ đề của phim thành công")
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @GetMapping("/auth/subtitle{filmId}")
+        @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+        @GetMapping("/subtitle/{filmId}")
         public ResponseEntity<BaseResponse> getAllSubtitlesByFilmId(@PathVariable String filmId) {
                 List<SubtitleResponseDTO> subtitles = subtitleService.getAllSubtitlesByFilmId(filmId);
                 BaseResponse response = new BaseResponse("Lấy danh sách tất cả phụ đề của phim thành công", HttpStatus.OK.value(), subtitles);

@@ -245,64 +245,29 @@ public class FilmController {
     @Operation(summary = "Đánh giá phim", description = "Đánh giá phim dựa trên số sao đã chọn")
     @ApiResponse(responseCode = "200", description = "Đánh giá thành công")
     @PostMapping("/film/rate/{filmId}")
-    public double rateFilm(@RequestBody RatingRequestDTO ratingRequestDTO) {
-        return filmService.updateRating(ratingRequestDTO);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Xem phim", description = "Xem phim người dùng đã thuê")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy phim!"),
-            @ApiResponse(responseCode = "200", description = "Xem phim thành công")
-    })
-    @GetMapping("/film/view/{filmId}")
-    public ResponseEntity<InputStreamResource> viewFilm(@PathVariable String filmId,
-                                                        @RequestHeader(value = "Range", required = false) String range) {
+    public ResponseEntity<BaseResponse> rateFilm(@PathVariable String filmId, @RequestBody RatingRequestDTO ratingRequestDTO) {
         try {
-            InputStream inputStream = filmService.getFilmStream(filmId, range);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + filmId);
-            headers.add(HttpHeaders.CONTENT_TYPE, "video/mp4");
-
-            return new ResponseEntity<>(new InputStreamResource(inputStream), headers, range != null ? HttpStatus.PARTIAL_CONTENT : HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Double avgRating = filmService.rateFilm(filmId, ratingRequestDTO);
+            BaseResponse response = new BaseResponse("Đánh giá thành công", HttpStatus.OK.value(), avgRating);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách phụ đề", description = "Lấy danh sách tất cả phụ đề của phim")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy Subtitle!"),
-            @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-    })
-    @GetMapping("/film/subtitles/{filmId}")
-    public ResponseEntity<List<Subtitle>> listSubtitles(@PathVariable String filmId) {
-        List<Subtitle> subtitles = subtitleService.findByFilmId(filmId);
-        if (subtitles.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(subtitles);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy phụ đề", description = "Lấy phụ đề theo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy Subtitle!"),
-            @ApiResponse(responseCode = "200", description = "Lấy phụ đề thành công")
-    })
-    @GetMapping("/film/getSubtitle/{id}")
-    public ResponseEntity<InputStreamResource> getSubtitle(@PathVariable String id) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Lấy điểm đánh giá", description = "Lấy điểm đánh giá của phim")
+    @ApiResponse(responseCode = "200", description = "Lấy đánh giá thành công")
+    @PostMapping("/film/rate/getRating/{filmId}")
+    public ResponseEntity<BaseResponse> getRating(@PathVariable String filmId) {
         try {
-            InputStream inputStream = subtitleService.getSubtitleStream(id);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + id);
-            headers.add(HttpHeaders.CONTENT_TYPE, "text/vtt"); // Điều chỉnh theo định dạng của phụ đề
-
-            return new ResponseEntity<>(new InputStreamResource(inputStream), headers, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            Double avgRating = filmService.getRating(filmId);
+            BaseResponse response = new BaseResponse("Lấy đánh giá thành công", HttpStatus.OK.value(), avgRating);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
-
 }

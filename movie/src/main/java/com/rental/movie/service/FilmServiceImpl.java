@@ -2,6 +2,8 @@ package com.rental.movie.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -181,33 +183,30 @@ public class FilmServiceImpl implements FilmService {
 
     }
 
-    public double updateRating(RatingRequestDTO ratingRequestDTO) {
-        Film film = filmRepository.findById(ratingRequestDTO.getFilmId())
-                .orElseThrow(() -> new CustomException("Phim không tồn tại", HttpStatus.NOT_FOUND.value()));
+    public Double rateFilm(String filmId, RatingRequestDTO ratingRequestDTO) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
-        List<Integer> ratings = film.getRatings();
-        ratings.add(ratingRequestDTO.getRating());
-
-        OptionalDouble average = ratings.stream()
-                .mapToInt(Integer::intValue)
-                .average();
-
-        double updatedRating = average.isPresent() ? average.getAsDouble() : 0.0;
-
-        film.setRatings(ratings);
+        int rating = ratingRequestDTO.getRating();
+        if (rating < 1 || rating > 5) {
+            throw new CustomException("Điểm đánh giá phải có giá trị từ 1 đến 5", HttpStatus.BAD_REQUEST.value());
+        }
+        film.getRatings().put(ratingRequestDTO.getIdUser(), rating);
         filmRepository.save(film);
 
-        return updatedRating;
+        return getRating(filmId);
     }
 
-    public InputStream getFilmStream(String filmId, String range) throws Exception{
-        Film film = filmRepository.findById(filmId).orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
-        URL url = new URL(film.getFilmUrl());
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (range != null) {
-            connection.setRequestProperty("Range", range);
+    public Double getRating(String filmId) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+
+        Map<String, Integer> ratings = film.getRatings();
+        if (ratings.isEmpty()) {
+            return 0.0;
         }
-        return connection.getInputStream();
+        double sum = ratings.values().stream().mapToInt(Integer::intValue).sum();
+        return sum / ratings.size();
     }
 
 }

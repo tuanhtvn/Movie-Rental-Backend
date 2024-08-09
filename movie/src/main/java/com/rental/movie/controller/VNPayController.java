@@ -8,8 +8,8 @@ import com.rental.movie.model.entity.TransactionHistory;
 import com.rental.movie.model.entity.User;
 import com.rental.movie.repository.InvoiceRepository;
 import com.rental.movie.repository.PackageInfoRepository;
-import com.rental.movie.repository.TransactionHistoryRepository;
 import com.rental.movie.service.*;
+import com.rental.movie.util.VNPayUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,7 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -48,7 +52,7 @@ public class VNPayController {
     private RentalService rentalService;
 
     @Autowired
-    private TransactionHistoryRepository transactionHistoryRepository;
+    private VNPayUtils vnPayUtils;
 
     @Operation(summary = "Tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL)  trong giỏ hàng", description = "API tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL) trong giỏ hàng")
     @ApiResponse(responseCode = "200", description = "Tạo yêu cầu thanh toán thành công")
@@ -107,18 +111,52 @@ public class VNPayController {
     @Operation(summary = "Xử lý callback thanh toán VNPay", description = "API xử lý callback từ VNPay sau khi thanh toán")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Xử lý callback thành công"),
-            @ApiResponse(responseCode = "400", description = "Yêu cầu không hợp lệ")
     })
     @GetMapping("/api/auth/payment/callback")
     public ResponseEntity<BaseResponse> handlePaymentCallback(@RequestParam Map<String, String> params) {
-        boolean isValid = vnPayService.validatePayment(params);
+//        boolean isValid = vnPayService.validatePayment(params);
+
+        Map<String, String> fields = new HashMap<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            String fieldName = URLEncoder.encode(entry.getKey(), StandardCharsets.US_ASCII);
+            String fieldValue = URLEncoder.encode(entry.getValue(), StandardCharsets.US_ASCII);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                fields.put(fieldName, fieldValue);
+            }
+        }
+//        String vnpSecureHash = params.remove("vnp_SecureHash");
+//        fields.remove("vnp_SecureHashType");
+
+//        String generatedSignature = vnPayUtils.hashAllFields(fields);
+
+//        boolean isValid = generatedSignature.equalsIgnoreCase(vnpSecureHash);
+
+//        Map<String, String> fields = new HashMap<>(params);
+
+        String vnp_SecureHash = params.get("vnp_SecureHash");
+        System.out.println(vnp_SecureHash);
+        if (fields.containsKey("vnp_SecureHashType")) {
+            fields.remove("vnp_SecureHashType");
+        }
+        if (fields.containsKey("vnp_SecureHash")) {
+            fields.remove("vnp_SecureHash");
+        }
+        String signValue = vnPayUtils.hashAllFields(fields);
+        System.out.println(signValue);
+
 
         String invoiceId = params.get("vnp_TxnRef");
         Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new RuntimeException("Invoice not found"));
         User user = invoice.getUser();
         BaseResponse baseResponse;
-        if (params.get("vnp_ResponseCode").equals("00") && isValid){
+//        params.get("vnp_ResponseCode").equals("00") && isValid
+
+        if (signValue.equals(vnp_SecureHash) && params.get("vnp_ResponseCode").equals("00")){
             updateData(user,invoice,PaymentStatus.SUCCESS,TransactionStatus.SUCCESS);
+            if(invoice.getPackageInfo() == null)
+                rentalService.addRentedFilm(invoice.getFilms(),user);
+            else
+                rentalService.addRentalPackage(invoice.getPackageInfo(),user);
             baseResponse = BaseResponse.builder()
                     .message("Thanh tooán thành công")
                     .status(HttpStatus.OK.value())
@@ -150,9 +188,5 @@ public class VNPayController {
                 invoice.getTotalPrice(),
                 transactionStatus);
         user.getTransactionHistories().add(transactionHistory);
-        if(invoice.getPackageInfo() == null)
-            rentalService.addRentedFilm(invoice.getFilms(),user);
-        else
-            rentalService.addRentalPackage(invoice.getPackageInfo(),user);
     }
 }

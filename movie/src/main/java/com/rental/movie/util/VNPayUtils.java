@@ -7,16 +7,14 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.stream.Collectors;
 
+@Component
 public class VNPayUtils {
-    private static VNPayConfig vnPayConfig;
-    public static String hmacSHA512(final String key, final String data) {
+    @Autowired
+    private VNPayConfig vnPayConfig;
+    public String hmacSHA512(final String key, final String data) {
         try {
-
             if (key == null || data == null) {
                 throw new NullPointerException();
             }
@@ -37,7 +35,7 @@ public class VNPayUtils {
         }
     }
 
-    public static String hashAllFields(Map fields) {
+    public String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
