@@ -68,8 +68,8 @@ public class NotificationController {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
     @GetMapping("/{userId}/unread")
-    public ResponseEntity<List<NotificationDTO>> getUnreadNotificationsByUserId(@PathVariable String userId) {
-        List<NotificationDTO> notifications = notificationService.getUnreadNotificationsByUserId(userId);
+    public ResponseEntity<List<NotificationResponseDTO>> getUnreadNotificationsByUserId(@PathVariable String userId) {
+        List<NotificationResponseDTO> notifications = notificationService.getUnreadNotificationsByUserId(userId);
         return ResponseEntity.ok(notifications);
     }
 
