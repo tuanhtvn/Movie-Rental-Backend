@@ -124,14 +124,6 @@ public class VNPayController {
                 fields.put(fieldName, fieldValue);
             }
         }
-//        String vnpSecureHash = params.remove("vnp_SecureHash");
-//        fields.remove("vnp_SecureHashType");
-
-//        String generatedSignature = vnPayUtils.hashAllFields(fields);
-
-//        boolean isValid = generatedSignature.equalsIgnoreCase(vnpSecureHash);
-
-//        Map<String, String> fields = new HashMap<>(params);
 
         String vnp_SecureHash = params.get("vnp_SecureHash");
         System.out.println(vnp_SecureHash);

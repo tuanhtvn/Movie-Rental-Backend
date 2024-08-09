@@ -3,6 +3,7 @@ package com.rental.movie.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.rental.movie.common.BaseResponse;
@@ -21,6 +22,7 @@ public class CartController {
     private CartService cartService;
 
     @Operation(summary = "Thêm phim vào giỏ hàng", description = "API thêm phim vào giỏ hàng")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiResponse(responseCode = "200", description = "Thêm phim vào giỏ hàng thành công")
     @PostMapping("/add/{filmId}")
     public ResponseEntity<BaseResponse> addToCart(@PathVariable("filmId") String filmId) {
@@ -33,6 +35,7 @@ public class CartController {
     }
 
     @Operation(summary = "Xem danh sách phim trong giỏ hàng", description = "API xem danh sách phim trong giỏ hàng")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiResponse(responseCode = "200", description = "Xem danh sách phim trong giỏ hàng thành công")
     @GetMapping("/view")
     public ResponseEntity<BaseResponse> viewCart() {
@@ -46,6 +49,7 @@ public class CartController {
     }
 
     @Operation(summary = "Xóa phim khỏi giỏ hàng", description = "API xóa phim khỏi giỏ hàng")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiResponse(responseCode = "200", description = "Xóa phim khỏi giỏ hàng thành công")
     @DeleteMapping("/remove/{filmId}")
     public ResponseEntity<BaseResponse> removeFromCart(@PathVariable("filmId") String filmId) {
