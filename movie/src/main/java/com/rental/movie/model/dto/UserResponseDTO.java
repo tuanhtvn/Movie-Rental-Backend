@@ -20,6 +20,8 @@ public class UserResponseDTO {
     private String id; // khóa chính
     @JsonProperty("FullName")
     private String fullName;
+    @JsonProperty("Avatar")
+    private String avatar;
     @JsonProperty("Email")
     private String email;
     @JsonProperty("Password")
