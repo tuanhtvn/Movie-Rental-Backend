@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class VNPayController {
 
     @Autowired
@@ -57,7 +58,7 @@ public class VNPayController {
     @Operation(summary = "Tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL)  trong giỏ hàng", description = "API tạo yêu cầu thanh toán VNPay danh sách các phim (Rentaltype = RENTAL) trong giỏ hàng")
     @ApiResponse(responseCode = "200", description = "Tạo yêu cầu thanh toán thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/createCartPayment")
+    @PostMapping("/rent/createCartPayment")
     public ResponseEntity<BaseResponse> createCartPayment() {
         Invoice invoice = invoiceService.createInvoice(null,null);
         // Tạo URL thanh toán VNPay
@@ -75,7 +76,7 @@ public class VNPayController {
     @Operation(summary = "Tạo yêu cầu thanh toán VNPay của 1 phim lẻ (Rentaltype = RENTAL) ", description = "API tạo yêu cầu thanh toán VNPay của 1 phim lẻ (Rentaltype = RENTAL)")
     @ApiResponse(responseCode = "200", description = "Tạo yêu cầu thanh toán thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/createFilmPayment/{filmId}")
+    @PostMapping("/rent/createFilmPayment/{filmId}")
     public ResponseEntity<BaseResponse> createFilmPayment(@PathVariable String filmId) {
         Invoice invoice = invoiceService.createInvoice(null,filmService.getById(filmId));
         // Tạo URL thanh toán VNPay
@@ -93,7 +94,7 @@ public class VNPayController {
     @Operation(summary = "Tạo yêu cầu thanh toán VNPay của 1 gói thuê (Rentaltype = SUBSCRIPTION) ", description = "API tạo yêu cầu thanh toán VNPay của 1 gói thuê (Rentaltype = SUBSCRIPTION)")
     @ApiResponse(responseCode = "200", description = "Tạo yêu cầu thanh toán thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/createPackageInfoPayment/{packageInfoId}")
+    @PostMapping("/rent/createPackageInfoPayment/{packageInfoId}")
     public ResponseEntity<BaseResponse> createPackageInfoPayment(@PathVariable String packageInfoId) {
         Invoice invoice = invoiceService.createInvoice(packageInfoRepository.findByIdAndIsActiveTrueAndIsDeletedFalse(packageInfoId),null);
         // Tạo URL thanh toán VNPay
@@ -112,7 +113,7 @@ public class VNPayController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Xử lý callback thành công"),
     })
-    @GetMapping("/api/auth/payment/callback")
+    @GetMapping("/auth/rent/payment/callback")
     public ResponseEntity<BaseResponse> handlePaymentCallback(@RequestParam Map<String, String> params) {
 //        boolean isValid = vnPayService.validatePayment(params);
 
