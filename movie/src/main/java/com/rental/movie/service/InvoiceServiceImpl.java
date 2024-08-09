@@ -2,6 +2,7 @@ package com.rental.movie.service;
 
 import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.PaymentStatus;
+import com.rental.movie.common.RentalType;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.InvoiceResponseDTO;
 import com.rental.movie.model.entity.*;
@@ -77,7 +78,8 @@ public class InvoiceServiceImpl implements InvoiceService {
         List<Film> filmList = new ArrayList<>();
         for (Item item : user.getCart()) {
             Film film = item.getFilm();
-            filmList.add(film);
+            if (film.getRentalType() == RentalType.RENTAL)
+                filmList.add(film);
         }
         return filmList;
     }
