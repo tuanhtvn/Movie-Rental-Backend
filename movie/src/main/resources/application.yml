@@ -73,5 +73,5 @@ vnp:
   TmnCode: LWWJA8MJ
   HashSecret: Z8G7LA20XI2ZHSKJ71ZSE158M543DR1X
   Url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-  ReturnUrl: http://localhost:8080/api/auth/payment/callback
+  ReturnUrl: https://hoctuancustomservice.io.vn/api/auth/payment/callback
 
