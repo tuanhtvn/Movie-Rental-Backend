@@ -53,7 +53,7 @@ public class SupportRequestController {
         return ResponseEntity.ok(supportRequests);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Lấy yêu cầu hỗ trợ theo ID người dùng",description = "Lấy danh sách yêu cầu hỗ trợ theo ID người dùng")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Danh sách yêu cầu hỗ trợ đã được tìm thấy"),
