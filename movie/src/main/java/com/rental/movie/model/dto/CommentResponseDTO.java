@@ -17,8 +17,6 @@ public class CommentResponseDTO extends BaseResponseDTO {
     private String id;
     @JsonProperty("Text")
     private String text;
-    @JsonProperty("CreatedAt")
-    private ZonedDateTime createdAt;
     @JsonProperty("IdUser")
     private String idUser;
     @JsonProperty("FilmId")

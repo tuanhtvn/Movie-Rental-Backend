@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Collections;
 
 import com.rental.movie.common.RentalType;
 import com.rental.movie.model.entity.BaseEntity;
@@ -58,9 +59,9 @@ public class FilmRequestDTO {
     @JsonProperty("Duration")
     private String duration;
 
-    @Schema(description = "Diễn viên", example = "Trấn Thành")
+    @Schema(description = "Diễn viên")
     @JsonProperty("Actors")
-    private List<String> actors;
+    private List<String> actors = Collections.emptyList();
 
     @Schema(description = "Đạo diễn", example = "Trấn Thành")
     @JsonProperty("Director")
@@ -88,14 +89,14 @@ public class FilmRequestDTO {
 
     @Schema(description = "Danh sách các phụ đề")
     @JsonProperty("SubtitlesId")
-    private List<String> subtitlesId;
+    private List<String> subtitlesId = Collections.emptyList();
 
     @Schema(description = "Danh sách các thuyết minh")
     @JsonProperty("NarrationsId")
-    private List<String> narrationsId;
+    private List<String> narrationsId = Collections.emptyList();
 
     @Schema(description = "Danh sách các thể loại")
     @JsonProperty("GenresId")
-    private List<String> genresId;
+    private List<String> genresId = Collections.emptyList();
 
 }

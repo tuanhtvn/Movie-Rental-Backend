@@ -10,8 +10,8 @@ import lombok.Data;
 public class NarrationResponseDTO {
     @JsonProperty("Id")
     private String id;
-    @JsonProperty("NarrationName")
-    private String narrationName;
+    @JsonProperty("Language")
+    private String language;
     @JsonProperty("NarrationUrl")
     private String narrationUrl;
 }

@@ -13,7 +13,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentRequestDTO {
     @Schema(description = "Nội dung bình luận", example = "Phim rất hay!")
-    @JsonProperty("text")
+    @JsonProperty("Text")
     @NotBlank(message = "Nội dung bình luận không được để trống")
     private String text;
     @Schema(description = "Người dùng bình luận", example = "669cc7e87d5a4d563f8b60e7")

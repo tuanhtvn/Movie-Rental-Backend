@@ -18,6 +18,7 @@ import com.rental.movie.model.dto.RatingRequestDTO;
 
 public interface FilmService {
     public Film getById(String id);
+    public FilmResponseDTO getByIdFilm(String id);
     public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search);       //isActive=true && isDeleted=false
     public Page<FilmResponseDTO> getAllNotDeletedFilm(Pageable pageable, String search);    //isDeleted=false
     public Page<FilmResponseDTO> getAllDeletedFilm(Pageable pageable, String search);       //isDeleted=true

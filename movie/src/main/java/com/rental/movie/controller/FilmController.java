@@ -87,7 +87,7 @@ public class FilmController {
     @GetMapping("/auth/films/{id}")
     public ResponseEntity<BaseResponse> getFilmById(@PathVariable String id) {
         try {
-            BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getById(id));
+            BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getByIdFilm(id));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);

@@ -23,23 +23,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Film extends BaseEntity {
     @Id
-    private String Id; // khóa chính
-    private String FilmName; // tên phim
-    private String FilmUrl; // đường dẫn phim
-    private String Description; // mô tả
-    private String ThumbnailUrl; // đường dẫn ảnh thumbnail
-    private String TrailerUrl; // đường dẫn trailer
-    private String ReleaseDate; // ngày phát hành
-    private String Duration; // thời lượng
-    private List<String> Actors; // danh sách diễn viên
-    private String Director; // đạo diễn
-    private String Language; // ngôn ngữ
-    private Integer NumberOfViews = 0; // số lượt xem
-    private Map<String, Integer> Ratings = new HashMap<>(); // lưu trữ đánh giá của người dùng
-    private Integer Age; // độ tuổi
-    private RentalType RentalType; // loại thuê phim
-    private Double Price; // giá
-    private Integer LimitTime; // thời hạn xem
+    private String id; // khóa chính
+    private String filmName; // tên phim
+    private String filmUrl; // đường dẫn phim
+    private String description; // mô tả
+    private String thumbnailUrl; // đường dẫn ảnh thumbnail
+    private String trailerUrl; // đường dẫn trailer
+    private String releaseDate; // ngày phát hành
+    private String duration; // thời lượng
+    private List<String> actors; // danh sách diễn viên
+    private String director; // đạo diễn
+    private String language; // ngôn ngữ
+    private Integer numberOfViews; // số lượt xem
+    private Map<String, Integer> ratings = new HashMap<>(); // lưu trữ đánh giá của người dùng
+    private Integer age; // độ tuổi
+    private RentalType rentalType; // loại thuê phim
+    private Double price; // giá
+    private Integer limitTime; // thời hạn xem
     @DBRef(lazy = true)
     private List<Subtitle> subtitles = new ArrayList<>(); // danh sách phụ đề
     @DBRef(lazy = true)
@@ -58,11 +58,11 @@ public class Film extends BaseEntity {
             return false;
         }
         Film film = (Film) obj;
-        return Objects.equals(Id, film.Id);
+        return Objects.equals(id, film.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id);
+        return Objects.hash(id);
     }
 }

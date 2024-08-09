@@ -13,8 +13,8 @@ public class NarrationRequestDTO {
     @NotBlank(message = "Vui lòng nhập tên thuyết minh")
     @Size(max = 100, message = "Tên thuyết minh không được vượt quá 100 ký tự")
     @Schema(description = "Tên thuyết minh", example = "Thuyết minh Tiếng Việt")
-    @JsonProperty("NarrationName")
-    private String narrationName;
+    @JsonProperty("Language")
+    private String language;
     @NotBlank(message = "Vui lòng chọn thuyết minh")
     @Schema(description = "Đường dẫn thuyết minh", example = "https://example.com/narration.mp3")
     @JsonProperty("NarrationUrl")

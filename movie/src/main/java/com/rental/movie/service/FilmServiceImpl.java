@@ -60,6 +60,12 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
+    public FilmResponseDTO getByIdFilm(String id) {
+        return filmMapper.convertToDTO(filmRepository.findById(id).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
+        }));
+    }
+    @Override
     public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByActived(pageable, search);
         //log.info("Get all actived films: {}", films.getContent().toString());

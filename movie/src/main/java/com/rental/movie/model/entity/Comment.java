@@ -17,17 +17,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment extends BaseEntity{
+public class Comment{
     @Id
     private String id; // khóa chính
     private String text; // nội dung
     @DBRef(lazy=true)
     private String idUser; // người bình luận
     @CreatedDate
-    //private Instant createdAt; // thời gian bình luận
+    private Instant createdAt; // thời gian bình luận
     private String filmId; // Id của phim đã bình luận
-    //public ZonedDateTime getCreatedAt() {
-    //    return createdAt.atZone(ZoneId.systemDefault());
-    //}
+    public ZonedDateTime getCreatedAt() {
+        return createdAt.atZone(ZoneId.systemDefault());
+    }
 
 }
