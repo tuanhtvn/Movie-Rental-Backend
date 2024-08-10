@@ -17,11 +17,10 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO {
-    private String id;
+    private String commentId;
     private String imgURL;
-    private Instant createdAt;
+    private String createdAt;
     private String userName;
     private String text;
     private Boolean isMyComment;
-
 }

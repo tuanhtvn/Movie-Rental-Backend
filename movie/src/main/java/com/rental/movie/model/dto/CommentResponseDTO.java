@@ -8,6 +8,7 @@ import lombok.Data;
 import java.time.ZonedDateTime;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,6 @@ public class CommentResponseDTO {
     private String idUser;
     @JsonProperty("FilmId")
     private String filmId;
-    @JsonProperty("createdAt")
-    private String createdAt;
+    @JsonProperty("CreatedAt")
+    private String CreatedAt;
 }

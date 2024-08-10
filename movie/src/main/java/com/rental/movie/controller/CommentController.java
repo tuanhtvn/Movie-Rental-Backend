@@ -120,7 +120,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy bình luận")
     })
-    @GetMapping("/auth/comment/{filmId}")
+    @GetMapping("/auth/comment/film/{filmId}")
     public ResponseEntity<BaseResponse> getCommentsByFilmId(
             @PathVariable String filmId,
             @RequestParam(defaultValue = "0") int page,

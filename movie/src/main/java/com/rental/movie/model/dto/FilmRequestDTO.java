@@ -60,7 +60,7 @@ public class FilmRequestDTO {
     @JsonProperty("Duration")
     private String duration;
 
-    @Schema(description = "Diễn viên", nullable = true)
+    @Schema(description = "Diễn viên", nullable = true, example = "[]")
     @JsonProperty("Actors")
     private List<String> actors;
 
@@ -88,16 +88,15 @@ public class FilmRequestDTO {
     @JsonProperty("RentalType")
     private RentalType rentalType;
 
-    @DBRef(lazy = true)
-    @Schema(description = "Danh sách các phụ đề", nullable = true)
+    @Schema(description = "Danh sách các phụ đề", nullable = true, example = "[]")
     @JsonProperty("Subtitles")
     private List<String> subtitles;
 
-    @Schema(description = "Danh sách các thuyết minh", nullable = true)
+    @Schema(description = "Danh sách các thuyết minh", nullable = true, example = "[]")
     @JsonProperty("Narrations")
     private List<String> narrations;
 
-    @Schema(description = "Danh sách các thể loại", nullable = true)
+    @Schema(description = "Danh sách các thể loại", nullable = true, example = "[]")
     @JsonProperty("Genres")
     private List<String> genres;
 

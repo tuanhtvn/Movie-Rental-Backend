@@ -1,6 +1,8 @@
 package com.rental.movie.service;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +57,11 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CustomException("Phim với ID " + commentDTO.getFilmId() + " không tồn tại", HttpStatus.NOT_FOUND.value()));
 
         Comment comment = commentMapper.convertToEntity(commentDTO);
+        comment.setCreatedAt(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         Comment savedComment = commentRepository.save(comment);
+        if (film.getComments() == null) {
+            film.setComments(new ArrayList<>());
+        }
         film.getComments().add(savedComment.getId());
         filmRepository.save(film);
         return commentMapper.convertToDTO(savedComment);
@@ -100,33 +107,45 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Comment> commentPage = commentRepository.findByFilmId(filmId, pageable);
-        return commentPage.map(commentMapper::convertToDTO);
+        List<String> commentIds = film.getComments();
+
+        if (commentIds == null || commentIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        List<Comment> comments = commentIds.stream()
+                .map(commentId -> commentRepository.findById(commentId).orElse(null)) // Lấy bình luận hoặc null nếu không tìm thấy
+                .filter(Objects::nonNull) // Loại bỏ các giá trị null
+                .collect(Collectors.toList());
+
+        List<CommentResponseDTO> dtos = comments.stream()
+                .map(commentMapper::convertToDTO)
+                .collect(Collectors.toList());
+
+        int start = Math.min((int) pageable.getOffset(), dtos.size());
+        int end = Math.min((start + pageable.getPageSize()), dtos.size());
+        List<CommentResponseDTO> paginatedDtos = dtos.subList(start, end);
+        return new PageImpl<>(paginatedDtos, pageable, dtos.size());
     }
 
     @Override
     public Page<CommentDTO> getCommentFilm(String filmId, int page, int size, String currentUserId) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Comment> commentPage = commentRepository.findByFilmId(filmId, pageable);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         return commentPage.map(comment -> {
             User user = userRepository.findById(comment.getIdUser())
                     .orElseThrow(() -> new CustomException("Người dùng không tồn tại", HttpStatus.NOT_FOUND.value()));
 
             CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setId(comment.getId());
+            commentDTO.setCommentId(comment.getId());
             commentDTO.setImgURL(user.getAvatar());
-            Instant createdAtInstant;
-            try {
-                createdAtInstant = Instant.parse(comment.getCreatedAt());
-            } catch (DateTimeParseException e) {
-                throw new CustomException("Định dạng thời gian không hợp lệ", HttpStatus.BAD_REQUEST.value());
-            }
-            commentDTO.setCreatedAt(createdAtInstant);
+            commentDTO.setCreatedAt(comment.getCreatedAt());
             commentDTO.setUserName(user.getFullName());
             commentDTO.setText(comment.getText());
             commentDTO.setIsMyComment(currentUserId.equals(comment.getIdUser()));

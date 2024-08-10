@@ -44,7 +44,6 @@ public class Film extends BaseEntity {
     private List<Subtitle> subtitles = new ArrayList<>(); // danh sách phụ đề
     @DBRef(lazy = true)
     private List<Narration> narrations = new ArrayList<>(); // danh sách thuyết minh
-    @DBRef(lazy = true)
     private List<String> comments = new ArrayList<>(); // danh sách bình luận
     @DBRef(lazy = true)
     private List<String> genres = new ArrayList<>(); // danh sách thể loại

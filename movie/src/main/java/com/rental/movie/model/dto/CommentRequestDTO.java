@@ -16,11 +16,11 @@ public class CommentRequestDTO {
     @JsonProperty("Text")
     @NotBlank(message = "Nội dung bình luận không được để trống")
     private String text;
-    @Schema(description = "Người dùng bình luận", example = "669cc7e87d5a4d563f8b60e7")
+    @Schema(description = "Người dùng bình luận", example = "6694a5cbe8df6594e88ee705")
     @JsonProperty("IdUser")
     @NotBlank(message = "ID hồ sơ không được để trống")
     private String idUser;
-    @Schema(description = "Bình luận của phim", example = "66b10fe0c01aaf371f3cf96e")
+    @Schema(description = "Bình luận của phim", example = "66b6e524dc337e7b7304dad7")
     @JsonProperty("FilmId")
     @NotBlank(message = "ID của phim không được để trống")
     private String filmId;
