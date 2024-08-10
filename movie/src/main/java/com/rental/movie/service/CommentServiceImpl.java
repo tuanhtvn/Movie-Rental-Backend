@@ -2,10 +2,12 @@ package com.rental.movie.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentMapper.convertToEntity(commentDTO);
         Comment savedComment = commentRepository.save(comment);
-        film.getCommentsId().add(savedComment.getId());
+        film.getComments().add(savedComment.getId());
         filmRepository.save(film);
         return commentMapper.convertToDTO(savedComment);
     }
@@ -118,7 +120,13 @@ public class CommentServiceImpl implements CommentService {
             CommentDTO commentDTO = new CommentDTO();
             commentDTO.setId(comment.getId());
             commentDTO.setImgURL(user.getAvatar());
-            commentDTO.setCreatedAt(comment.getCreatedAt());
+            Instant createdAtInstant;
+            try {
+                createdAtInstant = Instant.parse(comment.getCreatedAt());
+            } catch (DateTimeParseException e) {
+                throw new CustomException("Định dạng thời gian không hợp lệ", HttpStatus.BAD_REQUEST.value());
+            }
+            commentDTO.setCreatedAt(createdAtInstant);
             commentDTO.setUserName(user.getFullName());
             commentDTO.setText(comment.getText());
             commentDTO.setIsMyComment(currentUserId.equals(comment.getIdUser()));

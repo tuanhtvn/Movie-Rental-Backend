@@ -1,8 +1,9 @@
 package com.rental.movie.model.entity;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -26,8 +27,9 @@ public class Comment{
     @CreatedDate
     private Instant createdAt; // thời gian bình luận
     private String filmId; // Id của phim đã bình luận
-    public ZonedDateTime getCreatedAt() {
-        return createdAt.atZone(ZoneId.systemDefault());
+    public String getCreatedAt() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return createdAt.atZone(ZoneId.systemDefault()).format(formatter);
     }
 
 }

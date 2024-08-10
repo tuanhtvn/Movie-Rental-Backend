@@ -13,6 +13,7 @@ import java.util.Collections;
 import com.rental.movie.common.RentalType;
 import com.rental.movie.model.entity.BaseEntity;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -59,9 +60,9 @@ public class FilmRequestDTO {
     @JsonProperty("Duration")
     private String duration;
 
-    @Schema(description = "Diễn viên")
+    @Schema(description = "Diễn viên", nullable = true)
     @JsonProperty("Actors")
-    private List<String> actors = Collections.emptyList();
+    private List<String> actors;
 
     @Schema(description = "Đạo diễn", example = "Trấn Thành")
     @JsonProperty("Director")
@@ -87,16 +88,17 @@ public class FilmRequestDTO {
     @JsonProperty("RentalType")
     private RentalType rentalType;
 
-    @Schema(description = "Danh sách các phụ đề")
-    @JsonProperty("SubtitlesId")
-    private List<String> subtitlesId = Collections.emptyList();
+    @DBRef(lazy = true)
+    @Schema(description = "Danh sách các phụ đề", nullable = true)
+    @JsonProperty("Subtitles")
+    private List<String> subtitles;
 
-    @Schema(description = "Danh sách các thuyết minh")
-    @JsonProperty("NarrationsId")
-    private List<String> narrationsId = Collections.emptyList();
+    @Schema(description = "Danh sách các thuyết minh", nullable = true)
+    @JsonProperty("Narrations")
+    private List<String> narrations;
 
-    @Schema(description = "Danh sách các thể loại")
-    @JsonProperty("GenresId")
-    private List<String> genresId = Collections.emptyList();
+    @Schema(description = "Danh sách các thể loại", nullable = true)
+    @JsonProperty("Genres")
+    private List<String> genres;
 
 }

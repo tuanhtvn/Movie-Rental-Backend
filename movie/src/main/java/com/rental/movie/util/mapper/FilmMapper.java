@@ -47,15 +47,15 @@ public class FilmMapper {
 
     public Film convertToEntity(FilmRequestDTO dto) {
         Film film = modelMapper.map(dto, Film.class);
-        film.setGenresId(
-                dto.getGenresId() == null ? null : dto.getGenresId().stream().map(genreId -> {
+        film.setGenres(
+                dto.getGenres() == null ? null : dto.getGenres().stream().map(genreId -> {
                     genreRepository.findById(genreId).orElseThrow(
                             () -> new CustomException("Không tìm thấy thể loại", HttpStatus.NOT_FOUND.value()));
                     return genreId;
                 }).collect(Collectors.toList())
         );
-        film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
-        film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
+        film.setSubtitles(mapIdsToEntities(dto.getSubtitles(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
+        film.setNarrations(mapIdsToEntities(dto.getNarrations(), narrationRepository::findById, "Không tìm thấy Narration"));
         film.setActors(dto.getActors());
         return film;
     }
@@ -63,15 +63,15 @@ public class FilmMapper {
     // Overloading for update Film
     public Film convertToEntity(FilmRequestDTO dto, Film film) {
         modelMapper.map(dto, film);
-        film.setGenresId(
-                dto.getGenresId() == null ? null : dto.getGenresId().stream().map(genreId -> {
+        film.setGenres(
+                dto.getGenres() == null ? null : dto.getGenres().stream().map(genreId -> {
                     genreRepository.findById(genreId).orElseThrow(
                             () -> new CustomException("Không tìm thấy thể loại", HttpStatus.NOT_FOUND.value()));
                     return genreId;
                 }).collect(Collectors.toList())
         );
-        film.setSubtitles(mapIdsToEntities(dto.getSubtitlesId(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
-        film.setNarrations(mapIdsToEntities(dto.getNarrationsId(), narrationRepository::findById, "Không tìm thấy Narration"));
+        film.setSubtitles(mapIdsToEntities(dto.getSubtitles(), subtitleRepository::findById, "Không tìm thấy Subtitle"));
+        film.setNarrations(mapIdsToEntities(dto.getNarrations(), narrationRepository::findById, "Không tìm thấy Narration"));
         film.setActors(dto.getActors());
         return film;
     }

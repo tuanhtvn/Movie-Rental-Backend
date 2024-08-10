@@ -3,6 +3,7 @@ package com.rental.movie.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
@@ -18,13 +19,9 @@ import lombok.Data;
 public class CommentDTO {
     private String id;
     private String imgURL;
-    private String createdAt;
+    private Instant createdAt;
     private String userName;
     private String text;
     private Boolean isMyComment;
 
-    public void setCreatedAt(ZonedDateTime createdAt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        this.createdAt = createdAt.format(formatter);
-    }
 }

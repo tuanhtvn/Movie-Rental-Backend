@@ -228,7 +228,7 @@ public class FilmServiceImpl implements FilmService {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId, HttpStatus.NOT_FOUND.value()));
 
-        return film.getGenresId().stream()
+        return film.getGenres().stream()
                 .map(genreId -> genreRepository.findById(genreId)
                         .map(genre -> genre.getGenreName()) // Lấy tên thể loại từ ID
                         .orElse(null)) // Nếu không tìm thấy, trả về null

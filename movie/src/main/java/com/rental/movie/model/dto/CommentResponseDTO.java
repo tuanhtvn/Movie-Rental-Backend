@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
-
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CommentResponseDTO extends BaseResponseDTO {
+public class CommentResponseDTO {
     @JsonProperty("Id")
     private String id;
     @JsonProperty("Text")
@@ -21,4 +22,6 @@ public class CommentResponseDTO extends BaseResponseDTO {
     private String idUser;
     @JsonProperty("FilmId")
     private String filmId;
+    @JsonProperty("createdAt")
+    private String createdAt;
 }
