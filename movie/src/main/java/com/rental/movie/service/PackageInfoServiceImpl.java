@@ -47,7 +47,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
         return ResponseEntity.ok().body(
                 new BaseResponse("Tìm thấy danh sách gói.",
                         HttpStatus.OK.value(),
-                        packageInfoResponseDTOPage.getContent())
+                        packageInfoResponseDTOPage)
         );
     }
 
@@ -123,7 +123,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO)
         );
     }
 
@@ -159,7 +159,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO)
         );
     }
 
@@ -175,7 +175,7 @@ public class PackageInfoServiceImpl implements PackageInfoService {
             );
         }
         return ResponseEntity.ok(
-                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO.getContent())
+                new BaseResponse("Tìm thấy danh sách gói.", HttpStatus.OK.value(), pktDTO)
         );
     }
 

@@ -41,7 +41,7 @@ public class BannerServiceImpl implements BannerService {
             baseResponse = BaseResponse.builder()
                     .message("Tìm thấy danh sách banner.")
                     .status(HttpStatus.OK.value())
-                    .data(bannerDTOs.getContent())
+                    .data(bannerDTOs)
                     .build();
         }
         return ResponseEntity.status(HttpStatus.OK).body(baseResponse);
@@ -131,7 +131,7 @@ public class BannerServiceImpl implements BannerService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new BaseResponse("Tìm thấy banner.",
                             HttpStatus.OK.value(),
-                            bannerDTOs.getContent()));
+                            bannerDTOs));
         }
     }
 
@@ -151,7 +151,7 @@ public class BannerServiceImpl implements BannerService {
             baseResponse = BaseResponse.builder()
                     .message("Tìm thấy danh sách banner.")
                     .status(HttpStatus.OK.value())
-                    .data(bannerDTOs.getContent())
+                    .data(bannerDTOs)
                     .build();
         }
         return ResponseEntity.status(HttpStatus.OK).body(baseResponse);
@@ -185,7 +185,7 @@ public class BannerServiceImpl implements BannerService {
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new BaseResponse("OK.", HttpStatus.OK.value(), bannerDTOs.getContent())
+                new BaseResponse("OK.", HttpStatus.OK.value(), bannerDTOs)
         );
     }
 
