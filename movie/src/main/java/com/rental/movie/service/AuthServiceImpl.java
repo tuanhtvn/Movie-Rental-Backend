@@ -69,6 +69,7 @@ public class AuthServiceImpl implements AuthService {
                         LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
                                 .idUser(user.getId())
                                 .fullName(user.getFullName())
+                                .avatar(user.getAvatar())
                                 .role(user.getRole().name())
                                 .build();
                         TokenResponse tokenResponse = tokenService.getToken(user.getId(), user.getRole(), request);

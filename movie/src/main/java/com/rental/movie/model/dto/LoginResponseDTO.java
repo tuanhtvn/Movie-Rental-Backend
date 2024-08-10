@@ -16,6 +16,8 @@ public class LoginResponseDTO {
     private String role;
     @JsonProperty("FullName")
     private String fullName;
+    @JsonProperty("Avatar")
+    private String avatar;
     @JsonProperty("Token")
     private String token;
     @JsonProperty("ExpiredAt")

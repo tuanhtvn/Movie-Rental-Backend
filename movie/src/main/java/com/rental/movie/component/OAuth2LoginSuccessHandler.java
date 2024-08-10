@@ -84,6 +84,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                     .queryParam("token", tokenResponse.getToken())
                     .queryParam("expiredat", tokenResponse.getExpiredAt())
                     .queryParam("fullname", this.encoder.encode(this.user.getFullName()))
+                    .queryParam("avatar", this.encoder.encode(this.user.getAvatar()))
                     .queryParam("role", this.user.getRole())
                     .build().toUriString();
             log.info("Login account success: " + email);
