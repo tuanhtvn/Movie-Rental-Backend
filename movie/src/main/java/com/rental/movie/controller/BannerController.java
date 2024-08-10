@@ -103,7 +103,7 @@ public class BannerController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-    @Operation(summary = "Lấy danh sách banner đang Inactive (chỉ lấy chưa bị xoá), có phân trang.")
+    @Operation(summary = "Lấy danh sách banner đang inactive (chỉ lấy chưa bị xoá), có phân trang.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404", description = "Không tìm thấy banner!"),
             @ApiResponse(responseCode = "200", description = "OK.")

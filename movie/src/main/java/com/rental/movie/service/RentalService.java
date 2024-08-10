@@ -57,26 +57,40 @@ public class RentalService {
     }
 
     private void processUserForRenewal(User user) {
-        if (user.getRole() == Role.USER) {
-            RentalPackage rentalPackage = user.getRentalPackage();
-            if (rentalPackage != null && rentalPackage.getIsRenewal() && rentalPackage.getMinutesLeft() == 0) {
-                // kiểm tra coi gói đó có còn hoạt động không
-                if (!rentalPackage.getPackageInfo().getIsActive() || rentalPackage.getPackageInfo().getIsDeleted()) {
-                    handleUnavailableRentalPackage(user, rentalPackage);
-                } else {
-                    try {
-                        autoRenewal(user, rentalPackage);
-                    } catch (Exception e) {
-                        log.error("Lỗi khi gia hạn gói thuê cho người dùng: " + user.getFullName(), e);
-                    }
-                }
-            } else {
-                log.info("Người dùng: {} không cần gia hạn gói thuê.", user.getFullName());
-            }
-        } else {
+        if (user.getRole() != Role.USER) {
             log.info("Người dùng: {} không có vai trò USER, bỏ qua.", user.getFullName());
+            return;
+        }
+
+        RentalPackage rentalPackage = user.getRentalPackage();
+
+        if (rentalPackage == null) {
+            log.info("Người dùng: {} không có gói thuê nào, bỏ qua.", user.getFullName());
+            return;
+        }
+
+        if (!rentalPackage.getIsRenewal()) {
+            log.info("Người dùng: {} gói thuê không được đánh dấu gia hạn tự động, bỏ qua.", user.getFullName());
+            return;
+        }
+
+        if (rentalPackage.getMinutesLeft() > 0) {
+            log.info("Người dùng: {} vẫn còn phút trong gói thuê, bỏ qua.", user.getFullName());
+            return;
+        }
+
+        if (!rentalPackage.getPackageInfo().getIsActive() || rentalPackage.getPackageInfo().getIsDeleted()) {
+            handleUnavailableRentalPackage(user, rentalPackage);
+            return;
+        }
+
+        try {
+            autoRenewal(user, rentalPackage);
+        } catch (Exception e) {
+            log.error("Lỗi khi gia hạn gói thuê cho người dùng: " + user.getFullName(), e);
         }
     }
+
 
     private void handleUnavailableRentalPackage(User user, RentalPackage rentalPackage) {
         rentalPackage.setIsRenewal(false);
