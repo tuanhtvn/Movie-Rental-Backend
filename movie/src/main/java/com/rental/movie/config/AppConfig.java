@@ -47,4 +47,7 @@ public class AppConfig {
     private String apiKey;
     @Value("${spring.cloudinary.apiSecret}")
     private String apiSecret;
+
+    @Value("${google.drive.folder-id}")
+    private String folderId;
 }

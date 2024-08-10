@@ -55,7 +55,13 @@ spring:
           auth: true
           starttls:
             enable: true
-
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+google:
+  drive:
+    folder-id: 1jlQKAdciME_uKl2piik4Z2P0q1wLHRGQ
 # swagger-ui custom path
 springdoc:
   swagger-ui:

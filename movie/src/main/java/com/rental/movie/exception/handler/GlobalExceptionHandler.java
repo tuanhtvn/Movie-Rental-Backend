@@ -1,5 +1,7 @@
 package com.rental.movie.exception.handler;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -99,4 +101,17 @@ public class GlobalExceptionHandler {
         baseResponse.setData(null);
         return ResponseEntity.status(baseResponse.getStatus()).body(baseResponse);
     }
+
+    // Not Found Error
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<BaseResponse> handleIOException(IOException e) {
+        log.error("Exception: " + e.getMessage());
+        BaseResponse response = new BaseResponse();
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setMessage("Không tìm thấy tài nguyên");
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    // 
+    
 }
