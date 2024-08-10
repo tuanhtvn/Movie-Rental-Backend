@@ -250,7 +250,12 @@ public class FilmServiceImpl implements FilmService {
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId, HttpStatus.NOT_FOUND.value()));
 
         // Tăng số lượt xem
-        film.setNumberOfViews(film.getNumberOfViews() + 1);
+        Integer currentViews = film.getNumberOfViews();
+        if (currentViews == null || currentViews == 0) {
+            film.setNumberOfViews(1);
+        } else {
+            film.setNumberOfViews(currentViews + 1);
+        }
         filmRepository.save(film);
     }
 }
