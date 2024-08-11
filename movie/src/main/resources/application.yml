@@ -57,8 +57,8 @@ spring:
             enable: true
   servlet:
     multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
+      max-file-size: 1GB
+      max-request-size: 1GB
 google:
   drive:
     folder-id: 1jlQKAdciME_uKl2piik4Z2P0q1wLHRGQ

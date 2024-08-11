@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -21,12 +22,17 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Autowired
     private TikaAnalysis tikaAnalysis;
 
+    private long maxImageSize = 10 * 1024 * 1024;
+
     @Override
     public String upload(MultipartFile file) throws IOException {
         String secureUrl = null;
         log.info("Uploading image to cloudinary");
         // validate file
         tikaAnalysis.CheckSupportedContentType(file, "image/png", "image/jpg", "image/jpeg", "image/webp");
+        if (file.getSize() > maxImageSize) {
+            throw new MaxUploadSizeExceededException(maxImageSize);
+        }
         Map<?, ?> result = cloudinary.uploader().upload(file.getBytes(), null);
         secureUrl = (String) result.get("secure_url");
         log.info("Uploaded image to cloudinary with secureUrl: " + secureUrl);
