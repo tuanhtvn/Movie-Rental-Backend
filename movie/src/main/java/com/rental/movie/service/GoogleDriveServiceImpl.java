@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -37,13 +38,51 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
         private static final String SERVICE_ACOUNT_KEY_PATH = GenreServiceImpl.class
                         .getResource("/certs/drive/credentials.json").getPath();
 
+        private long maxFileSize = 10 * 1024 * 1024;
+
         @Override
         public String uploadFilm(MultipartFile file) throws GeneralSecurityException, IOException {
-                log.info("Uploading film to Google Drive");
+                log.info("Upload film to Google Drive");
                 log.info(file.getOriginalFilename());
+
                 tikaAnalysis.CheckSupportedContentType(file, "video/mp4", "video/quicktime", "video/avi",
-                                "video/mkv");
-                String folderId = appConfig.getFolderId();
+                                "video/mkv", "application/x-matroska");
+
+                String folderId = appConfig.getFolderIdFilm();
+                return uploadFile(folderId, file);
+        }
+
+        @Override
+        public String uploadSubtitle(MultipartFile file) throws GeneralSecurityException, IOException {
+                log.info("Upload subtitle to Google Drive");
+                log.info(file.getOriginalFilename());
+
+                tikaAnalysis.CheckSupportedContentType(file, "text/plain", "text/vtt", "application/x-subrip",
+                                "application/x-ass", "application/x-sub");
+                if (file.getSize() > maxFileSize) {
+                        throw new MaxUploadSizeExceededException(maxFileSize);
+                }
+                String folderId = appConfig.getFolderIdSubtitle();
+                return uploadFile(folderId, file);
+        }
+
+        @Override
+        public String uploadNarration(MultipartFile file) throws GeneralSecurityException, IOException {
+                log.info("Upload narration to Google Drive");
+                log.info(file.getOriginalFilename());
+
+                tikaAnalysis.CheckSupportedContentType(file, "audio/mpeg", "audio/wav", "video/x-m4v",
+                                "audio/x-ms-wma");
+                if (file.getSize() > maxFileSize) {
+                        throw new MaxUploadSizeExceededException(maxFileSize);
+                }
+                String folderId = appConfig.getFolderIdNarration();
+                return uploadFile(folderId, file);
+        }
+
+        private String uploadFile(String folderId, MultipartFile file) throws GeneralSecurityException, IOException {
+                log.info("Uploading file to Google Drive");
+                log.info(file.getOriginalFilename());
 
                 File fileMetadata = new File();
                 fileMetadata.setParents(Collections.singletonList(folderId));
@@ -57,16 +96,16 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
                                 .setFields("id").execute();
 
                 log.debug(uploadFile.toString());
-                log.info("Uploaded film to Google Drive with id: " + uploadFile.getId());
+                log.info("Uploaded file to Google Drive with id: " + uploadFile.getId());
                 return "https://drive.google.com/uc?id=" + uploadFile.getId();
         }
 
         @Override
-        public void deleteFilm(String filmUrl) throws GeneralSecurityException, IOException {
-                log.info("Deleting film from Google Drive");
-                String id = filmUrl.substring(filmUrl.lastIndexOf("=") + 1);
+        public void deleteFile(String url) throws GeneralSecurityException, IOException {
+                log.info("Deleting file from Google Drive");
+                String id = url.substring(url.lastIndexOf("=") + 1);
                 getInstance().files().delete(id).execute();
-                log.info("Deleted film from Google Drive with id: " + id);
+                log.info("Deleted file from Google Drive with id: " + id);
         }
 
         private static Drive getInstance() throws GeneralSecurityException, IOException {

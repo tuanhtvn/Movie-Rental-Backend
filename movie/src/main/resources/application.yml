@@ -61,7 +61,11 @@ spring:
       max-request-size: 1GB
 google:
   drive:
-    folder-id: 1jlQKAdciME_uKl2piik4Z2P0q1wLHRGQ
+    folder-id:
+      film: 1jlQKAdciME_uKl2piik4Z2P0q1wLHRGQ
+      narration: 1fYjgqTrXjy_LBWHQeo22GhlF0scu7oQC
+      subtitle: 1UFGnwZEVYrUKlceUTw-DRYtiO0Gu1lxO
+
 # swagger-ui custom path
 springdoc:
   swagger-ui:

@@ -19,7 +19,7 @@ public class TikaAnalysis {
                 return;
             }
         }
-        throw new CustomException("Hệ thống không hỗ trợ file định dạng này", HttpStatus.BAD_REQUEST.value());
+        throw new CustomException("Không hỗ trợ định dạng này: " + contentType, HttpStatus.BAD_REQUEST.value());
     }
 
     private String getContentType(MultipartFile file) throws IOException {
