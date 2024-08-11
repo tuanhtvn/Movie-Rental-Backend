@@ -12,5 +12,5 @@ import com.rental.movie.model.entity.Comment;
 
 @Repository
 public interface CommentRepository extends MongoRepository<Comment, String> {
-    Page<Comment> findByFilmId(String filmId, Pageable pageable);
+    List<Comment> findByFilmId(String filmId);
 }

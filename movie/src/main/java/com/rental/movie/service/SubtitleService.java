@@ -19,7 +19,7 @@ public interface SubtitleService {
     public SubtitleResponseDTO createSubtitle(SubtitleRequestDTO subtitleRequestDTO);
     public SubtitleResponseDTO updateSubtitle(String id, SubtitleRequestDTO subtitleRequestDTO);
     public void deleteSubtitle(String subtitleId);
-    public FilmResponseDTO addSubtitle(SubtitleRequestDTO subtitleDTO, String filmId);
+    public FilmResponseDTO addSubtitle(String subtitleId, String filmId);
     public FilmResponseDTO removeSubtitle(String subtitleId, String filmId);
     public List<SubtitleResponseDTO> getAllSubtitles();
     public List<SubtitleResponseDTO> getAllSubtitlesByFilmId(String filmId);

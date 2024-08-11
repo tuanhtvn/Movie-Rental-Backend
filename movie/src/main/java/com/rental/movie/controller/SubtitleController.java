@@ -115,10 +115,10 @@ public class SubtitleController {
         @Operation(summary = "Thêm phụ đề", description = "Thêm phụ đề cho phim")
         @ApiResponse(responseCode = "200", description = "Thêm phụ đề thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/subtitle/{filmId}/add")
-        public ResponseEntity<BaseResponse> addSubtitle(@RequestBody SubtitleRequestDTO subtitleDTO, @PathVariable String filmId) {
+        @PostMapping("/subtitle/{subtitleId}/add/{filmId}")
+        public ResponseEntity<BaseResponse> addSubtitle(@PathVariable String subtitleId, @PathVariable String filmId) {
                 try {
-                        FilmResponseDTO updatedFilm = subtitleService.addSubtitle(subtitleDTO, filmId);
+                        FilmResponseDTO updatedFilm = subtitleService.addSubtitle(subtitleId, filmId);
                         BaseResponse response = new BaseResponse("Thêm phụ đề thành công", HttpStatus.OK.value(), updatedFilm);
                         return new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (CustomException e) {
@@ -132,10 +132,10 @@ public class SubtitleController {
                 @ApiResponse(responseCode = "404", description = "Không tìm thấy phụ đề")
         })
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @DeleteMapping("/subtitle/{filmId}/remove/{subtitleId}")
+        @DeleteMapping("/subtitle/{subtitleId}/remove/{filmId}")
         public ResponseEntity<BaseResponse> removeSubtitle(@PathVariable String subtitleId, @PathVariable String filmId) {
                 try {
-                        FilmResponseDTO updatedFilm = subtitleService.removeSubtitle(filmId, subtitleId);
+                        FilmResponseDTO updatedFilm = subtitleService.removeSubtitle(subtitleId, filmId);
                         BaseResponse response = new BaseResponse("Loại bỏ phụ đề thành công", HttpStatus.OK.value(), updatedFilm);
                         return new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (CustomException e) {

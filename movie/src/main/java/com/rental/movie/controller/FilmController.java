@@ -21,6 +21,8 @@ import com.rental.movie.common.BaseResponse;
 import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmDTO;
+import com.rental.movie.model.dto.FilmInfoDTO;
+import com.rental.movie.model.dto.FilmResourcesDTO;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.model.entity.Subtitle;
 import com.rental.movie.service.FilmService;
@@ -43,7 +45,7 @@ public class FilmController {
 
      @Operation(summary = "Lấy danh sách tất cả phim đang hoạt động", description = "Lấy tất cả phim đã active và không xóa mềm") //isActive=true && isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/auth/films")
+     @GetMapping("/auth/film/active")
      public ResponseEntity<BaseResponse> getAllActivedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try{
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllActivedFilm(pageable, search));
@@ -57,7 +59,7 @@ public class FilmController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim không xóa mềm", description = "Lấy tất cả phim không xóa mềm") // isDeleted=false
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/films/deleted")
+     @GetMapping("/film/deleted")
      public ResponseEntity<BaseResponse> getAllNotDeletedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllNotDeletedFilm(pageable, search));
@@ -71,7 +73,7 @@ public class FilmController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
      @Operation(summary = "Lấy danh sách tất cả phim đã xóa mềm", description = "Lấy tất cả phim đã xóa mềm") // isDeleted=true
      @ApiResponse(responseCode = "200", description = "Lấy danh sách thành công")
-     @GetMapping("/films/getNotdelete")
+     @GetMapping("/film/notDelete")
      public ResponseEntity<BaseResponse> getAllDeletedFilm(@ParameterObject Pageable pageable,@RequestParam(defaultValue = "") String search) {
          try {
              BaseResponse response = new BaseResponse("Lấy danh sách thành công", HttpStatus.OK.value(), filmService.getAllDeletedFilm(pageable, search));
@@ -84,10 +86,36 @@ public class FilmController {
 
     @Operation(summary = "Lấy thông tin phim theo ID", description = "Lấy thông tin tổng quan của phim theo ID")
     @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công")
-    @GetMapping("/auth/films/{id}")
+    @GetMapping("/auth/film/{id}")
     public ResponseEntity<BaseResponse> getFilmById(@PathVariable String id) {
         try {
             BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getByIdFilm(id));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation(summary = "Xem thông tin của phim", description = "Xem thông tin tổng quan của phim theo ID")
+    @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công")
+    @GetMapping("/auth/film/info/{id}")
+    public ResponseEntity<BaseResponse> getFilmInfoById(@PathVariable String id) {
+        try {
+            BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getFilmInfoById(id));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (CustomException e) {
+            BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN', 'ROLE_EMPLOYEE')")
+    @Operation(summary = "Lấy thông tin tài nguyên của phim", description = "Lấy tất cả thông tin tài nguyên của phim theo ID")
+    @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công")
+    @GetMapping("/film/resource/{id}")
+    public ResponseEntity<BaseResponse> getFilmResourcesById(@PathVariable String id) {
+        try {
+            BaseResponse response = new BaseResponse("Lấy thông tin thành công", HttpStatus.OK.value(), filmService.getFilmResourcesById(id));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (CustomException e) {
             BaseResponse response = new BaseResponse(e.getMessage(), HttpStatus.NOT_FOUND.value(), null);
@@ -100,7 +128,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Không có phim"),
              @ApiResponse(responseCode = "200", description = "Tìm thành công")
      })
-     @GetMapping("/auth/films/search")
+     @GetMapping("/auth/film/search")
      public ResponseEntity<BaseResponse> searchFilmByName(@RequestParam String keywords) {
          try {
              List<Film> films = filmService.searchFilmByName(keywords);
@@ -125,7 +153,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Thêm thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "201", description = "Thêm thành công")
      })
-     @PostMapping("/films/create")
+     @PostMapping("/film/create")
      public ResponseEntity<BaseResponse> createFilm(@Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO createdFilm = filmService.createFilm(filmDTO);
@@ -143,7 +171,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Xóa thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Xóa thành công")
      })
-     @DeleteMapping("/films/delete/{id}")
+     @DeleteMapping("/film/delete/{id}")
      public ResponseEntity<BaseResponse> deleteFilmById(@PathVariable String id) {
          try {
              filmService.deleteFilmById(id);
@@ -165,7 +193,7 @@ public class FilmController {
              @ApiResponse(responseCode = "200", description = "Cập nhật thành công"),
              @ApiResponse(responseCode = "400", description = "Dữ liệu đầu vào không hợp lệ")
      })
-     @PutMapping("/films/update/{id}")
+     @PutMapping("/film/update/{id}")
      public ResponseEntity<BaseResponse> updateFilmById(@PathVariable String id, @Valid @RequestBody FilmRequestDTO filmDTO) {
          try {
              FilmResponseDTO updatedFilm = filmService.updateFilmById(id, filmDTO);
@@ -186,7 +214,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
      })
-     @PatchMapping("/films/active/{id}")
+     @PatchMapping("/film/active/{id}")
      public ResponseEntity<BaseResponse> activeFilm(@PathVariable String id) {
          try {
              FilmResponseDTO updatedFilm = filmService.activeFilm(id);
@@ -207,7 +235,7 @@ public class FilmController {
             @ApiResponse(responseCode = "404", description = "Cập nhật thất bại. Có lỗi xảy ra!!!"),
             @ApiResponse(responseCode = "200", description = "Cập nhật thành công")
     })
-    @PatchMapping("/films/deactive/{id}")
+    @PatchMapping("/film/deactive/{id}")
     public ResponseEntity<BaseResponse> deactiveFilm(@PathVariable String id) {
         try {
             FilmResponseDTO updatedFilm = filmService.deactiveFilm(id);
@@ -227,7 +255,7 @@ public class FilmController {
              @ApiResponse(responseCode = "404", description = "Khôi phục thất bại. Có lỗi xảy ra!!!"),
              @ApiResponse(responseCode = "200", description = "Khôi phục thành công")
      })
-     @PatchMapping("/films/restore/{id}")
+     @PatchMapping("/film/restore/{id}")
      public ResponseEntity<BaseResponse> restoreFilmById(@PathVariable String id) {
          try {
              FilmResponseDTO restoredFilm = filmService.restoreFilmById(id);
@@ -260,7 +288,7 @@ public class FilmController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Lấy điểm đánh giá", description = "Lấy điểm đánh giá của phim")
     @ApiResponse(responseCode = "200", description = "Lấy đánh giá thành công")
-    @PostMapping("/film/rate/getRating/{filmId}")
+    @PostMapping("/film/rating/{filmId}")
     public ResponseEntity<BaseResponse> getRating(@PathVariable String filmId) {
         try {
             Double avgRating = filmService.getRating(filmId);
@@ -290,7 +318,7 @@ public class FilmController {
     @Operation(summary = "Lấy tên thể loại của phim", description = "Lấy danh sách các thể loại của phim hiện tại")
     @ApiResponse(responseCode = "200", description = "Lấy danh sách thể loại thành công")
     @ApiResponse(responseCode = "404", description = "Không tìm thấy thể loại hoặc phim")
-    @GetMapping("/auth/film/getGenres/{filmId}")
+    @GetMapping("/auth/film/genre/{filmId}")
     public ResponseEntity<BaseResponse> getGenresOfFilm(@PathVariable String filmId) {
         try {
             List<String> genres = filmService.getGenresOfFilm(filmId);
@@ -305,7 +333,7 @@ public class FilmController {
     @Operation(summary = "Lấy danh sách diễn viên của phim", description = "Lấy danh sách các diễn viên của phim hiện tại")
     @ApiResponse(responseCode = "200", description = "Lấy danh sách diễn viên thành công")
     @ApiResponse(responseCode = "404", description = "Không tìm thấy phim")
-    @GetMapping("/auth/film/getActors/{filmId}")
+    @GetMapping("/auth/film/actor/{filmId}")
     public ResponseEntity<BaseResponse> getActorsOfFilm(@PathVariable String filmId) {
         try {
             List<String> actors = filmService.getActorsOfFilm(filmId);

@@ -18,7 +18,7 @@ public interface NarrationService {
     public NarrationResponseDTO createNarration(NarrationRequestDTO narrationRequestDTO);
     public NarrationResponseDTO updateNarration(String id, NarrationRequestDTO narrationRequestDTO);
     public void deleteNarration(String narrationId);
-    public FilmResponseDTO addNarration(NarrationRequestDTO narrationDTO, String filmId);
+    public FilmResponseDTO addNarration(String narrationId, String filmId);
     public FilmResponseDTO removeNarration(String narrationId, String filmId);
     public List<NarrationResponseDTO> getAllNarrations();
     public List<NarrationResponseDTO> getAllNarrationsByFilmId(String filmId);
