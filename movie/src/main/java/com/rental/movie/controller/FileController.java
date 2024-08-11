@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,7 @@ public class FileController {
 
     @Operation(summary = "Tải phim lên", description = "API tải phim lên. Định dạng phim hỗ trợ: mp4, mov, avi, mkv")
     @ApiResponse(responseCode = "200", description = "Tải phim lên thành công")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping(path = "/film/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse> uploadFilm(@RequestParam(name = "film", required = true) MultipartFile file)
             throws GeneralSecurityException, IOException {
@@ -72,6 +74,7 @@ public class FileController {
 
     @Operation(summary = "Xoá phim theo url", description = "API xoá phim theo url")
     @ApiResponse(responseCode = "200", description = "Xoá phim thành công")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/film/delete")
     public ResponseEntity<BaseResponse> deleteFilm(@RequestParam(name = "url", required = true) String url)
             throws GeneralSecurityException, IOException {
