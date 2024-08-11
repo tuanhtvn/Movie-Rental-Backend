@@ -105,11 +105,20 @@ public class NarrationServiceImpl implements NarrationService {
 
     @Override
     @Transactional
-    public FilmResponseDTO addNarration(NarrationRequestDTO narrationDTO, String filmId) {
+    public FilmResponseDTO addNarration(String narrationId, String filmId) {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 
-        Narration narration = narrationMapper.convertToEntity(narrationDTO);
+        Narration narration = narrationRepository.findById(narrationId)
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
+
+        boolean exists = film.getNarrations().stream()
+                .anyMatch(n -> n.getId().equals(narrationId));
+
+        if (exists) {
+            throw new CustomException("Thuyết minh đã tồn tại", HttpStatus.BAD_REQUEST.value());
+        }
+
         film.getNarrations().add(narration);
         filmRepository.save(film);
 

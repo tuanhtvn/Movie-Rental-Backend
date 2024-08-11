@@ -19,17 +19,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.rental.movie.exception.CustomException;
-import com.rental.movie.model.dto.FilmResponseDTO;
-import com.rental.movie.model.dto.FilmRequestDTO;
-import com.rental.movie.model.dto.FilmDTO;
-import com.rental.movie.model.entity.Film;
-import com.rental.movie.repository.FilmRepository;
+import com.rental.movie.model.dto.*;
+import com.rental.movie.model.entity.*;
+import com.rental.movie.repository.*;
 import com.rental.movie.util.mapper.FilmMapper;
-import com.rental.movie.model.dto.RatingRequestDTO;
-import com.rental.movie.repository.GenreRepository;
-import com.rental.movie.repository.SubtitleRepository;
-import com.rental.movie.repository.NarrationRepository;
-import com.rental.movie.repository.CommentRepository;
+
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,6 +59,65 @@ public class FilmServiceImpl implements FilmService {
             throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
         }));
     }
+
+    @Override
+    public FilmInfoDTO getFilmInfoById(String id) {
+        Film film = filmRepository.findById(id).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
+        });
+
+        FilmInfoDTO filmInfoDTO = new FilmInfoDTO();
+        filmInfoDTO.setFilmName(film.getFilmName());
+        filmInfoDTO.setDescription(film.getDescription());
+        filmInfoDTO.setTrailerUrl(film.getTrailerUrl());
+        filmInfoDTO.setReleaseDate(film.getReleaseDate());
+        filmInfoDTO.setDirector(film.getDirector());
+        filmInfoDTO.setLanguage(film.getLanguage());
+        filmInfoDTO.setAge(film.getAge());
+        filmInfoDTO.setPrice(film.getPrice());
+
+        return filmInfoDTO;
+    }
+
+    public FilmResourcesDTO getFilmResourcesById(String id) {
+        Film film = filmRepository.findById(id).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
+        });
+
+        FilmResourcesDTO filmResourcesDTO = new FilmResourcesDTO();
+        filmResourcesDTO.setFilmUrl(film.getFilmUrl());
+
+        filmResourcesDTO.setSubtitles(
+                film.getSubtitles().stream()
+                        .map(this::mapToSubtitleResponseDTO)
+                        .collect(Collectors.toList())
+        );
+
+        filmResourcesDTO.setNarrations(
+                film.getNarrations().stream()
+                        .map(this::mapToNarrationResponseDTO)
+                        .collect(Collectors.toList())
+        );
+
+        return filmResourcesDTO;
+    }
+
+    private SubtitleResponseDTO mapToSubtitleResponseDTO(Subtitle subtitle) {
+        SubtitleResponseDTO dto = new SubtitleResponseDTO();
+        dto.setId(subtitle.getId());
+        dto.setSubtitleName(subtitle.getSubtitleName());
+        dto.setSubtitleUrl(subtitle.getSubtitleUrl());
+        return dto;
+    }
+
+    private NarrationResponseDTO mapToNarrationResponseDTO(Narration narration) {
+        NarrationResponseDTO dto = new NarrationResponseDTO();
+        dto.setId(narration.getId());
+        dto.setLanguage(narration.getLanguage());
+        dto.setNarrationUrl(narration.getNarrationUrl());
+        return dto;
+    }
+
     @Override
     public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByActived(pageable, search);

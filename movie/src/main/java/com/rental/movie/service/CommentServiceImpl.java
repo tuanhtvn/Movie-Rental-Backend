@@ -8,7 +8,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.time.format.DateTimeParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,12 +135,16 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 
         Pageable pageable = PageRequest.of(page, size);
-
-        Page<Comment> commentPage = commentRepository.findByFilmId(filmId, pageable);
-
+        List<Comment> allComments = commentRepository.findByFilmId(filmId);
+        // Sắp xếp danh sách bình luận theo createdAt giảm dần
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        return commentPage.map(comment -> {
+        allComments.sort((c1, c2) -> {
+            LocalDate date1 = LocalDate.parse(c1.getCreatedAt(), formatter);
+            LocalDate date2 = LocalDate.parse(c2.getCreatedAt(), formatter);
+            return date2.compareTo(date1);
+        });
+        // Chuyển đổi các bình luận sang CommentDTO
+        List<CommentDTO> commentDTOs = allComments.stream().map(comment -> {
             User user = userRepository.findById(comment.getIdUser())
                     .orElseThrow(() -> new CustomException("Người dùng không tồn tại", HttpStatus.NOT_FOUND.value()));
 
@@ -151,6 +157,12 @@ public class CommentServiceImpl implements CommentService {
             commentDTO.setIsMyComment(currentUserId.equals(comment.getIdUser()));
 
             return commentDTO;
-        });
+        }).collect(Collectors.toList());
+        // Tạo đối tượng Page từ danh sách đã sắp xếp và phân trang
+        int start = Math.min((int) pageable.getOffset(), commentDTOs.size());
+        int end = Math.min((start + pageable.getPageSize()), commentDTOs.size());
+        Page<CommentDTO> commentDTOPage = new PageImpl<>(commentDTOs.subList(start, end), pageable, commentDTOs.size());
+
+        return commentDTOPage;
     }
 }

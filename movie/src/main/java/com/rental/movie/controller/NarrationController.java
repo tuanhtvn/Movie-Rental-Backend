@@ -114,10 +114,10 @@ public class NarrationController {
         @Operation(summary = "Thêm thuyết minh", description = "Thêm thuyết minh cho phim")
         @ApiResponse(responseCode = "200", description = "Thêm thuyết minh thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
-        @PostMapping("/narration/{filmId}/add")
-        public ResponseEntity<BaseResponse> addNarration(@RequestBody NarrationRequestDTO narrationDTO, @PathVariable String filmId) {
+        @PostMapping("/narration/{filmId}/add/{narrationId}")
+        public ResponseEntity<BaseResponse> addNarration(@PathVariable String narrationId, @PathVariable String filmId) {
                 try {
-                        FilmResponseDTO updatedFilm = narrationService.addNarration(narrationDTO, filmId);
+                        FilmResponseDTO updatedFilm = narrationService.addNarration(narrationId, filmId);
                         BaseResponse response = new BaseResponse("Thêm thuyết minh thành công", HttpStatus.OK.value(), updatedFilm);
                         return new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (CustomException e) {
@@ -134,7 +134,7 @@ public class NarrationController {
         @DeleteMapping("/narration/{filmId}/remove/{narrationId}")
         public ResponseEntity<BaseResponse> removeNarration(@PathVariable String narrationId, @PathVariable String filmId) {
                 try {
-                        FilmResponseDTO updatedFilm = narrationService.removeNarration(filmId, narrationId);
+                        FilmResponseDTO updatedFilm = narrationService.removeNarration(narrationId, filmId);
                         BaseResponse response = new BaseResponse("Loại bỏ thuyết minh thành công", HttpStatus.OK.value(), updatedFilm);
                         return new ResponseEntity<>(response, HttpStatus.OK);
                 } catch (CustomException e) {

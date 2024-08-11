@@ -108,11 +108,20 @@ public class SubtitleServiceImpl implements SubtitleService {
 
     @Override
     @Transactional
-    public FilmResponseDTO addSubtitle(SubtitleRequestDTO subtitleDTO, String filmId) {
+    public FilmResponseDTO addSubtitle(String subtitleId, String filmId) {
         Film film = filmRepository.findById(filmId)
                 .orElseThrow(() -> new CustomException("Không tìm thấy phim", HttpStatus.NOT_FOUND.value()));
 
-        Subtitle subtitle = subtitleMapper.convertToEntity(subtitleDTO);
+        Subtitle subtitle = subtitleRepository.findById(subtitleId)
+                .orElseThrow(() -> new CustomException("Không tìm thấy phụ đề", HttpStatus.NOT_FOUND.value()));
+
+        boolean exists = film.getSubtitles().stream()
+                .anyMatch(n -> n.getId().equals(subtitleId));
+
+        if (exists) {
+            throw new CustomException("Phụ đề đã tồn tại", HttpStatus.BAD_REQUEST.value());
+        }
+
         film.getSubtitles().add(subtitle);
         filmRepository.save(film);
 
