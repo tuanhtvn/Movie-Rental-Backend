@@ -35,7 +35,7 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
 
         private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
         private static final String SERVICE_ACOUNT_KEY_PATH = GenreServiceImpl.class
-                        .getResource("/certs/credentials.json").getPath();
+                        .getResource("/certs/drive/credentials.json").getPath();
 
         @Override
         public String uploadFilm(MultipartFile file) throws GeneralSecurityException, IOException {
