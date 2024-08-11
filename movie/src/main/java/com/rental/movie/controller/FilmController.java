@@ -131,7 +131,7 @@ public class FilmController {
      @GetMapping("/auth/film/search")
      public ResponseEntity<BaseResponse> searchFilmByName(@RequestParam String keywords) {
          try {
-             List<Film> films = filmService.searchFilmByName(keywords);
+             List<FilmResponseDTO> films = filmService.searchFilmByName(keywords);
              BaseResponse response;
 
              if (films.isEmpty()) {

@@ -152,14 +152,15 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> searchFilmByName(String keywords) {
+    public List<FilmResponseDTO> searchFilmByName(String keywords) {
         String keyword = removeAccents(keywords).toLowerCase();
 
         return filmRepository.findByActived().stream()
                 .filter(film -> {
-                    String films = removeAccents(film.getFilmName()).toLowerCase();
-                    return films.contains(keyword);
+                    String filmName = removeAccents(film.getFilmName()).toLowerCase();
+                    return filmName.contains(keyword);
                 })
+                .map(filmMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
 
