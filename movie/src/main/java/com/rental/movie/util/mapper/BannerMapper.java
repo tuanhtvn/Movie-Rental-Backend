@@ -2,9 +2,12 @@ package com.rental.movie.util.mapper;
 
 import com.rental.movie.model.dto.BannerRequestDTO;
 import com.rental.movie.model.dto.BannerResponseDTO;
+import com.rental.movie.model.dto.FilmRequestDTO;
+import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.entity.Banner;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.repository.FilmRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +15,8 @@ import org.springframework.stereotype.Component;
 public class BannerMapper {
     @Autowired
     private FilmRepository filmRepository;
+    @Autowired
+    private FilmMapper filmMapper;
 
     public BannerResponseDTO convertToDTO(Banner banner) {
         if (banner == null) {
@@ -21,7 +26,8 @@ public class BannerMapper {
         if (banner.getFilm() != null) {
             Film film = filmRepository.findByIdDefault(banner.getFilm().getId()).orElse(null);
             if (film != null) {
-                responseBanner.setFilm(film);
+                FilmResponseDTO responseFilm = filmMapper.convertToDTO(film);
+                responseBanner.setFilm(responseFilm);
             }
         }
         responseBanner.setId(banner.getId());
