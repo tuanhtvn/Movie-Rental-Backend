@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.rental.movie.common.BaseResponse;
 import com.rental.movie.exception.CustomException;
@@ -112,6 +113,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    // 
-    
+    // Max Upload Size Error
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<BaseResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        log.error("Exception: " + e.getMessage());
+        BaseResponse response = new BaseResponse();
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setMessage("Kích thước tệp tải lên vượt quá giới hạn cho phép");
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
 }
