@@ -1,6 +1,5 @@
 .DS_Store
 .vscode
-credentials.json
 ### STS ###
 .apt_generated
 .classpath
