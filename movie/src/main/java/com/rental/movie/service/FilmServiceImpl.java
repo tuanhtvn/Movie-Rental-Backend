@@ -152,7 +152,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> searchFilmByName(String keywords) {
+    public List<FilmResponseDTO> searchFilmByName(String keywords) {
         String keyword = removeAccents(keywords).toLowerCase();
 
         return filmRepository.findByActived().stream()
