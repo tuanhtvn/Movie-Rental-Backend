@@ -26,7 +26,7 @@ public interface FilmService {
     public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search);       //isActive=true && isDeleted=false
     public Page<FilmResponseDTO> getAllNotDeletedFilm(Pageable pageable, String search);    //isDeleted=false
     public Page<FilmResponseDTO> getAllDeletedFilm(Pageable pageable, String search);       //isDeleted=true
-    public List<Film> searchFilmByName(String keywords);
+    public List<FilmResponseDTO> searchFilmByName(String keywords);
     public FilmResponseDTO createFilm(FilmRequestDTO filmDTO);
     public FilmResponseDTO deleteFilmById(String filmId);
     public FilmResponseDTO updateFilmById(String filmId, FilmRequestDTO filmDTO);
