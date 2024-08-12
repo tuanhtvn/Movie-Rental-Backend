@@ -2,12 +2,10 @@ package com.rental.movie.util.mapper;
 
 import com.rental.movie.model.dto.BannerRequestDTO;
 import com.rental.movie.model.dto.BannerResponseDTO;
-import com.rental.movie.model.dto.FilmRequestDTO;
 import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.entity.Banner;
 import com.rental.movie.model.entity.Film;
 import com.rental.movie.repository.FilmRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
