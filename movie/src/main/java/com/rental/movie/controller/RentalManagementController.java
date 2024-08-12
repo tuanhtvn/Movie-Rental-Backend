@@ -5,13 +5,20 @@ import com.rental.movie.service.RentalManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/rental-management")
+@Slf4j
 public class RentalManagementController {
     @Autowired
     private RentalManagementService rentalManagementService;
@@ -25,7 +32,18 @@ public class RentalManagementController {
             @ApiResponse(responseCode = "200", description = "Thành công.")
     })
     @GetMapping("/getRentalPackage/{userId}")
-    public ResponseEntity<BaseResponse> getRentalPackageByUserId(@PathVariable String userId) {
+    public ResponseEntity<BaseResponse> getRentalPackageByUserId(@PathVariable String userId, Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        log.info("Lấy gói thuê dựa trên userId, vai trò của người dùng hiện tại: " + authorities);
+
+        boolean isManager = authorities.stream().anyMatch(
+                role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_EMPLOYEE")
+        );
+        //Nếu không phải là người quản trị hoặc userId không trùng với người dùng hiện tại
+        if (!isManager && !userId.equals(authentication.getName())){
+            throw new AccessDeniedException("Bạn không có quyền truy cập vào tài nguyên này!");
+        }
+
         return rentalManagementService.getRentalPackageByUserId(userId);
     }
 
@@ -62,7 +80,18 @@ public class RentalManagementController {
             @ApiResponse(responseCode = "200", description = "Tìm thấy danh sách phim thuê.")
     })
     @GetMapping("/getRentedFilms/{userId}")
-    public ResponseEntity<BaseResponse> getRentedFilms(@PathVariable String userId) {
+    public ResponseEntity<BaseResponse> getRentedFilms(@PathVariable String userId, Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        log.info("Lấy ds phim thuê dựa trên userId, vai trò của người dùng hiện tại: " + authorities);
+
+        boolean isManager = authorities.stream().anyMatch(
+                role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_EMPLOYEE")
+        );
+        //Nếu không phải là người quản trị hoặc userId không trùng với người dùng hiện tại
+        if (!isManager && !userId.equals(authentication.getName())){
+            throw new AccessDeniedException("Bạn không có quyền truy cập vào tài nguyên này!");
+        }
+
         return rentalManagementService.getRentedFilmsByUserId(userId);
     }
 
