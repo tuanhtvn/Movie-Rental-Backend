@@ -392,28 +392,16 @@ public class FilmController {
     @ApiResponse(responseCode = "200", description = "Kiểm tra thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/file/film/check/{id}")
-    public ResponseEntity<BaseResponse> checkUserHasPermissionToAccessFile(@PathVariable String id,
-            HttpServletRequest req,
-            HttpServletResponse res) {
-
+    public ResponseEntity<BaseResponse> checkUserHasPermissionToAccessFile(@PathVariable String id) {
         filmService.checkUserHasPermissionToAccessFile(id);
         BaseResponse response = new BaseResponse("Kiểm tra thành công", HttpStatus.OK.value(), null);
-        // Set cookie
-        String token = req.getHeader("Authorization");
-        token = token.substring(7);
-        Cookie cookie = new Cookie("Authorization", token);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(12 * 60 * 60);
-        res.addCookie(cookie);
-        //
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Xem phim bước 2", description = "API xem phim")
     @ApiResponse(responseCode = "200", description = "Tải phim thành công")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(path = "/file/film/{id}")
+    @GetMapping("/file/film/{id}")
     public ResponseEntity<Resource> getFileFilm(@PathVariable String id)
             throws GeneralSecurityException, IOException {
         InputStream inputStream = filmService.getFileFilm(id);
