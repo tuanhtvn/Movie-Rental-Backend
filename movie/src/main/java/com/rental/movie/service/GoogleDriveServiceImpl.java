@@ -3,12 +3,12 @@ package com.rental.movie.service;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -37,9 +37,6 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
         private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
         private static final String SERVICE_ACOUNT_KEY_PATH = GenreServiceImpl.class
                         .getResource("/certs/drive/credentials.json").getPath();
-
-        private long maxFileSize = 10 * 1024 * 1024;
-
         @Override
         public String uploadFilm(MultipartFile file) throws GeneralSecurityException, IOException {
                 log.info("Upload film to Google Drive");
@@ -59,9 +56,6 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
 
                 tikaAnalysis.CheckSupportedContentType(file, "text/plain", "text/vtt", "application/x-subrip",
                                 "application/x-ass", "application/x-sub");
-                if (file.getSize() > maxFileSize) {
-                        throw new MaxUploadSizeExceededException(maxFileSize);
-                }
                 String folderId = appConfig.getFolderIdSubtitle();
                 return uploadFile(folderId, file);
         }
@@ -73,11 +67,15 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
 
                 tikaAnalysis.CheckSupportedContentType(file, "audio/mpeg", "audio/wav", "video/x-m4v",
                                 "audio/x-ms-wma");
-                if (file.getSize() > maxFileSize) {
-                        throw new MaxUploadSizeExceededException(maxFileSize);
-                }
                 String folderId = appConfig.getFolderIdNarration();
                 return uploadFile(folderId, file);
+        }
+
+        @Override
+        public InputStream getFileAsInputStream(String url) throws GeneralSecurityException, IOException {
+                log.info("Get file from Google Drive as InputStream");
+                String id = url.substring(url.lastIndexOf("=") + 1);
+                return getInstance().files().get(id).executeMediaAsInputStream();
         }
 
         private String uploadFile(String folderId, MultipartFile file) throws GeneralSecurityException, IOException {
@@ -117,6 +115,7 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
                                 GoogleNetHttpTransport.newTrustedTransport(),
                                 JSON_FACTORY,
                                 credentialsAdapter)
+                                .setApplicationName("Movie Rental")
                                 .build();
 
         }

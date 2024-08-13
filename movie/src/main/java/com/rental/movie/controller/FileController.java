@@ -73,7 +73,7 @@ public class FileController {
                 return ResponseEntity.status(response.getStatus()).body(response);
         }
 
-        @Operation(summary = "Tải phụ đề lên", description = "API tải phụ đề lên. Định dạng phụ đề hỗ trợ: srt, vtt, ass, sub. Kích thước tối đa: 10MB")
+        @Operation(summary = "Tải phụ đề lên", description = "API tải phụ đề lên. Định dạng phụ đề hỗ trợ: srt, vtt, ass, sub")
         @ApiResponse(responseCode = "200", description = "Tải phụ đề lên thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @PostMapping(path = "/subtitle/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -88,7 +88,7 @@ public class FileController {
                 return ResponseEntity.status(response.getStatus()).body(response);
         }
 
-        @Operation(summary = "Tải file thuyết minh lên", description = "API tải file thuyết minh lên. Định dạng file thuyết minh hỗ trợ: mp3, wav, m4v, wma. Kích thước tối đa: 10MB")
+        @Operation(summary = "Tải file thuyết minh lên", description = "API tải file thuyết minh lên. Định dạng file thuyết minh hỗ trợ: mp3, wav, m4v, wma")
         @ApiResponse(responseCode = "200", description = "Tải thuyết minh lên thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @PostMapping(path = "/narration/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -103,7 +103,7 @@ public class FileController {
                 return ResponseEntity.status(response.getStatus()).body(response);
         }
 
-        @Operation(summary = "Xoá file (film, phụ đề, thuyết minh) theo url", description = "API xoá file theo url")
+        @Operation(summary = "Xoá file (video, phụ đề, thuyết minh) theo url", description = "API xoá file theo url")
         @ApiResponse(responseCode = "200", description = "Xoá file thành công")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EMPLOYEE')")
         @DeleteMapping("/file/delete")

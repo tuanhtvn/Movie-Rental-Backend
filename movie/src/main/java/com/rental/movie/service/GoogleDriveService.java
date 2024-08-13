@@ -1,6 +1,7 @@
 package com.rental.movie.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,8 @@ public interface GoogleDriveService {
     public String uploadSubtitle(MultipartFile file) throws GeneralSecurityException, IOException;
 
     public String uploadNarration(MultipartFile file) throws GeneralSecurityException, IOException;
+
+    public InputStream getFileAsInputStream(String url) throws GeneralSecurityException, IOException;
 
     public void deleteFile(String url) throws GeneralSecurityException, IOException;
 }

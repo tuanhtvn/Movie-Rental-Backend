@@ -2,7 +2,6 @@ package com.rental.movie.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.OptionalDouble;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.security.GeneralSecurityException;
 
+import com.rental.movie.common.IAuthentication;
+import com.rental.movie.common.RentalType;
 import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.dto.*;
 import com.rental.movie.model.entity.*;
 import com.rental.movie.repository.*;
 import com.rental.movie.util.mapper.FilmMapper;
-
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,12 +42,16 @@ public class FilmServiceImpl implements FilmService {
     private CommentRepository commentRepository;
     @Autowired
     private FilmMapper filmMapper;
+    @Autowired
+    private GoogleDriveService googleDriveService;
+    @Autowired
+    private IAuthentication authManager;
 
     @Override
     public Film getById(String id) {
-        //log.info("Get film by id: {}", id);
+        // log.info("Get film by id: {}", id);
         return filmRepository.findById(id).orElseThrow(() -> {
-            //log.error("Film not found with id: {}", id);
+            // log.error("Film not found with id: {}", id);
             throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
         });
     }
@@ -90,14 +93,12 @@ public class FilmServiceImpl implements FilmService {
         filmResourcesDTO.setSubtitles(
                 film.getSubtitles().stream()
                         .map(this::mapToSubtitleResponseDTO)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
 
         filmResourcesDTO.setNarrations(
                 film.getNarrations().stream()
                         .map(this::mapToNarrationResponseDTO)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
 
         return filmResourcesDTO;
     }
@@ -121,7 +122,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Page<FilmResponseDTO> getAllActivedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByActived(pageable, search);
-        //log.info("Get all actived films: {}", films.getContent().toString());
+        // log.info("Get all actived films: {}", films.getContent().toString());
         if (films.isEmpty()) {
             log.error("No films found");
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
@@ -132,7 +133,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Page<FilmResponseDTO> getAllNotDeletedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByNotDeleted(pageable, search);
-        //log.info("Get all not deleted films: {}", films.getContent().toString());
+        // log.info("Get all not deleted films: {}", films.getContent().toString());
         if (films.isEmpty()) {
             log.error("No films found");
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
@@ -143,7 +144,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Page<FilmResponseDTO> getAllDeletedFilm(Pageable pageable, String search) {
         Page<Film> films = filmRepository.findAllByDeleted(pageable, search);
-        //log.info("Get all deleted films: {}", films.getContent().toString());
+        // log.info("Get all deleted films: {}", films.getContent().toString());
         if (films.isEmpty()) {
             log.error("No films found");
             throw new CustomException("Không có phim nào", HttpStatus.NOT_FOUND.value());
@@ -177,7 +178,7 @@ public class FilmServiceImpl implements FilmService {
     public FilmResponseDTO createFilm(FilmRequestDTO filmDTO) {
         Film film = filmMapper.convertToEntity(filmDTO);
 
-        //log.info("Create film {}", film.toString());
+        // log.info("Create film {}", film.toString());
         Film savedFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(savedFilm);
     }
@@ -186,11 +187,12 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public FilmResponseDTO deleteFilmById(String filmId) {
         Film film = filmRepository.findByIdDefault(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         film.setIsDeleted(true);
 
-        //log.info("Soft delete film {}", film.toString());
+        // log.info("Soft delete film {}", film.toString());
         Film deletedFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(deletedFilm);
     }
@@ -199,7 +201,8 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public FilmResponseDTO updateFilmById(String filmId, FilmRequestDTO filmDTO) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         Film updateFilm = filmMapper.convertToEntity(filmDTO, film);
         return filmMapper.convertToDTO(filmRepository.save(updateFilm));
@@ -209,11 +212,12 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public FilmResponseDTO activeFilm(String filmId) {
         Film film = filmRepository.findByIdDefault(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         film.setIsActive(true);
 
-        //log.info("Active film {}", film.toString());
+        // log.info("Active film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(updatedFilm);
     }
@@ -222,11 +226,12 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public FilmResponseDTO deactiveFilm(String filmId) {
         Film film = filmRepository.findByIdDefault(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         film.setIsActive(false);
 
-        //log.info("Deactive film {}", film.toString());
+        // log.info("Deactive film {}", film.toString());
         Film updatedFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(updatedFilm);
     }
@@ -235,23 +240,63 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public FilmResponseDTO restoreFilmById(String filmId) {
         Film film = filmRepository.findByIdDefault(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         film.setIsDeleted(false);
 
-        //log.info("Restore film {}", film.toString());
+        // log.info("Restore film {}", film.toString());
         Film restoredFilm = filmRepository.save(film);
         return filmMapper.convertToDTO(restoredFilm);
 
     }
 
+    @Override
+    public InputStream getFileFilm(String filmId) throws GeneralSecurityException, IOException {
+        // check user has permission to access this file (User rent this film)
+        String url = this.checkUserHasPermissionToAccessFile(filmId);
+        return googleDriveService.getFileAsInputStream(url);
+    }
+    
+    @Override
+    public String checkUserHasPermissionToAccessFile(String filmId) {
+        Film film = filmRepository.findById(filmId).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
+        });
+        User user = authManager.getUserAuthentication();
+        if (film.getRentalType() == RentalType.RENTAL) {
+            RentedFilm rentedFilm = user.getRentedFilms().stream()
+                    .filter(f -> f.getFilm().equals(film))
+                    .findFirst()
+                    .orElse(null);
+            if (rentedFilm == null) {
+                throw new CustomException("Bạn chưa thuê phim này", HttpStatus.FORBIDDEN.value());
+            } else {
+                if (rentedFilm.getMinutesLeft() <= 0) {
+                    throw new CustomException("Phim thuê đã hết hạn", HttpStatus.FORBIDDEN.value());
+                }
+            }
+        } else {
+            if (user.getRentalPackage() == null) {
+                throw new CustomException("Bạn chưa thuê gói nào", HttpStatus.FORBIDDEN.value());
+            } else {
+                if (user.getRentalPackage().getMinutesLeft() <= 0) {
+                    throw new CustomException("Gói thuê đã hết hạn", HttpStatus.FORBIDDEN.value());
+                }
+            }
+        }
+        return film.getFilmUrl();
+    }
+
     public Double rateFilm(String filmId, RatingRequestDTO ratingRequestDTO) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         int rating = ratingRequestDTO.getRating();
         if (rating < 1 || rating > 5) {
-            throw new CustomException("Điểm đánh giá phải có giá trị từ 1 đến 5", HttpStatus.BAD_REQUEST.value());
+            throw new CustomException("Điểm đánh giá phải có giá trị từ 1 đến 5",
+                    HttpStatus.BAD_REQUEST.value());
         }
         film.getRatings().put(ratingRequestDTO.getIdUser(), rating);
         filmRepository.save(film);
@@ -261,7 +306,8 @@ public class FilmServiceImpl implements FilmService {
 
     public Double getRating(String filmId) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại", HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Phim với ID " + filmId + " không tồn tại",
+                        HttpStatus.NOT_FOUND.value()));
 
         Map<String, Integer> ratings = film.getRatings();
         if (ratings.isEmpty()) {
@@ -280,7 +326,8 @@ public class FilmServiceImpl implements FilmService {
 
     public List<String> getGenresOfFilm(String filmId) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId, HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId,
+                        HttpStatus.NOT_FOUND.value()));
 
         return film.getGenres().stream()
                 .map(genreId -> genreRepository.findById(genreId)
@@ -292,7 +339,8 @@ public class FilmServiceImpl implements FilmService {
 
     public List<String> getActorsOfFilm(String filmId) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId, HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId,
+                        HttpStatus.NOT_FOUND.value()));
 
         // Trả về danh sách diễn viên
         return film.getActors() != null ? film.getActors() : List.of();
@@ -301,7 +349,8 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     public void incrementViews(String filmId) {
         Film film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId, HttpStatus.NOT_FOUND.value()));
+                .orElseThrow(() -> new CustomException("Không tìm thấy phim với ID: " + filmId,
+                        HttpStatus.NOT_FOUND.value()));
 
         // Tăng số lượt xem
         Integer currentViews = film.getNumberOfViews();

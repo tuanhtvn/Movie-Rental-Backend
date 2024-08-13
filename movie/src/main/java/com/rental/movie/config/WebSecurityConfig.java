@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.util.WebUtils;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -32,6 +33,9 @@ import com.rental.movie.component.DelegatedAuthenticationEntryPoint;
 import com.rental.movie.component.OAuth2LoginSuccessHandler;
 import com.rental.movie.component.OAuth2AuthenticationFailureHandler;
 import com.rental.movie.util.CustomAuthenticationConverter;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -50,8 +54,9 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowedOrigins(Arrays.asList("*")); // appConfig.getClientUrl()
+        configuration.setAllowedOrigins(Arrays.asList(appConfig.getClientUrl())); // appConfig.getClientUrl()
         configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -77,11 +82,23 @@ public class WebSecurityConfig {
                 })
                 .oauth2ResourceServer(oauth2 -> {
                     oauth2
+                            .bearerTokenResolver(req -> this.CustomBearerTokenResolver(req))
                             .authenticationEntryPoint(this.delegatedAuthenticationEntryPoint)
                             .jwt(jwt -> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()));
                 })
                 .exceptionHandling(handler -> handler.authenticationEntryPoint(this.delegatedAuthenticationEntryPoint))
                 .build();
+    }
+
+    private String CustomBearerTokenResolver(HttpServletRequest request) {        Cookie cookie = WebUtils.getCookie(request, "Authorization");
+        if (cookie != null) {
+            return cookie.getValue();
+        }
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        return null;
     }
 
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
