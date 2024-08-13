@@ -51,9 +51,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getNotificationsByUserId(String userId) {
+    public List<NotificationResponseDTO> getNotificationsByUserId() {
         User currentUser = authentication.getUserAuthentication();
-        userId = currentUser.getId();
+        String userId = currentUser.getId();
         List<Notification> notifications = notificationRepository.findByUserId(userId);
         if (notifications.isEmpty()) {
             throw new CustomException("Không có thông báo nào", HttpStatus.NOT_FOUND.value());
@@ -62,9 +62,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getUnreadNotificationsByUserId(String userId) {
+    public List<NotificationResponseDTO> getUnreadNotificationsByUserId() {
         User currentUser = authentication.getUserAuthentication();
-        userId = currentUser.getId();
+        String userId = currentUser.getId();
         List<Notification> notifications = notificationRepository.findByUserIdAndIsRead(userId, false);
         if (notifications.isEmpty()) {
             throw new CustomException("Không có thông báo chưa đọc nào", HttpStatus.NOT_FOUND.value());
@@ -81,6 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         existingNotification.setTitle(notificationDTO.getTitle());
         existingNotification.setContent(notificationDTO.getContent());
+        existingNotification.setSentTime(ZonedDateTime.now());
         return notificationMapper.toDTO(notificationRepository.save(existingNotification));
     }
 

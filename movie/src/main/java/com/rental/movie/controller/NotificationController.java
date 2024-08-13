@@ -1,11 +1,13 @@
 package com.rental.movie.controller;
 
+import com.rental.movie.common.IAuthentication;
 import com.rental.movie.model.dto.NotificationDTO;
 import com.rental.movie.model.dto.NotificationResponseDTO;
 import com.rental.movie.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/notifications")
 public class NotificationController {
     private final NotificationService notificationService;
-
     public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
@@ -55,9 +56,9 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Lấy thông báo theo id người dùng thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
-    @GetMapping("/notifications/user/{userId}")
-    public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserId(@PathVariable String userId) {
-        List<NotificationResponseDTO> notifications = notificationService.getNotificationsByUserId(userId);
+    @GetMapping("/user}")
+    public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserId() {
+        List<NotificationResponseDTO> notifications = notificationService.getNotificationsByUserId();
         return ResponseEntity.ok(notifications);
     }
 
@@ -67,9 +68,9 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Lấy thông báo chưa đọc theo id người dùng thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
-    @GetMapping("/{userId}/unread")
-    public ResponseEntity<List<NotificationResponseDTO>> getUnreadNotificationsByUserId(@PathVariable String userId) {
-        List<NotificationResponseDTO> notifications = notificationService.getUnreadNotificationsByUserId(userId);
+    @GetMapping("/user/unread")
+    public ResponseEntity<List<NotificationResponseDTO>> getUnreadNotificationsByUserId() {
+        List<NotificationResponseDTO> notifications = notificationService.getUnreadNotificationsByUserId();
         return ResponseEntity.ok(notifications);
     }
 

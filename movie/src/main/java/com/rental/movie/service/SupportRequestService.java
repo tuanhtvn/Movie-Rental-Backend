@@ -8,7 +8,7 @@ import java.util.List;
 public interface SupportRequestService {
     SupportRequestDTO createSupportRequest(SupportRequestDTO supportRequestDTO);
     List<SupportRequestResponseDTO> getAllSupportRequests();
-    List<SupportRequestResponseDTO> getSupportRequestsByUserId(String userId);
+    List<SupportRequestResponseDTO> getSupportRequestsByUserId();
     List<SupportRequestResponseDTO> getUnresolvedSupportRequests();
     void deleteSupportRequest(String id);
 }

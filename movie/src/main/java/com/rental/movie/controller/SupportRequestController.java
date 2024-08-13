@@ -59,9 +59,9 @@ public class SupportRequestController {
             @ApiResponse(responseCode = "200", description = "Danh sách yêu cầu hỗ trợ đã được tìm thấy"),
             @ApiResponse(responseCode = "404", description = "Danh sách yêu cầu hỗ trợ không tồn tại")
     })
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<SupportRequestResponseDTO>> getSupportRequestsByUserId(@PathVariable String userId) {
-        List<SupportRequestResponseDTO> supportRequests = supportRequestService.getSupportRequestsByUserId(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<SupportRequestResponseDTO>> getSupportRequestsByUserId() {
+        List<SupportRequestResponseDTO> supportRequests = supportRequestService.getSupportRequestsByUserId();
         return ResponseEntity.ok(supportRequests);
     }
 

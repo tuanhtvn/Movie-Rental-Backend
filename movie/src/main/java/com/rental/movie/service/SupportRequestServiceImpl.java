@@ -55,9 +55,9 @@ public class SupportRequestServiceImpl implements SupportRequestService {
     }
 
     @Override
-    public List<SupportRequestResponseDTO> getSupportRequestsByUserId(String userId) {
+    public List<SupportRequestResponseDTO> getSupportRequestsByUserId() {
         User currentUser = authentication.getUserAuthentication();
-        userId = currentUser.getId();
+        String userId = currentUser.getId();
         List<SupportRequest> supportRequests = supportRequestRepository.findByUserId(userId);
         if (supportRequests.isEmpty()) {
             throw new CustomException("Không có yêu cầu hỗ trợ nào", HttpStatus.NOT_FOUND.value());
