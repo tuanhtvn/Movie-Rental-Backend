@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springdoc.core.annotations.ParameterObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,15 +24,13 @@ import com.rental.movie.model.dto.FilmResponseDTO;
 import com.rental.movie.model.dto.FilmDTO;
 import com.rental.movie.service.FilmService;
 import com.rental.movie.service.SubtitleService;
+import com.rental.movie.service.TokenService;
 import com.rental.movie.model.dto.RatingRequestDTO;
 import com.rental.movie.exception.CustomException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,6 +40,8 @@ public class FilmController {
     private FilmService filmService;
     @Autowired
     private SubtitleService subtitleService;
+    @Autowired
+    private TokenService tokenService;
 
     @Operation(summary = "Lấy danh sách tất cả phim đang hoạt động", description = "Lấy tất cả phim đã active và không xóa mềm") // isActive=true
                                                                                                                                           // &&
@@ -393,17 +394,23 @@ public class FilmController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/file/film/check/{id}")
     public ResponseEntity<BaseResponse> checkUserHasPermissionToAccessFile(@PathVariable String id) {
-        filmService.checkUserHasPermissionToAccessFile(id);
+        filmService.checkUserHasPermissionToAccessFile(id, true);
         BaseResponse response = new BaseResponse("Kiểm tra thành công", HttpStatus.OK.value(), null);
+        String accessToken = tokenService.getToken(id);
+        response.setData(new HashMap<String, String>() {
+            {
+                put("AccessToken", accessToken);
+            }
+        });
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(summary = "Xem phim bước 2", description = "API xem phim")
     @ApiResponse(responseCode = "200", description = "Tải phim thành công")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/file/film/{id}")
-    public ResponseEntity<Resource> getFileFilm(@PathVariable String id)
+    @GetMapping("/auth/file/film/{id}/{token}")
+    public ResponseEntity<Resource> getFileFilm(@PathVariable String id, @PathVariable String token)
             throws GeneralSecurityException, IOException {
+        tokenService.validateToken(token, id);
         InputStream inputStream = filmService.getFileFilm(id);
         return ResponseEntity
                 .ok()

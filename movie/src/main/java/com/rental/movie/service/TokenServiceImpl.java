@@ -6,9 +6,13 @@ import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 
 import com.google.common.hash.Hashing;
@@ -16,6 +20,7 @@ import com.rental.movie.common.IAuthentication;
 import com.rental.movie.common.Role;
 import com.rental.movie.common.TokenResponse;
 import com.rental.movie.config.AppConfig;
+import com.rental.movie.exception.CustomException;
 import com.rental.movie.model.entity.User;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +35,9 @@ public class TokenServiceImpl implements TokenService {
     @Lazy
     @Autowired
     private JwtEncoder jwtEncoder;
+    @Lazy
+    @Autowired
+    private JwtDecoder jwtDecoder;
     @Lazy
     @Autowired
     private DeviceService deviceService;
@@ -84,5 +92,31 @@ public class TokenServiceImpl implements TokenService {
         }
         return user.getDevices().stream()
                 .anyMatch(d -> d.getToken().equals(hashString(token)));
+    }
+
+    @Override
+    public String getToken(String filmId) {
+        Instant now = Instant.now();
+        Instant expiresAt = now.plus(1, ChronoUnit.DAYS);
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(expiresAt)
+                .subject(filmId)
+                .build();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    @Override
+    public void validateToken(String token, String filmId) {
+        try {
+            Jwt decodedJwt = jwtDecoder.decode(token);
+            if (!decodedJwt.getSubject().equals(filmId)) {
+                throw new CustomException("Token không hợp lệ", HttpStatus.UNAUTHORIZED.value());
+            }
+        } catch (JwtException e) {
+            throw new CustomException("Token không hợp lệ", HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }

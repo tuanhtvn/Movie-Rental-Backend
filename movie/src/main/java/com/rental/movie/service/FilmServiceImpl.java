@@ -253,16 +253,18 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public InputStream getFileFilm(String filmId) throws GeneralSecurityException, IOException {
-        // check user has permission to access this file (User rent this film)
-        String url = this.checkUserHasPermissionToAccessFile(filmId);
+        String url = this.checkUserHasPermissionToAccessFile(filmId, false);
         return googleDriveService.getFileAsInputStream(url);
     }
-    
+
     @Override
-    public String checkUserHasPermissionToAccessFile(String filmId) {
+    public String checkUserHasPermissionToAccessFile(String filmId, boolean isCheck) {
         Film film = filmRepository.findById(filmId).orElseThrow(() -> {
             throw new CustomException("Không tìm thấy film", HttpStatus.NOT_FOUND.value());
         });
+        if (!isCheck) {
+            return film.getFilmUrl();
+        }
         User user = authManager.getUserAuthentication();
         if (film.getRentalType() == RentalType.RENTAL) {
             RentedFilm rentedFilm = user.getRentedFilms().stream()

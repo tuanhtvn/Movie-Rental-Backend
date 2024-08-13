@@ -63,5 +63,5 @@ public interface FilmService {
     // Exception;
     public InputStream getFileFilm(String filmId) throws GeneralSecurityException, IOException;
 
-    public String checkUserHasPermissionToAccessFile(String filmId);
+    public String checkUserHasPermissionToAccessFile(String filmId, boolean isCheck);
 }
