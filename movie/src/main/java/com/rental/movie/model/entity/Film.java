@@ -63,7 +63,6 @@ public class Film extends BaseEntity {
     @DBRef(lazy = true)
     private List<Narration> narrations = new ArrayList<>(); // danh sách thuyết minh
     private List<String> comments = new ArrayList<>(); // danh sách bình luận
-    @DBRef(lazy = true)
     private List<String> genres = new ArrayList<>(); // danh sách thể loại
 
     @Override
