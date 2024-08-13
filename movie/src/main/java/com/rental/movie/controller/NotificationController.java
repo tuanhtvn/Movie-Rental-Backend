@@ -56,7 +56,7 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Lấy thông báo theo id người dùng thành công"),
             @ApiResponse(responseCode = "404", description = "Không tìm thấy thông báo")
     })
-    @GetMapping("/user}")
+    @GetMapping("/user")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserId() {
         List<NotificationResponseDTO> notifications = notificationService.getNotificationsByUserId();
         return ResponseEntity.ok(notifications);
