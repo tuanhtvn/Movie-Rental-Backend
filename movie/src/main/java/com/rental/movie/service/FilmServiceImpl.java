@@ -105,7 +105,6 @@ public class FilmServiceImpl implements FilmService {
 
     private SubtitleResponseDTO mapToSubtitleResponseDTO(Subtitle subtitle) {
         SubtitleResponseDTO dto = new SubtitleResponseDTO();
-        dto.setId(subtitle.getId());
         dto.setSubtitleName(subtitle.getSubtitleName());
         dto.setSubtitleUrl(subtitle.getSubtitleUrl());
         return dto;
@@ -113,7 +112,6 @@ public class FilmServiceImpl implements FilmService {
 
     private NarrationResponseDTO mapToNarrationResponseDTO(Narration narration) {
         NarrationResponseDTO dto = new NarrationResponseDTO();
-        dto.setId(narration.getId());
         dto.setLanguage(narration.getLanguage());
         dto.setNarrationUrl(narration.getNarrationUrl());
         return dto;
