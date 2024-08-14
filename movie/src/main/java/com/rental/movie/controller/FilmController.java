@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springdoc.core.annotations.ParameterObject;
+import org.apache.tika.Tika;
 
 import java.util.HashMap;
 import java.util.List;
@@ -415,6 +416,46 @@ public class FilmController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(inputStream));
+    }
+
+    @Operation(summary = "Xem phim bước 2 - Phụ đề", description = "API tải phụ đề")
+    @ApiResponse(responseCode = "200", description = "Tải phụ đề thành công")
+    @GetMapping("/auth/file/subtitle/{subtitleId}/{token}")
+    public ResponseEntity<Resource> getFileSubtitle(@PathVariable String subtitleId, @PathVariable String token)
+            throws GeneralSecurityException, IOException {
+        tokenService.validateToken(token);
+        InputStream inputStream = filmService.getFileSubtitle(subtitleId);
+
+        // Sử dụng Tika để xác định loại MIME
+        Tika tika = new Tika();
+        String mimeType = tika.detect(inputStream);
+
+        inputStream.reset();
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .body(new InputStreamResource(inputStream));
+    }
+
+    @Operation(summary = "Xem phim bước 2 - Thuyết minh", description = "API tải thuyết minh")
+    @ApiResponse(responseCode = "200", description = "Tải thuyết minh thành công")
+    @GetMapping("/auth/file/narration/{narrationId}/{token}")
+    public ResponseEntity<Resource> getFileNarration(@PathVariable String narrationId, @PathVariable String token)
+            throws GeneralSecurityException, IOException {
+        tokenService.validateToken(token);
+        InputStream inputStream = filmService.getFileNarration(narrationId);
+
+        // Sử dụng Tika để xác định loại MIME
+        Tika tika = new Tika();
+        String mimeType = tika.detect(inputStream);
+
+        inputStream.reset();
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(mimeType))
                 .body(new InputStreamResource(inputStream));
     }
 

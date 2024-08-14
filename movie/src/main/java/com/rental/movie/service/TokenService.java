@@ -15,4 +15,7 @@ public interface TokenService {
     public Boolean compareTokens(String tokenHash, String tokenPlain);
 
     public Boolean checkToken(String token);
+
+    public void validateToken(String token);
+
 }

@@ -59,9 +59,12 @@ public interface FilmService {
 
     public void incrementViews(String filmId);
 
-    // public InputStream getFilmStream(String filmId, String range) throws
-    // Exception;
     public InputStream getFileFilm(String filmId) throws GeneralSecurityException, IOException;
 
     public String checkUserHasPermissionToAccessFile(String filmId, boolean isCheck);
+
+    public InputStream getFileSubtitle(String subtitleId) throws GeneralSecurityException, IOException;
+
+    public InputStream getFileNarration(String narrationId) throws GeneralSecurityException, IOException;
+
 }

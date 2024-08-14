@@ -119,4 +119,13 @@ public class TokenServiceImpl implements TokenService {
             throw new CustomException("Token không hợp lệ", HttpStatus.UNAUTHORIZED.value());
         }
     }
+
+    @Override
+    public void validateToken(String token) {
+        try {
+            Jwt decodedJwt = jwtDecoder.decode(token);
+        } catch (JwtException e) {
+            throw new CustomException("Token không hợp lệ", HttpStatus.UNAUTHORIZED.value());
+        }
+    }
 }

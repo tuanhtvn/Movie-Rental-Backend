@@ -105,6 +105,7 @@ public class FilmServiceImpl implements FilmService {
 
     private SubtitleResponseDTO mapToSubtitleResponseDTO(Subtitle subtitle) {
         SubtitleResponseDTO dto = new SubtitleResponseDTO();
+        dto.setId(subtitle.getId());
         dto.setSubtitleName(subtitle.getSubtitleName());
         dto.setSubtitleUrl(subtitle.getSubtitleUrl());
         return dto;
@@ -112,6 +113,7 @@ public class FilmServiceImpl implements FilmService {
 
     private NarrationResponseDTO mapToNarrationResponseDTO(Narration narration) {
         NarrationResponseDTO dto = new NarrationResponseDTO();
+        dto.setId(narration.getId());
         dto.setLanguage(narration.getLanguage());
         dto.setNarrationUrl(narration.getNarrationUrl());
         return dto;
@@ -286,6 +288,22 @@ public class FilmServiceImpl implements FilmService {
             }
         }
         return film.getFilmUrl();
+    }
+
+    @Override
+    public InputStream getFileSubtitle(String subtitleId) throws GeneralSecurityException, IOException {
+        Subtitle subtitle = subtitleRepository.findById(subtitleId).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy phụ đề", HttpStatus.NOT_FOUND.value());
+        });
+        return googleDriveService.getFileAsInputStream(subtitle.getSubtitleUrl());
+    }
+
+    @Override
+    public InputStream getFileNarration(String narrationId) throws GeneralSecurityException, IOException {
+        Narration narration = narrationRepository.findById(narrationId).orElseThrow(() -> {
+            throw new CustomException("Không tìm thấy thuyết minh", HttpStatus.NOT_FOUND.value());
+        });
+        return googleDriveService.getFileAsInputStream(narration.getNarrationUrl());
     }
 
     public Double rateFilm(String filmId, RatingRequestDTO ratingRequestDTO) {
